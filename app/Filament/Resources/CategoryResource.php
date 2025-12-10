@@ -21,9 +21,11 @@ class CategoryResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-tag';
 
-    // AJUSTE MENÚ: Stock Autos > Editar Categorías
-    protected static ?string $navigationGroup = 'Stock Autos';
-    protected static ?string $navigationLabel = 'Editar Categorías';
+    // AJUSTE MENÚ: Inventario > Categorías
+    protected static ?string $navigationGroup = 'Inventario';
+    protected static ?string $navigationLabel = 'Categorías';
+    protected static ?string $modelLabel = 'Categoría';
+    protected static ?string $pluralModelLabel = 'Categorías';
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
@@ -34,11 +36,33 @@ class CategoryResource extends Resource
                     ->label('Nombre de Categoría')
                     ->required()
                     ->live(onBlur: true)
-                    ->afterStateUpdated(fn ($set, $state) => $set('slug', Str::slug($state))),
+                    ->afterStateUpdated(fn($set, $state) => $set('slug', Str::slug($state))),
 
                 TextInput::make('slug')
                     ->required()
                     ->readOnly(),
+
+                Forms\Components\FileUpload::make('banner_path')
+                    ->label('Banner de Categoría (Opcional)')
+                    ->image()
+                    ->directory('category-banners')
+                    ->columnSpanFull(),
+
+                Forms\Components\Section::make('Configuración de Menú')
+                    ->schema([
+                        Toggle::make('is_menu_item')
+                            ->label('Mostrar en Menú Principal')
+                            ->default(false),
+                        TextInput::make('menu_order')
+                            ->label('Orden en Menú')
+                            ->numeric()
+                            ->default(0),
+                        TextInput::make('filter_query')
+                            ->label('Filtro Especial (Avanzado)')
+                            ->placeholder('Ej: is_premium=1 o search=Moto')
+                            ->helperText('Si se usa, esta categoría filtrará vehículos con esta query en lugar de solo por ID.')
+                            ->columnSpanFull(),
+                    ])->columns(2),
 
                 Toggle::make('is_active')
                     ->label('Activa')
@@ -50,6 +74,9 @@ class CategoryResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('banner_path')
+                    ->label('Banner'),
+
                 TextColumn::make('name')
                     ->label('Nombre')
                     ->searchable()
@@ -61,6 +88,14 @@ class CategoryResource extends Resource
                 IconColumn::make('is_active')
                     ->label('Activa')
                     ->boolean(),
+
+                Tables\Columns\IconColumn::make('is_menu_item')
+                    ->label('En Menú')
+                    ->boolean(),
+
+                TextColumn::make('menu_order')
+                    ->label('Orden')
+                    ->sortable(),
             ])
             ->filters([
                 //

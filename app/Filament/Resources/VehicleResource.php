@@ -28,8 +28,10 @@ class VehicleResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-truck';
 
     // Configuración del Menú
-    protected static ?string $navigationGroup = 'Stock Autos';
-    protected static ?string $navigationLabel = 'Cargar Auto';
+    protected static ?string $navigationGroup = 'Inventario';
+    protected static ?string $navigationLabel = 'Vehículos';
+    protected static ?string $modelLabel = 'Vehículo';
+    protected static ?string $pluralModelLabel = 'Vehículos';
     protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
@@ -51,7 +53,7 @@ class VehicleResource extends Resource
                                     TextInput::make('name')
                                         ->required()
                                         ->live(onBlur: true)
-                                        ->afterStateUpdated(fn ($set, $state) => $set('slug', Str::slug($state))),
+                                        ->afterStateUpdated(fn($set, $state) => $set('slug', Str::slug($state))),
                                     TextInput::make('slug')->required()->readOnly(),
                                     FileUpload::make('logo')->directory('brands'),
                                 ]),
@@ -83,7 +85,7 @@ class VehicleResource extends Resource
 
                             // CATEGORÍA con CREACIÓN RÁPIDA
                             Select::make('category_id')
-                                ->relationship('category', 'name')
+                                ->relationship('category', 'name', fn($query) => $query->whereNull('filter_query'))
                                 ->label('Categoría')
                                 ->searchable()
                                 ->preload()
@@ -92,7 +94,7 @@ class VehicleResource extends Resource
                                     TextInput::make('name')
                                         ->required()
                                         ->live(onBlur: true)
-                                        ->afterStateUpdated(fn ($set, $state) => $set('slug', Str::slug($state))),
+                                        ->afterStateUpdated(fn($set, $state) => $set('slug', Str::slug($state))),
                                     TextInput::make('slug')->required()->readOnly(),
                                 ]),
                         ]),
@@ -105,29 +107,18 @@ class VehicleResource extends Resource
                         Grid::make(3)->schema([
                             Select::make('transmission')
                                 ->label('Transmisión')
-                                ->options([
-                                    'Manual' => 'Manual',
-                                    'Automática' => 'Automática',
-                                    'CVT' => 'CVT',
-                                    'Doble Embrague' => 'Doble Embrague',
-                                ]),
+                                ->options(\App\Models\VehicleAttribute::where('type', 'transmission')->where('is_active', true)->pluck('name', 'name'))
+                                ->searchable(),
 
                             Select::make('fuel')
                                 ->label('Combustible')
-                                ->options([
-                                    'Bencina' => 'Bencina',
-                                    'Diesel' => 'Diesel',
-                                    'Híbrido' => 'Híbrido',
-                                    'Eléctrico' => 'Eléctrico',
-                                ]),
+                                ->options(\App\Models\VehicleAttribute::where('type', 'fuel')->where('is_active', true)->pluck('name', 'name'))
+                                ->searchable(),
 
                             Select::make('traction')
                                 ->label('Tracción')
-                                ->options([
-                                    '4x2' => '4x2',
-                                    '4x4' => '4x4',
-                                    'AWD' => 'AWD',
-                                ]),
+                                ->options(\App\Models\VehicleAttribute::where('type', 'traction')->where('is_active', true)->pluck('name', 'name'))
+                                ->searchable(),
                         ]),
 
                         // UBICACIÓN
@@ -200,36 +191,64 @@ class VehicleResource extends Resource
                     ->sortable()
                     ->searchable(),
 
-                TextColumn::make('model')
+                Tables\Columns\TextInputColumn::make('model')
                     ->label('Modelo')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->rules(['required', 'string', 'max:255']),
 
-                TextColumn::make('year')
+                Tables\Columns\TextInputColumn::make('year')
                     ->label('Año')
-                    ->sortable(),
+                    ->type('number')
+                    ->sortable()
+                    ->rules(['numeric', 'min:1900', 'max:2026']),
 
-                TextColumn::make('price')
-                    ->label('Precio')
-                    ->money('CLP')
-                    ->sortable(),
+                Tables\Columns\TextInputColumn::make('price')
+                    ->label('Precio (CLP)')
+                    ->type('number')
+                    ->sortable()
+                    ->rules(['numeric', 'min:0']),
 
-                TextColumn::make('category.name')
+                Tables\Columns\SelectColumn::make('category_id')
                     ->label('Categoría')
-                    ->badge()
-                    ->color('gray'),
+                    ->options(\App\Models\Category::pluck('name', 'id'))
+                    ->sortable()
+                    ->searchable(),
 
-                IconColumn::make('is_premium')
-                    ->label('Premium')
-                    ->boolean()
-                    ->trueColor('warning'),
+                Tables\Columns\ToggleColumn::make('is_premium')
+                    ->label('💎 Premium')
+                    ->sortable()
+                    ->onColor('warning'),
 
-                IconColumn::make('is_published')
+                Tables\Columns\ToggleColumn::make('is_featured')
+                    ->label('⭐ Destacado')
+                    ->sortable()
+                    ->onColor('success'),
+
+                Tables\Columns\ToggleColumn::make('is_published')
                     ->label('Visible')
-                    ->boolean(),
+                    ->sortable(),
             ])
             ->filters([
-                // Filtros futuros
+                Tables\Filters\SelectFilter::make('category_id')
+                    ->label('Categoría')
+                    ->relationship('category', 'name')
+                    ->searchable()
+                    ->preload(),
+
+                Tables\Filters\SelectFilter::make('brand_id')
+                    ->label('Marca')
+                    ->relationship('brand', 'name')
+                    ->searchable()
+                    ->preload(),
+
+                Tables\Filters\Filter::make('is_premium')
+                    ->label('Solo Premium')
+                    ->query(fn($query) => $query->where('is_premium', true)),
+
+                Tables\Filters\Filter::make('is_offer')
+                    ->label('En Oferta')
+                    ->query(fn($query) => $query->where('is_offer', true)),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

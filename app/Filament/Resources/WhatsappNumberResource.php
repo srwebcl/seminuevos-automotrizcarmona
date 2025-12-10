@@ -24,20 +24,22 @@ class WhatsappNumberResource extends Resource
     protected static ?string $navigationGroup = 'Administración';
     protected static ?int $navigationSort = 2;
     protected static ?string $navigationLabel = 'WhatsApp';
+    protected static ?string $modelLabel = 'Número WhatsApp';
+    protected static ?string $pluralModelLabel = 'Números WhatsApp';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-             TextInput::make('label')
-    ->label('Nombre / Cargo') // Ej: Ventas Seminuevos
-    ->required(),
-TextInput::make('phone')
-    ->label('Número (Formato 569...)')
-    ->numeric()
-    ->required(),
-Toggle::make('is_active')
-    ->default(true),
+                TextInput::make('label')
+                    ->label('Nombre / Cargo') // Ej: Ventas Seminuevos
+                    ->required(),
+                TextInput::make('phone')
+                    ->label('Número (Formato 569...)')
+                    ->numeric()
+                    ->required(),
+                Toggle::make('is_active')
+                    ->default(true),
             ]);
     }
 
@@ -46,16 +48,21 @@ Toggle::make('is_active')
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('label')
+                    ->label('Nombre / Cargo')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone')
+                    ->label('Número')
                     ->searchable(),
                 Tables\Columns\IconColumn::make('is_active')
+                    ->label('Activo')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

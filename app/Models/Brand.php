@@ -9,6 +9,11 @@ class Brand extends Model
 {
     use HasFactory;
 
-    // Esto desbloquea la protección para todos los campos
     protected $guarded = [];
+
+    // ESTA ES LA FUNCIÓN QUE FALTABA
+    public function vehicles()
+    {
+        return $this->hasMany(Vehicle::class);
+    }
 }

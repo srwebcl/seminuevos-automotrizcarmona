@@ -24,32 +24,34 @@ class BrandResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = 'Stock Autos';
+    protected static ?string $navigationGroup = 'Inventario';
     protected static ?int $navigationSort = 3;
-    protected static ?string $navigationLabel = 'Editar Marcas';
+    protected static ?string $navigationLabel = 'Marcas';
+    protected static ?string $modelLabel = 'Marca';
+    protected static ?string $pluralModelLabel = 'Marcas';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 TextInput::make('name')
-    ->label('Nombre de la Marca')
-    ->required()
-    ->live(onBlur: true)
-    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
+                    ->label('Nombre de la Marca')
+                    ->required()
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', Str::slug($state))),
 
-TextInput::make('slug')
-    ->required()
-    ->readOnly(),
+                TextInput::make('slug')
+                    ->required()
+                    ->readOnly(),
 
-FileUpload::make('logo')
-    ->directory('brands')
-    ->image()
-    ->imageEditor(),
+                FileUpload::make('logo')
+                    ->directory('brands')
+                    ->image()
+                    ->imageEditor(),
 
-Toggle::make('is_active')
-    ->label('¿Marca Activa?')
-    ->default(true),
+                Toggle::make('is_active')
+                    ->label('¿Marca Activa?')
+                    ->default(true),
             ]);
     }
 
@@ -58,18 +60,23 @@ Toggle::make('is_active')
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('logo')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\ImageColumn::make('logo')
+                    ->label('Logo'),
                 Tables\Columns\IconColumn::make('is_active')
+                    ->label('Activo')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
