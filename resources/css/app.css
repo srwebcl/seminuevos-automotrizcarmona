@@ -1,6 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
 @layer utilities {
     .text-shadow {
@@ -75,6 +75,7 @@ body.theme-christmas h2::after {
 body.theme-christmas .seasonal-word {
     background: linear-gradient(45deg, #D42426, #165B33);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     display: inline-block;
     font-weight: 900;
@@ -108,6 +109,7 @@ body.theme-new_year .seasonal-word {
     background-size: 200% auto;
     animation: shine 3s linear infinite;
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     display: inline-block;
 }
@@ -138,6 +140,7 @@ body.theme-18sept h2::after {
 body.theme-18sept .seasonal-word {
     background: linear-gradient(90deg, #0039A6, #D52B1E);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     display: inline-block;
 }
