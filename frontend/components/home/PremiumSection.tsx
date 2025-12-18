@@ -82,11 +82,12 @@ export default function PremiumSection({ vehicles: initialVehicles }: { vehicles
 
                 <div className="flex overflow-x-auto snap-x scrollbar-hide gap-8 pb-12 scroll-smooth -mx-4 px-4 md:mx-0 md:px-0">
                     {vehicles.map((auto) => (
-                        <div key={auto.id} className="snap-center shrink-0 w-[85%] sm:w-[380px] bg-neutral-900/60 backdrop-blur-xl rounded-3xl overflow-hidden border border-white/10 hover:border-premium-gold/70 transition duration-500 group relative shadow-2xl">
-                            <div className="relative aspect-[16/10] overflow-hidden">
-                                <div className="absolute top-4 left-4 z-30 shadow-lg">
-                                    <span className="bg-gradient-to-tr from-[#D4AF37] to-[#8a6e15] text-white text-[10px] font-black px-3 py-1.5 rounded uppercase flex items-center gap-1.5 shadow-md tracking-wider">
-                                        <i className="fa-solid fa-crown text-yellow-100"></i> Elite
+                        <div key={auto.id} className="snap-center shrink-0 w-[85%] sm:w-[380px] bg-[#0a0a0a] rounded-[32px] overflow-hidden border border-white/5 transition duration-500 group relative shadow-2xl flex flex-col">
+                            {/* Image Section */}
+                            <div className="relative aspect-[4/3] overflow-hidden">
+                                <div className="absolute top-6 left-6 z-30">
+                                    <span className="bg-[#b8860b] text-white text-[11px] font-black px-4 py-1.5 rounded uppercase flex items-center gap-2 tracking-widest shadow-lg">
+                                        <i className="fa-solid fa-crown text-[10px]"></i> ELITE
                                     </span>
                                 </div>
                                 {auto.cover_photo && (
@@ -94,38 +95,66 @@ export default function PremiumSection({ vehicles: initialVehicles }: { vehicles
                                         src={auto.cover_photo}
                                         alt={auto.model}
                                         fill
-                                        className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-90 group-hover:opacity-100"
+                                        className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-90 group-hover:opacity-100 unoptimized={true}"
                                     />
                                 )}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+                                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent opacity-80"></div>
                             </div>
 
-                            <div className="p-7 relative">
-                                <div className="mb-4">
-                                    <p className="text-xs font-bold text-premium-gold uppercase mb-1.5 tracking-widest flex items-center gap-2">
-                                        {auto.brand.name}
-                                    </p>
-                                    <h3 className="text-2xl font-black text-white truncate italic font-heading">{auto.model}</h3>
-                                </div>
-
-                                <div className="grid grid-cols-3 gap-2 mb-6">
-                                    <div className="text-center bg-white/5 rounded-lg py-2 border border-white/5">
-                                        <p className="text-[10px] text-gray-500 uppercase font-bold">Año</p>
-                                        <p className="text-xs text-gray-200 font-bold">{auto.year}</p>
+                            {/* Content Section */}
+                            <div className="px-8 pb-8 pt-2 relative flex-1 flex flex-col">
+                                {/* Header: Brand & Actions */}
+                                <div className="flex justify-between items-start mb-2">
+                                    <div className="flex items-center gap-3">
+                                        <span className="text-[#b8860b] font-bold text-xs tracking-[0.2em] uppercase">
+                                            {auto.brand.name}
+                                        </span>
+                                        <div className="h-[1px] w-8 bg-[#b8860b]/50"></div>
                                     </div>
-                                    <div className="text-center bg-white/5 rounded-lg py-2 border border-white/5">
-                                        <p className="text-[10px] text-gray-500 uppercase font-bold">Kms</p>
-                                        <p className="text-xs text-gray-200 font-bold">{auto.km_formatted.replace('km', '')}</p>
-                                    </div>
-                                    <div className="text-center bg-white/5 rounded-lg py-2 border border-white/5">
-                                        <p className="text-[10px] text-gray-500 uppercase font-bold">Precio</p>
-                                        <p className="text-xs text-gray-200 font-bold">{auto.price_formatted}</p>
+                                    <div className="flex gap-2">
+                                        <button className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors border border-white/5">
+                                            <i className="fa-brands fa-whatsapp text-sm"></i>
+                                        </button>
+                                        <button className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors border border-white/5">
+                                            <i className="fa-solid fa-link text-sm"></i>
+                                        </button>
                                     </div>
                                 </div>
 
-                                <div className="flex justify-between items-center pt-5 border-t border-white/10">
-                                    <Link href={`/auto/${auto.slug}`} className="w-full text-center py-3 bg-white text-black font-bold rounded-full hover:bg-premium-gold transition-colors">
-                                        Ver Detalles
+                                {/* Model Name */}
+                                <h3 className="text-[26px] leading-tight font-black text-white italic mb-6">
+                                    {auto.model}
+                                </h3>
+
+                                {/* Info Grid */}
+                                <div className="grid grid-cols-3 gap-3 mb-8">
+                                    <div className="bg-[#1a1a1a] rounded-xl py-3 border border-white/5 flex flex-col items-center justify-center">
+                                        <p className="text-[9px] text-gray-500 uppercase font-black tracking-wider mb-0.5">AÑO</p>
+                                        <p className="text-sm text-white font-bold">{auto.year}</p>
+                                    </div>
+                                    <div className="bg-[#1a1a1a] rounded-xl py-3 border border-white/5 flex flex-col items-center justify-center">
+                                        <p className="text-[9px] text-gray-500 uppercase font-black tracking-wider mb-0.5">KMS</p>
+                                        <p className="text-sm text-white font-bold">{auto.km_formatted.replace(' km', '')}</p>
+                                    </div>
+                                    <div className="bg-[#1a1a1a] rounded-xl py-3 border border-white/5 flex flex-col items-center justify-center">
+                                        <p className="text-[9px] text-gray-500 uppercase font-black tracking-wider mb-0.5">TRANS.</p>
+                                        <p className="text-sm text-white font-bold truncate px-1 w-full text-center">
+                                            {auto.transmission === 'AUTOMATICA' ? 'Aut' : 'Mec'}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Division Line */}
+                                <div className="h-[1px] w-full bg-white/10 mb-6"></div>
+
+                                {/* Footer: Price & CTA */}
+                                <div className="mt-auto flex justify-between items-end">
+                                    <div>
+                                        <p className="text-xs text-gray-500 font-medium mb-1">Precio Contado</p>
+                                        <p className="text-3xl font-black text-white tracking-tight">{auto.price_formatted}</p>
+                                    </div>
+                                    <Link href={`/auto/${auto.slug}`} className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-[0_0_20px_rgba(255,255,255,0.3)] shrink-0">
+                                        <i className="fa-solid fa-arrow-right text-black text-lg"></i>
                                     </Link>
                                 </div>
                             </div>
