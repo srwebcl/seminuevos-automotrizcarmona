@@ -4,8 +4,16 @@ import { Banner } from '@/types/banner';
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
 
 async function fetchAPI<T>(endpoint: string): Promise<T> {
-    const res = await fetch(`${API_URL}/${endpoint}`, {
-        cache: 'no-store', // Adjust caching strategy as needed
+    const separator = endpoint.includes('?') ? '&' : '?';
+    const url = `${API_URL}/${endpoint}${separator}_t=${Date.now()}`;
+
+    const res = await fetch(url, {
+        cache: 'no-store',
+        headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0',
+        }
     });
 
     if (!res.ok) {
