@@ -183,8 +183,8 @@ const PremiumCard = ({ auto }: { auto: Vehicle }) => {
                         <p className="text-[10px] text-gray-500 uppercase tracking-wider mb-0.5">Precio Lista</p>
                         <p className="text-xl font-bold text-white tracking-tight">{auto.price_formatted}</p>
                     </div>
-                    <Link href={`/auto/${auto.slug}`} className="w-10 h-10 bg-white/5 hover:bg-[#4F94FF] hover:text-white rounded-full flex items-center justify-center transition-all duration-300 shadow-lg shadow-black/50 border border-white/5">
-                        <i className="fa-solid fa-arrow-right -rotate-45 group-hover:rotate-0 transition-transform"></i>
+                    <Link href={`/auto/${auto.slug}`} className="w-10 h-10 bg-white/5 hover:bg-[#4F94FF] text-white rounded-full flex items-center justify-center transition-all duration-300 shadow-lg shadow-black/50 border border-white/5 group">
+                        <i className="fa-solid fa-arrow-right -rotate-45 group-hover:rotate-0 transition-transform text-white"></i>
                     </Link>
                 </div>
             </div>
@@ -300,8 +300,8 @@ export default function PremiumSection({ vehicles: initialVehicles }: { vehicles
                         <span className="relative inline-block text-[#4F94FF] font-bold uppercase tracking-[0.2em] text-[10px] mb-2 border-b border-[#4F94FF]/30 pb-1">
                             Exclusividad Garantizada
                         </span>
-                        <h2 className="relative text-4xl md:text-5xl font-bold text-white italic tracking-tighter leading-none">
-                            Autos <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#4F94FF] via-[#00BFFF] to-[#4F94FF]">Premium</span>
+                        <h2 className="relative text-4xl md:text-5xl font-bold text-white italic tracking-tighter leading-none pb-2 pr-2">
+                            Autos <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E0E0E0] via-[#FFFFFF] to-[#A0A0A0]">Premium</span>
                         </h2>
                     </div>
 
