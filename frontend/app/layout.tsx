@@ -4,6 +4,7 @@ import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AosInit from '@/components/AosInit';
+import SmartWhatsAppButton from '@/components/SmartWhatsAppButton';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit' });
@@ -30,24 +31,10 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
-        <WhatsAppButton />
+        <Footer />
+        <SmartWhatsAppButton />
         <AosInit />
       </body>
     </html>
-  );
-}
-
-function WhatsAppButton() {
-  return (
-    <a
-      href="https://wa.me/56912345678?text=Hola,%20quisiera%20más%20información."
-      target="_blank"
-      className="fixed bottom-6 right-6 z-50 group flex items-center justify-center w-16 h-16 bg-[#25D366] rounded-full shadow-[0_4px_20px_rgba(37,211,102,0.4)] hover:scale-110 transition-all duration-300 animate-pulse-green"
-    >
-      <i className="fa-brands fa-whatsapp text-4xl text-white"></i>
-      <span className="absolute right-20 bg-white text-gray-800 text-xs font-bold px-3 py-2 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none transform translate-x-2 group-hover:translate-x-0 duration-300">
-        ¡Hablemos ahora! 👋
-      </span>
-    </a>
   );
 }
