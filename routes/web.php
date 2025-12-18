@@ -94,8 +94,31 @@ Route::view('/financiamiento', 'financing')->name('financing.index');
 // REMOVE THIS IN PRODUCTION AFTER FIXING
 Route::get('/fix-storage', function () {
     try {
+        $linkPath = public_path('storage');
+
+        // 1. Force remove existing link/folder if exists
+        if (file_exists($linkPath)) {
+            // If it's a symlink, unlink it
+            if (is_link($linkPath)) {
+                unlink($linkPath);
+            }
+            // If it's a folder (wrongly created), delete it (be careful, but usually safer on cPanel deploy)
+            // skipping rmdir to be safe, just unlink.
+            else {
+                // Rename it just in case it has data
+                rename($linkPath, $linkPath . '_old_' . time());
+            }
+        }
+
+        // 2. Create new link
         \Illuminate\Support\Facades\Artisan::call('storage:link');
-        return 'Storage Link Created Successfully via Artisan!';
+
+        return response()->json([
+            'message' => 'Symlink Reset Successfully',
+            'target' => $linkPath,
+            'linked_to' => readlink($linkPath)
+        ]);
+
     } catch (\Exception $e) {
         return 'Error: ' . $e->getMessage();
     }

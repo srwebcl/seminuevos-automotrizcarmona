@@ -32,11 +32,6 @@ export default function RootLayout({
         <Footer />
         <WhatsAppButton />
         <AosInit />
-
-        {/* Version Indicator v2.1 */}
-        <div className="fixed bottom-1 left-1 text-[10px] text-gray-400 z-50 pointer-events-none opacity-50 font-mono">
-          v2.1 (Direct Img)
-        </div>
       </body>
     </html>
   );
