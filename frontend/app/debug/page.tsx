@@ -9,25 +9,35 @@ export default function DebugPage() {
     const [config, setConfig] = useState<any>(null);
     const [data, setData] = useState<any>(null);
     const [banners, setBanners] = useState<any>(null);
+    const [bannerError, setBannerError] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        // Show what the browser sees as the API URL
-        const envUrl = process.env.NEXT_PUBLIC_API_URL;
-        setConfig({
-            apiUrl: envUrl || 'UNDEFINED (Using default?)'
-        });
+        // ... (config logic)
 
-        // Test Fetch Vehicles
         getVehicles(1)
             .then(res => setData(res))
             .catch(err => setError(err.message));
 
-        // Test Fetch Banners
         getBanners()
             .then(res => setBanners(res))
-            .catch(err => console.error("Banner error", err));
+            .catch(err => setBannerError(err.message));
     }, []);
+
+    // ... render ...
+    <div className="mt-6">
+        <p className="text-blue-600 font-bold">BANNERS CHECK</p>
+        {bannerError ? (
+            <p className="text-red-600 font-bold">ERROR: {bannerError}</p>
+        ) : (
+            <>
+                <p>Total Banners: {banners?.data?.length || 0}</p>
+                <pre className="mt-2 bg-gray-900 text-yellow-400 p-4 rounded overflow-auto max-h-60">
+                    {JSON.stringify(banners, null, 2)}
+                </pre>
+            </>
+        )}
+    </div>
 
     return (
         <div className="p-10 font-mono text-sm bg-gray-100 min-h-screen text-black">

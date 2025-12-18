@@ -100,3 +100,12 @@ Route::get('/fix-storage', function () {
         return 'Error: ' . $e->getMessage();
     }
 });
+
+Route::get('/test-banners', function () {
+    $banners = \App\Models\Banner::all();
+    return response()->json([
+        'count' => $banners->count(),
+        'first' => $banners->first(),
+        'all' => $banners
+    ]);
+});
