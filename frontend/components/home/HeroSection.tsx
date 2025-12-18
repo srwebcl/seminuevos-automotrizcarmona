@@ -69,6 +69,7 @@ export default function HeroSection({ banner }: HeroSectionProps) {
                         fill
                         className="object-cover"
                         priority
+                        unoptimized={true} // Bypass Vercel Image Optimization to avoid 502 errors from cPanel
                     />
                 )}
                 <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-black/90"></div>
