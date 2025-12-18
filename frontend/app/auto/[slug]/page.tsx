@@ -61,7 +61,7 @@ export default async function VehicleDetailPage({
                     {/* Details */}
                     <div>
                         <span className="text-blue-600 font-bold tracking-wide uppercase text-sm">
-                            {vehicle.condition === 'new' ? 'Nuevo' : 'Seminuevo'}
+                            Seminuevo
                         </span>
                         <h1 className="text-3xl font-black text-gray-900 mt-2 mb-4">
                             {vehicle.brand.name} {vehicle.model}
