@@ -91,37 +91,33 @@ Route::get('/api/home-filter', [VehicleController::class, 'ajaxHomeFilter'])->na
 Route::view('/sucursales', 'locations')->name('locations.index');
 Route::view('/financiamiento', 'financing')->name('financing.index');
 
-// REMOVE THIS IN PRODUCTION AFTER FIXING
-Route::get('/fix-storage', function () {
+// DIAGNOSTIC TOOL
+Route::get('/debug-storage', function () {
+    $results = [];
+
+    // 1. Check Env
+    $results['app_url'] = env('APP_URL');
+    $results['filesystem_disk'] = env('FILESYSTEM_DISK');
+
+    // 2. Check Symlink
+    $publicStorage = public_path('storage');
+    $results['public_storage_exists'] = file_exists($publicStorage);
+    $results['public_storage_is_link'] = is_link($publicStorage);
+    $results['public_storage_target'] = is_link($publicStorage) ? readlink($publicStorage) : 'NOT A LINK';
+
+    // 3. Test Write/Read
     try {
-        $linkPath = public_path('storage');
-
-        // 1. Force remove existing link/folder if exists
-        if (file_exists($linkPath)) {
-            // If it's a symlink, unlink it
-            if (is_link($linkPath)) {
-                unlink($linkPath);
-            }
-            // If it's a folder (wrongly created), delete it (be careful, but usually safer on cPanel deploy)
-            // skipping rmdir to be safe, just unlink.
-            else {
-                // Rename it just in case it has data
-                rename($linkPath, $linkPath . '_old_' . time());
-            }
-        }
-
-        // 2. Create new link
-        \Illuminate\Support\Facades\Artisan::call('storage:link');
-
-        return response()->json([
-            'message' => 'Symlink Reset Successfully',
-            'target' => $linkPath,
-            'linked_to' => readlink($linkPath)
-        ]);
-
+        $filename = 'debug_test_' . time() . '.txt';
+        \Illuminate\Support\Facades\Storage::disk('public')->put($filename, 'Hello World');
+        $results['write_test'] = 'SUCCESS';
+        $results['file_path'] = storage_path('app/public/' . $filename);
+        $results['file_url'] = \Illuminate\Support\Facades\Storage::disk('public')->url($filename);
+        $results['file_url_accessible'] = 'Click below to test';
     } catch (\Exception $e) {
-        return 'Error: ' . $e->getMessage();
+        $results['write_test'] = 'FAILED: ' . $e->getMessage();
     }
+
+    return response()->json($results);
 });
 
 Route::get('/test-banners', function () {
