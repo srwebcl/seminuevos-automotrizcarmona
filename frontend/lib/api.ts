@@ -1,4 +1,5 @@
 import { PaginatedResponse, Vehicle, VehicleCategory } from '@/types/vehicle';
+import { Banner } from '@/types/banner';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
 
@@ -45,4 +46,8 @@ export async function getCategories(): Promise<{ data: VehicleCategory[] }> {
 
 export async function searchGlobal(query: string): Promise<{ categories: VehicleCategory[], vehicles: Vehicle[] }> {
     return fetchAPI<{ categories: VehicleCategory[], vehicles: Vehicle[] }>(`search/global?query=${encodeURIComponent(query)}`);
+}
+
+export async function getBanners(): Promise<{ data: Banner[] }> {
+    return fetchAPI<{ data: Banner[] }>('banners');
 }

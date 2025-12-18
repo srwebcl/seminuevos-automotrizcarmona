@@ -1,32 +1,69 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, MouseEvent } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getPremiumVehicles } from '@/lib/api';
 import { Vehicle } from '@/types/vehicle';
 
-export default function PremiumSection() {
-    const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+export default function PremiumSection({ vehicles: initialVehicles }: { vehicles?: Vehicle[] }) {
+    const [vehicles, setVehicles] = useState<Vehicle[]>(initialVehicles || []);
+    const glowRef = useRef<HTMLDivElement>(null);
+    const sectionRef = useRef<HTMLElement>(null);
 
     useEffect(() => {
-        const fetchPremium = async () => {
-            try {
-                const response = await getPremiumVehicles();
-                setVehicles(response.data);
-            } catch (error) {
-                console.error("Failed to load premium vehicles", error);
-            }
-        };
-        fetchPremium();
-    }, []);
+        if (!initialVehicles) {
+            const fetchPremium = async () => {
+                try {
+                    const response = await getPremiumVehicles();
+                    setVehicles(response.data);
+                } catch (error) {
+                    console.error("Failed to load premium vehicles", error);
+                }
+            };
+            fetchPremium();
+        }
+    }, [initialVehicles]);
+
+    const handleMouseMove = (e: MouseEvent<HTMLElement>) => {
+        if (!glowRef.current || !sectionRef.current) return;
+
+        const rect = sectionRef.current.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // Move the glow to cursor position (centering the glow)
+        // Offset logic from legacy: x - 300, y - 150 (half of w-600 h-300)
+        glowRef.current.style.transform = `translate(${x - 300}px, ${y - 150}px)`;
+    };
+
+    const handleMouseLeave = () => {
+        if (!glowRef.current) return;
+        glowRef.current.style.transition = 'transform 1s ease-out';
+        glowRef.current.style.transform = 'translate(-50%, -50%)'; // Reset center
+        setTimeout(() => {
+            if (glowRef.current) glowRef.current.style.transition = 'transform 0.1s ease-out';
+        }, 1000);
+    };
 
     if (vehicles.length === 0) return null;
 
     return (
-        <section className="w-full bg-[#050505] relative overflow-hidden py-24 border-t border-white/5">
+        <section
+            ref={sectionRef}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            className="w-full bg-[#050505] relative overflow-hidden py-24 border-t border-white/5"
+        >
             {/* Luminous Effects */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#D4AF37]/20 via-black/0 to-transparent pointer-events-none z-0"></div>
+
+            {/* Dynamic Glow */}
+            <div
+                ref={glowRef}
+                className="absolute top-0 left-0 w-[600px] h-[300px] bg-premium-gold/30 blur-[100px] rounded-full mix-blend-screen pointer-events-none z-0 animate-pulse transition-transform duration-100 ease-out"
+                style={{ transform: 'translate(-50%, -50%)', left: '50%', top: '0' }}
+            ></div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div className="flex flex-col items-center text-center mb-16">
