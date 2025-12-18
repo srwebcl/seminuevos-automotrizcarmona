@@ -90,3 +90,13 @@ Route::get('/api/home-filter', [VehicleController::class, 'ajaxHomeFilter'])->na
 // Páginas Estáticas
 Route::view('/sucursales', 'locations')->name('locations.index');
 Route::view('/financiamiento', 'financing')->name('financing.index');
+
+// REMOVE THIS IN PRODUCTION AFTER FIXING
+Route::get('/fix-storage', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('storage:link');
+        return 'Storage Link Created Successfully via Artisan!';
+    } catch (\Exception $e) {
+        return 'Error: ' . $e->getMessage();
+    }
+});
