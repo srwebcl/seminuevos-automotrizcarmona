@@ -1,33 +1,60 @@
+import Link from 'next/link';
+
 export default function Footer() {
     return (
-        <footer className="bg-gray-900 text-white py-12">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div>
-                    <h3 className="text-2xl font-bold mb-4">Automotriz Carmona</h3>
-                    <p className="text-gray-400">
-                        Líderes en venta de vehículos seminuevos. Calidad y confianza garantizada.
-                    </p>
+        <footer className="bg-black text-white pt-24 pb-12 border-t border-gray-900 relative overflow-hidden">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
+                <div className="flex flex-col md:flex-row justify-between items-start gap-16 mb-20">
+                    <div className="md:w-1/3">
+                        <div className="h-12 flex items-center mb-6">
+                            <span className="text-white font-black text-2xl italic tracking-tighter">CARMONA<span className="text-premium-gold">.</span></span>
+                            {/* <img src="/images/logo.png" class="h-12 w-auto brightness-0 invert mb-6 opacity-90" /> */}
+                        </div>
+                        <p className="text-gray-500 text-sm leading-relaxed mb-8">
+                            Redefiniendo el estándar de seminuevos en Chile.
+                        </p>
+                        <div className="flex gap-4">
+                            <a href="#" className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-400 hover:bg-premium-gold hover:text-black transition-all">
+                                <i className="fa-brands fa-instagram"></i>
+                            </a>
+                            <a href="#" className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-400 hover:bg-premium-gold hover:text-black transition-all">
+                                <i className="fa-brands fa-facebook-f"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div className="w-full md:w-2/3 grid grid-cols-2 md:grid-cols-3 gap-8">
+                        <div>
+                            <h4 className="text-white font-bold uppercase text-xs tracking-wider mb-6">Explorar</h4>
+                            <ul className="space-y-4 text-sm text-gray-500">
+                                <li><Link href="/catalogo" className="hover:text-white">Seminuevos</Link></li>
+                                <li><Link href="/catalogo?is_premium=1" className="hover:text-premium-gold text-premium-gold font-bold">Premium</Link></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 className="text-white font-bold uppercase text-xs tracking-wider mb-6">Cliente</h4>
+                            <ul className="space-y-4 text-sm text-gray-500">
+                                <li><Link href="#" className="hover:text-white">Financiamiento</Link></li>
+                                <li><Link href="#" className="hover:text-white">Vende tu auto</Link></li>
+                            </ul>
+                        </div>
+                        <div className="col-span-2 md:col-span-1">
+                            <h4 className="text-white font-bold uppercase text-xs tracking-wider mb-6">Contacto</h4>
+                            <ul className="space-y-4 text-sm text-gray-500">
+                                <li className="flex items-start gap-3">
+                                    <i className="fa-solid fa-location-dot mt-1 text-premium-gold"></i>
+                                    <span>Av. Balmaceda 3570,<br />La Serena</span>
+                                </li>
+                                <li className="flex items-center gap-3">
+                                    <i className="fa-solid fa-envelope text-premium-gold"></i>
+                                    <span>contacto@carmona.cl</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <h4 className="font-bold mb-4">Enlaces Rápidos</h4>
-                    <ul className="space-y-2 text-gray-400">
-                        <li><a href="/" className="hover:text-white">Inicio</a></li>
-                        <li><a href="/catalogo" className="hover:text-white">Catálogo</a></li>
-                        <li><a href="#" className="hover:text-white">Financiamiento</a></li>
-                        <li><a href="#" className="hover:text-white">Contacto</a></li>
-                    </ul>
+                <div className="border-t border-gray-900 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-600">
+                    <p>© {new Date().getFullYear()} Automotriz Carmona.</p>
                 </div>
-                <div>
-                    <h4 className="font-bold mb-4">Contacto</h4>
-                    <ul className="space-y-2 text-gray-400">
-                        <li>Av. Principal 1234, Santiago</li>
-                        <li>+56 9 1234 5678</li>
-                        <li>contacto@automotrizcarmona.cl</li>
-                    </ul>
-                </div>
-            </div>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 pt-8 border-t border-gray-800 text-center text-gray-500 text-sm">
-                © {new Date().getFullYear()} Automotriz Carmona. Todos los derechos reservados.
             </div>
         </footer>
     );

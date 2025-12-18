@@ -9,12 +9,28 @@ use Illuminate\Http\Request;
 
 class VehicleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $vehicles = Vehicle::with(['brand', 'category'])
-            ->where('is_published', true)
-            ->orderBy('created_at', 'desc')
-            ->paginate(12);
+        $query = Vehicle::with(['brand', 'category'])
+            ->where('is_published', true);
+
+        if ($request->has('category')) {
+            $slug = $request->query('category');
+            // Support filtering by category slug
+            $query->whereHas('category', function ($q) use ($slug) {
+                $q->where('slug', $slug);
+            });
+        }
+
+        if ($request->has('is_premium')) {
+            $query->where('is_premium', true);
+        }
+
+        if ($request->has('is_featured')) {
+            $query->where('is_featured', true);
+        }
+
+        $vehicles = $query->orderBy('created_at', 'desc')->paginate(12);
 
         return VehicleResource::collection($vehicles);
     }

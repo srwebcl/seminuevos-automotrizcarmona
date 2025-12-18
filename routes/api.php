@@ -9,6 +9,8 @@ Route::prefix('vehicles')->group(function () {
     Route::get('/{slug}', [\App\Http\Controllers\Api\VehicleController::class, 'show']);
 });
 
+Route::get('categories', [\App\Http\Controllers\Api\CategoryController::class, 'index']);
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');

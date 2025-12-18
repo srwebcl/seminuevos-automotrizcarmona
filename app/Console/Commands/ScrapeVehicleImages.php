@@ -62,6 +62,7 @@ class ScrapeVehicleImages extends Command
             sleep(rand(1, 2));
 
             try {
+                /** @var \Illuminate\Http\Client\Response $response */
                 $response = Http::withHeaders($fullHeaders)
                     ->timeout(20)
                     ->get($url);
@@ -131,7 +132,9 @@ class ScrapeVehicleImages extends Command
                     }
 
                     try {
-                        $imgContent = Http::withHeaders(['User-Agent' => $userAgent])->get($imgUrl)->body();
+                        /** @var \Illuminate\Http\Client\Response $imgResponse */
+                        $imgResponse = Http::withHeaders(['User-Agent' => $userAgent])->get($imgUrl);
+                        $imgContent = $imgResponse->body();
                         if (strlen($imgContent) > 1000) { // Valid image check
                             $disk->put($destPath, $imgContent);
                             $storedPhotos[] = $destPath;

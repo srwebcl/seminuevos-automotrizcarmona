@@ -10,8 +10,13 @@ const nextConfig = {
             },
             {
                 protocol: 'https',
-                hostname: 'usados.automotrizcarmona.cl',
+                hostname: 'api-dev.automotrizcarmona.cl',
                 pathname: '/storage/**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'images.unsplash.com',
+                pathname: '/**',
             },
             {
                 protocol: 'http',

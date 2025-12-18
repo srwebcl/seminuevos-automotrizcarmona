@@ -12,15 +12,151 @@
   --font-outfit: var(--font-outfit);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+}
+
+@layer utilities {
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* === MODOS FESTIVOS (Ported) === */
+
+/* Protección Identidad Global */
+body[class*="theme-"] .text-premium-gold {
+  color: #D4AF37 !important;
+  background: none !important;
+  -webkit-text-fill-color: initial !important;
+}
+
+nav .flex-shrink-0 {
+  position: relative;
+}
+
+/* --- 1. NAVIDAD --- */
+body.theme-christmas nav .flex-shrink-0::after {
+  content: '🎅';
+  position: absolute;
+  top: -14px;
+  right: -12px;
+  font-size: 24px;
+  transform: rotate(15deg);
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.5));
+  pointer-events: none;
+}
+
+body.theme-christmas h1::after,
+body.theme-christmas h2::after {
+  content: '🎄';
+  font-size: 0.6em;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+body.theme-christmas .seasonal-word {
+  background: linear-gradient(45deg, #D42426, #165B33);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  font-weight: 900;
+}
+
+/* --- 2. AÑO NUEVO --- */
+body.theme-new_year nav .flex-shrink-0::after {
+  content: '🥂';
+  position: absolute;
+  top: -12px;
+  right: -15px;
+  font-size: 26px;
+  transform: rotate(10deg);
+  filter: drop-shadow(0 0 5px #FFD700);
+  pointer-events: none;
+}
+
+body.theme-new_year h1::after,
+body.theme-new_year h2::after {
+  content: '🎉';
+  font-size: 0.6em;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+body.theme-new_year .seasonal-word {
+  background: linear-gradient(45deg, #FFD700, #F0E68C, #FFD700);
+  background-size: 200% auto;
+  animation: shine 3s linear infinite;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+/* --- 3. FIESTAS PATRIAS --- */
+body.theme-18sept nav .flex-shrink-0::after {
+  content: '🤠';
+  position: absolute;
+  top: -15px;
+  right: -12px;
+  font-size: 26px;
+  transform: rotate(10deg);
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.5));
+  pointer-events: none;
+}
+
+body.theme-18sept h1::after,
+body.theme-18sept h2::after {
+  content: '🇨🇱';
+  font-size: 0.6em;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+body.theme-18sept .seasonal-word {
+  background: linear-gradient(90deg, #0039A6, #D52B1E);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+@keyframes shine {
+  to {
+    background-position: 200% center;
+  }
+}
+
+.festive-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  animation: particles-explode 1.5s ease-out forwards;
+  pointer-events: none;
+  z-index: 10;
+}
+
+@keyframes particles-explode {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(var(--tx), var(--ty));
+    opacity: 0;
+  }
 }
