@@ -35,9 +35,15 @@ export default function Navbar() {
                     {/* Logo */}
                     <div className="flex-shrink-0 flex items-center cursor-pointer relative z-50">
                         <Link href="/">
-                            {/* Placeholder Logo - Replace with actual asset */}
-                            <span className="text-white font-black text-xl italic tracking-tighter">CARMONA<span className="text-premium-gold">.</span></span>
-                            {/* <img src="/images/logo.png" alt="Carmona y Cia" class="h-10 w-auto brightness-0 invert" /> */}
+                            {/* Original Logo */}
+                            <Image
+                                src="/images/logo.png"
+                                alt="Automotriz Carmona"
+                                width={180}
+                                height={60}
+                                className="h-10 w-auto brightness-0 invert object-contain"
+                                priority
+                            />
                         </Link>
                     </div>
 
