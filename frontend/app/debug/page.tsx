@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getVehicles } from '@/lib/api';
+import { getVehicles, getBanners } from '@/lib/api';
 
 export const dynamic = 'force-dynamic';
 
 export default function DebugPage() {
     const [config, setConfig] = useState<any>(null);
     const [data, setData] = useState<any>(null);
+    const [banners, setBanners] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -17,10 +18,15 @@ export default function DebugPage() {
             apiUrl: envUrl || 'UNDEFINED (Using default?)'
         });
 
-        // Test Fetch
+        // Test Fetch Vehicles
         getVehicles(1)
             .then(res => setData(res))
             .catch(err => setError(err.message));
+
+        // Test Fetch Banners
+        getBanners()
+            .then(res => setBanners(res))
+            .catch(err => console.error("Banner error", err));
     }, []);
 
     return (
@@ -40,9 +46,17 @@ export default function DebugPage() {
                     <div className="text-gray-500">Loading...</div>
                 ) : (
                     <div>
-                        <p className="text-green-600 font-bold">SUCCESS</p>
+                        <p className="text-green-600 font-bold">VEHICLES: SUCCESS</p>
                         <p>Total Vehicles: {data.meta?.total || 'N/A'}</p>
-                        <p>First Vehicle: {data.data?.[0]?.model || 'None'}</p>
+
+                        <div className="mt-6">
+                            <p className="text-blue-600 font-bold">BANNERS CHECK</p>
+                            <p>Total Banners: {banners?.data?.length || 0}</p>
+                            <pre className="mt-2 bg-gray-900 text-yellow-400 p-4 rounded overflow-auto max-h-60">
+                                {JSON.stringify(banners, null, 2)}
+                            </pre>
+                        </div>
+
                         <pre className="mt-4 bg-gray-900 text-green-400 p-4 rounded overflow-auto max-h-60">
                             {JSON.stringify(data.data?.[0], null, 2)}
                         </pre>
