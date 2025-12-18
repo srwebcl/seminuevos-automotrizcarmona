@@ -10,16 +10,43 @@ import { Banner } from '@/types/banner';
 import { useDebounce } from 'use-debounce';
 
 interface HeroSectionProps {
-    banner?: Banner | null;
+    banners: Banner[];
 }
 
-export default function HeroSection({ banner }: HeroSectionProps) {
+export default function HeroSection({ banners }: HeroSectionProps) {
     const [searchTerm, setSearchTerm] = useState('');
     const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
     const [results, setResults] = useState<{ categories: VehicleCategory[], vehicles: Vehicle[] }>({ categories: [], vehicles: [] });
     const [isLoading, setIsLoading] = useState(false);
     const [showResults, setShowResults] = useState(false);
+
+    // Slideshow Logic
+    const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
     const router = useRouter();
+
+    // Default fallback banner if none provided
+    const effectiveBanners = banners.length > 0 ? banners : [{
+        id: 0,
+        title: "Hero Background",
+        image_url: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1920&auto=format&fit=crop",
+        type: 'hero',
+        video_url: null,
+        subtitle: null,
+        link: null,
+        category_slug: null
+    }];
+
+    // Use specific useEffect for banners change to handle generic array dependency issue if possible, but simplest is length check above.
+    // Actually we need to reference the current banners array.
+    // Let's refine the interval logic to be safer with state updates.
+    useEffect(() => {
+        if (effectiveBanners.length <= 1) return;
+        const timer = setInterval(() => {
+            setCurrentBannerIndex(prev => (prev + 1) % effectiveBanners.length);
+        }, 8000);
+        return () => clearInterval(timer);
+    }, [effectiveBanners.length]); // Only reset timer if number of banners changes
+
 
     useEffect(() => {
         const performSearch = async () => {
@@ -50,52 +77,78 @@ export default function HeroSection({ banner }: HeroSectionProps) {
     };
 
     return (
-        <div className="relative h-[600px] flex items-center justify-center z-40">
-            {/* Background Container - Isolated for Overflow Hidden */}
+        <div className="relative h-[650px] flex items-center justify-center z-40 bg-black">
+            {/* Background Slideshow Container */}
             <div className="absolute inset-0 z-0 overflow-hidden">
-                {/* Dynamic Banner: Video or Image */}
-                {banner?.video_url ? (
-                    <video
-                        autoPlay
-                        muted
-                        loop
-                        playsInline
-                        className="object-cover w-full h-full scale-105"
-                        src={banner.video_url}
-                    />
-                ) : (
-                    <Image
-                        src={banner?.image_url || "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1920&auto=format&fit=crop"}
-                        alt={banner?.title || "Hero Background"}
-                        fill
-                        className="object-cover"
-                        priority
-                        unoptimized={true}
-                    />
-                )}
-                <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-black/90"></div>
+                {effectiveBanners.map((banner, index) => {
+                    const isActive = index === currentBannerIndex;
+                    const isVideo = !!banner.video_url;
+
+                    return (
+                        <div
+                            key={banner.id || index}
+                            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${isActive ? 'opacity-100' : 'opacity-0'}`}
+                        >
+                            {isVideo ? (
+                                <video
+                                    autoPlay
+                                    muted
+                                    loop
+                                    playsInline
+                                    className="object-cover w-full h-full"
+                                    src={banner.video_url!}
+                                />
+                            ) : (
+                                <div className={`relative w-full h-full ${isActive ? 'animate-ken-burns' : ''}`}>
+                                    <Image
+                                        src={banner.image_url!}
+                                        alt={banner.title || "Hero Background"}
+                                        fill
+                                        className="object-cover"
+                                        priority={index === 0}
+                                        unoptimized={true}
+                                    />
+                                </div>
+                            )}
+                            {/* Gradient Overlay specific to slide if needed, but we use a global one below */}
+                        </div>
+                    );
+                })}
+
+                {/* Global Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/30 to-black/90 z-10 pointer-events-none"></div>
             </div>
 
             {/* Content Container */}
-            <div className="relative z-30 w-full max-w-4xl px-4 text-center">
-                <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-8 tracking-tight leading-tight drop-shadow-2xl">
-                    Tu próximo auto, <br />
-                    <span className="text-transparent bg-clip-text bg-gradient-to-b from-[#F9F1D8] via-[#D4AF37] to-[#996515] filter brightness-110">
+            <div className="relative z-30 w-full max-w-5xl px-4 text-center">
+                {/* POWER TITLE - Enhanced Typography & Shadows */}
+                <h1 className="text-6xl md:text-8xl font-black text-white mb-10 tracking-tighter leading-[0.9] drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] relative">
+                    <span className="block mb-2" data-aos="fade-down" data-aos-duration="1000">Tu próximo auto,</span>
+                    <span
+                        className="text-transparent bg-clip-text bg-gradient-to-b from-[#FFF5D1] via-[#D4AF37] to-[#8A6E2F] filter brightness-125 drop-shadow-[0_0_25px_rgba(212,175,55,0.4)]"
+                        data-aos="fade-up"
+                        data-aos-duration="1000"
+                        data-aos-delay="200"
+                    >
                         está aquí.
                     </span>
                 </h1>
 
                 {/* Search Bar Container */}
-                <div className="mt-8 relative max-w-2xl mx-auto group">
+                <div
+                    className="mt-12 relative max-w-2xl mx-auto group"
+                    data-aos="fade-up"
+                    data-aos-delay="400"
+                >
                     <div className="relative z-50 transition-transform duration-300 group-focus-within:scale-105">
-                        <i className={`fa-solid fa-magnifying-glass absolute left-6 top-1/2 -translate-y-1/2 z-10 text-lg transition-colors duration-300 ${showResults ? 'text-premium-gold' : 'text-gray-400'}`}></i>
+                        <i className={`fa-solid fa-magnifying-glass absolute left-6 top-1/2 -translate-y-1/2 z-10 text-xl transition-colors duration-300 ${showResults ? 'text-premium-gold' : 'text-gray-400'}`}></i>
                         <input
                             type="text"
                             placeholder="Busca por marca, modelo o tipo... (Ej: BMW X5)"
                             value={searchTerm}
                             onChange={(e) => handleInputChange(e.target.value)}
                             onFocus={() => { if (searchTerm.length >= 2) setShowResults(true); }}
-                            className="w-full h-16 pl-16 pr-16 rounded-2xl bg-white/95 backdrop-blur-xl border border-white/20 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-premium-gold/30 focus:bg-white transition-all text-lg shadow-[0_0_40px_rgba(0,0,0,0.3)]"
+                            className="w-full h-16 pl-16 pr-16 rounded-2xl bg-white/95 backdrop-blur-xl border border-white/20 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-premium-gold/30 focus:bg-white transition-all text-xl font-medium shadow-[0_0_50px_rgba(0,0,0,0.4)]"
                             autoComplete="off"
                         />
                         {isLoading && (
@@ -115,7 +168,7 @@ export default function HeroSection({ banner }: HeroSectionProps) {
 
                     {/* Instant Search Results Dropdown - High Impact Design */}
                     {showResults && (
-                        <div className="absolute top-full left-0 w-full bg-white/90 backdrop-blur-2xl rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] mt-4 overflow-hidden z-[100] border border-white/40 ring-1 ring-black/5 text-left transform transition-all duration-300 origin-top">
+                        <div className="absolute top-full left-0 w-full bg-white/90 backdrop-blur-2xl rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] mt-4 overflow-hidden z-[100] border border-white/40 ring-1 ring-black/5 text-left transform transition-all duration-300 origin-top animate-in fade-in slide-in-from-top-2">
 
                             {/* Categories Grid */}
                             {results.categories.length > 0 && (
