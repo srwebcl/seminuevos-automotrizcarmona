@@ -251,6 +251,11 @@ class VehicleResource extends Resource
                     ->query(fn($query) => $query->where('is_offer', true)),
             ])
             ->actions([
+                Tables\Actions\Action::make('view_frontend')
+                    ->label('Ver en Sitio')
+                    ->icon('heroicon-o-eye')
+                    ->url(fn(Vehicle $record) => env('FRONTEND_URL', 'https://automotrizcarmona.cl') . '/auto/' . $record->slug)
+                    ->openUrlInNewTab(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])

@@ -15,6 +15,21 @@ const nextConfig = {
             },
             {
                 protocol: 'https',
+                hostname: 'api.automotrizcarmona.cl',
+                pathname: '/storage/**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'automotrizcarmona.cl',
+                pathname: '/storage/**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'seminuevos.automotrizcarmona.cl',
+                pathname: '/storage/**',
+            },
+            {
+                protocol: 'https',
                 hostname: 'images.unsplash.com',
                 pathname: '/**',
             },
