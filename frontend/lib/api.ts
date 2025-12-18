@@ -42,3 +42,7 @@ export async function getCategories(): Promise<{ data: VehicleCategory[] }> {
     // For now, let's try standard endpoint.
     return fetchAPI<{ data: VehicleCategory[] }>('categories');
 }
+
+export async function searchGlobal(query: string): Promise<{ categories: VehicleCategory[], vehicles: Vehicle[] }> {
+    return fetchAPI<{ categories: VehicleCategory[], vehicles: Vehicle[] }>(`search/global?query=${encodeURIComponent(query)}`);
+}

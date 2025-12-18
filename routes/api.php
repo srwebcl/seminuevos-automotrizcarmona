@@ -10,6 +10,7 @@ Route::prefix('vehicles')->group(function () {
 });
 
 Route::get('categories', [\App\Http\Controllers\Api\CategoryController::class, 'index']);
+Route::get('search/global', [\App\Http\Controllers\Api\SearchController::class, 'index']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();
