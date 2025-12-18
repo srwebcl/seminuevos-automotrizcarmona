@@ -6,7 +6,7 @@ import ExperienceSection from '@/components/home/ExperienceSection';
 import FullBanner from '@/components/home/FullBanner';
 import CategoryPromos from '@/components/home/CategoryPromos';
 
-export const revalidate = 60; // Revalidate every minute
+export const dynamic = 'force-dynamic'; // Disable caching for real-time updates
 
 export default async function Home() {
   const [
