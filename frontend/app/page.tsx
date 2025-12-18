@@ -25,12 +25,13 @@ export default async function Home() {
   const banners = bannersResponse.data;
 
   // Filter Banners
+  const heroBanner = banners.find(b => b.type === 'hero') || null;
   const fullBanner = banners.find(b => b.type === 'full') || null;
   const promos = banners.filter(b => b.type === 'promo') || [];
 
   return (
     <main>
-      <HeroSection />
+      <HeroSection banner={heroBanner} />
 
       <FullBanner banner={fullBanner} />
       <CategoryPromos promos={promos} />

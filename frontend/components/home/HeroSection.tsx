@@ -6,9 +6,14 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { searchGlobal } from '@/lib/api';
 import { Vehicle, VehicleCategory } from '@/types/vehicle';
-import { useDebounce } from 'use-debounce'; // Ensure this package is installed or use custom implementation
+import { Banner } from '@/types/banner';
+import { useDebounce } from 'use-debounce';
 
-export default function HeroSection() {
+interface HeroSectionProps {
+    banner?: Banner | null;
+}
+
+export default function HeroSection({ banner }: HeroSectionProps) {
     const [searchTerm, setSearchTerm] = useState('');
     const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
     const [results, setResults] = useState<{ categories: VehicleCategory[], vehicles: Vehicle[] }>({ categories: [], vehicles: [] });
@@ -47,14 +52,25 @@ export default function HeroSection() {
     return (
         <div className="relative h-[600px] flex items-center justify-center overflow-hidden">
             <div className="absolute inset-0 z-0">
-                {/* Fallback Image */}
-                <Image
-                    src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1920&auto=format&fit=crop"
-                    alt="Hero Background"
-                    fill
-                    className="object-cover"
-                    priority
-                />
+                {/* Dynamic Banner: Video or Image */}
+                {banner?.video_url ? (
+                    <video
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        className="object-cover w-full h-full"
+                        src={banner.video_url}
+                    />
+                ) : (
+                    <Image
+                        src={banner?.image_url || "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1920&auto=format&fit=crop"}
+                        alt={banner?.title || "Hero Background"}
+                        fill
+                        className="object-cover"
+                        priority
+                    />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-black/90"></div>
             </div>
 
