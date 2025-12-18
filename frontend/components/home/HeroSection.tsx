@@ -71,7 +71,7 @@ export default function HeroSection() {
                         <i className="fa-solid fa-magnifying-glass absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 z-10"></i>
                         <input
                             type="text"
-                            placeholder="Busca por marca, modelo o tipo... (Ej: Camionetas)"
+                            placeholder="Busca por marca, modelo o tipo... (Ej: BMW X5)"
                             value={searchTerm}
                             onChange={(e) => handleInputChange(e.target.value)}
                             onFocus={() => { if (searchTerm.length >= 2) setShowResults(true); }}
