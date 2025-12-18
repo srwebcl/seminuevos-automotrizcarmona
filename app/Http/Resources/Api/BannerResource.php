@@ -20,12 +20,20 @@ class BannerResource extends JsonResource
             'type' => $this->type, // hero, full, promo
             'title' => $this->title,
             'subtitle' => $this->subtitle,
-            'image_url' => $this->image_path ? Storage::url($this->image_path) : null,
-            'mobile_image_url' => $this->mobile_image_path ? Storage::url($this->mobile_image_path) : null,
-            'video_url' => $this->video_path ? Storage::url($this->video_path) : null,
+            'image_url' => $this->image_path ? $this->getStorageUrl($this->image_path) : null,
+            'mobile_image_url' => $this->mobile_image_path ? $this->getStorageUrl($this->mobile_image_path) : null,
+            'video_url' => $this->video_path ? $this->getStorageUrl($this->video_path) : null,
             'link' => $this->link,
             'category_slug' => $this->category ? $this->category->slug : null,
             'sort_order' => $this->sort_order,
         ];
+    }
+
+    private function getStorageUrl(?string $path): ?string
+    {
+        if (!$path)
+            return null;
+        // Force HTTPS and use the correct domain
+        return 'https://api-dev.automotrizcarmona.cl/storage/' . $path;
     }
 }
