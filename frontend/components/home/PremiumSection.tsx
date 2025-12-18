@@ -55,23 +55,24 @@ export default function PremiumSection({ vehicles: initialVehicles }: { vehicles
             onMouseLeave={handleMouseLeave}
             className="w-full bg-[#050505] relative overflow-hidden py-24 border-t border-white/5"
         >
-            {/* Luminous Effects */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#D4AF37]/20 via-black/0 to-transparent pointer-events-none z-0"></div>
+            {/* Improved Luminous Effects */}
+            <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[120%] h-[800px] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#D4AF37]/15 via-black/40 to-black pointer-events-none z-0"></div>
 
             {/* Dynamic Glow */}
             <div
                 ref={glowRef}
-                className="absolute top-0 left-0 w-[600px] h-[300px] bg-premium-gold/30 blur-[100px] rounded-full mix-blend-screen pointer-events-none z-0 animate-pulse transition-transform duration-100 ease-out"
+                className="absolute top-0 left-0 w-[600px] h-[300px] bg-premium-gold/20 blur-[120px] rounded-full mix-blend-screen pointer-events-none z-0 transition-transform duration-100 ease-out"
                 style={{ transform: 'translate(-50%, -50%)', left: '50%', top: '0' }}
             ></div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div className="flex flex-col items-center text-center mb-16">
-                    <span className="inline-block text-premium-gold font-bold uppercase tracking-[0.25em] text-xs mb-4 border border-premium-gold/30 px-5 py-1.5 rounded-full bg-premium-gold/5 backdrop-blur-md">
+                    {/* Fixed Visibility for Label */}
+                    <span className="inline-block text-[#D4AF37] font-bold uppercase tracking-[0.25em] text-xs mb-4 border border-[#D4AF37]/50 px-6 py-2 rounded-full bg-[#D4AF37]/10 shadow-[0_0_15px_rgba(212,175,55,0.2)]">
                         Exclusividad Garantizada
                     </span>
 
-                    <h2 className="text-5xl md:text-7xl font-black text-white italic tracking-tighter mb-6 drop-shadow-2xl leading-tight py-2">
+                    <h2 className="text-5xl md:text-7xl font-bold text-white italic tracking-tighter mb-6 drop-shadow-2xl leading-tight py-2">
                         Autos <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F9F1D8] via-[#D4AF37] to-[#F9F1D8] inline-block pr-2">Premium</span>
                     </h2>
 
@@ -82,11 +83,11 @@ export default function PremiumSection({ vehicles: initialVehicles }: { vehicles
 
                 <div className="flex overflow-x-auto snap-x scrollbar-hide gap-8 pb-12 scroll-smooth -mx-4 px-4 md:mx-0 md:px-0">
                     {vehicles.map((auto) => (
-                        <div key={auto.id} className="snap-center shrink-0 w-[85%] sm:w-[380px] bg-[#0a0a0a] rounded-[32px] overflow-hidden border border-white/5 transition duration-500 group relative shadow-2xl flex flex-col">
+                        <div key={auto.id} className="snap-center shrink-0 w-[85%] sm:w-[380px] bg-[#0a0a0a] rounded-[32px] overflow-hidden border border-white/10 transition duration-500 group relative shadow-2xl flex flex-col hover:shadow-[0_0_30px_rgba(212,175,55,0.15)] hover:border-[#D4AF37]/50">
                             {/* Image Section */}
                             <div className="relative aspect-[4/3] overflow-hidden">
                                 <div className="absolute top-6 left-6 z-30">
-                                    <span className="bg-[#b8860b] text-white text-[11px] font-black px-4 py-1.5 rounded uppercase flex items-center gap-2 tracking-widest shadow-lg">
+                                    <span className="bg-[#b8860b] text-white text-[11px] font-bold px-4 py-1.5 rounded uppercase flex items-center gap-2 tracking-widest shadow-lg">
                                         <i className="fa-solid fa-crown text-[10px]"></i> ELITE
                                     </span>
                                 </div>
@@ -121,39 +122,39 @@ export default function PremiumSection({ vehicles: initialVehicles }: { vehicles
                                     </div>
                                 </div>
 
-                                {/* Model Name */}
-                                <h3 className="text-[26px] leading-tight font-black text-white italic mb-6">
+                                {/* Model Name - Reduced Font Weight */}
+                                <h3 className="text-[26px] leading-[1.1] font-bold text-white italic mb-6">
                                     {auto.model}
                                 </h3>
 
                                 {/* Info Grid */}
                                 <div className="grid grid-cols-3 gap-3 mb-8">
-                                    <div className="bg-[#1a1a1a] rounded-xl py-3 border border-white/5 flex flex-col items-center justify-center">
-                                        <p className="text-[9px] text-gray-500 uppercase font-black tracking-wider mb-0.5">AÑO</p>
-                                        <p className="text-sm text-white font-bold">{auto.year}</p>
+                                    <div className="bg-[#151515] rounded-xl py-3 border border-white/5 flex flex-col items-center justify-center group-hover:bg-[#1a1a1a] transition-colors">
+                                        <p className="text-[9px] text-[#666] uppercase font-bold tracking-wider mb-0.5">AÑO</p>
+                                        <p className="text-sm text-gray-200 font-bold">{auto.year}</p>
                                     </div>
-                                    <div className="bg-[#1a1a1a] rounded-xl py-3 border border-white/5 flex flex-col items-center justify-center">
-                                        <p className="text-[9px] text-gray-500 uppercase font-black tracking-wider mb-0.5">KMS</p>
-                                        <p className="text-sm text-white font-bold">{auto.km_formatted.replace(' km', '')}</p>
+                                    <div className="bg-[#151515] rounded-xl py-3 border border-white/5 flex flex-col items-center justify-center group-hover:bg-[#1a1a1a] transition-colors">
+                                        <p className="text-[9px] text-[#666] uppercase font-bold tracking-wider mb-0.5">KMS</p>
+                                        <p className="text-sm text-gray-200 font-bold">{auto.km_formatted.replace(' km', '')}</p>
                                     </div>
-                                    <div className="bg-[#1a1a1a] rounded-xl py-3 border border-white/5 flex flex-col items-center justify-center">
-                                        <p className="text-[9px] text-gray-500 uppercase font-black tracking-wider mb-0.5">TRANS.</p>
-                                        <p className="text-sm text-white font-bold truncate px-1 w-full text-center">
+                                    <div className="bg-[#151515] rounded-xl py-3 border border-white/5 flex flex-col items-center justify-center group-hover:bg-[#1a1a1a] transition-colors">
+                                        <p className="text-[9px] text-[#666] uppercase font-bold tracking-wider mb-0.5">TRANS.</p>
+                                        <p className="text-sm text-gray-200 font-bold truncate px-1 w-full text-center">
                                             {auto.transmission === 'AUTOMATICA' ? 'Aut' : 'Mec'}
                                         </p>
                                     </div>
                                 </div>
 
                                 {/* Division Line */}
-                                <div className="h-[1px] w-full bg-white/10 mb-6"></div>
+                                <div className="h-[1px] w-full bg-white/5 mb-6 group-hover:bg-white/10 transition-colors"></div>
 
                                 {/* Footer: Price & CTA */}
                                 <div className="mt-auto flex justify-between items-end">
                                     <div>
-                                        <p className="text-xs text-gray-500 font-medium mb-1">Precio Contado</p>
-                                        <p className="text-3xl font-black text-white tracking-tight">{auto.price_formatted}</p>
+                                        <p className="text-xs text-[#666] font-medium mb-1">Precio Contado</p>
+                                        <p className="text-3xl font-bold text-white tracking-tight">{auto.price_formatted}</p>
                                     </div>
-                                    <Link href={`/auto/${auto.slug}`} className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-[0_0_20px_rgba(255,255,255,0.3)] shrink-0">
+                                    <Link href={`/auto/${auto.slug}`} className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-[0_0_20px_rgba(255,255,255,0.2)] shrink-0 group-hover:bg-[#D4AF37] group-hover:text-black">
                                         <i className="fa-solid fa-arrow-right text-black text-lg"></i>
                                     </Link>
                                 </div>
@@ -163,7 +164,7 @@ export default function PremiumSection({ vehicles: initialVehicles }: { vehicles
                 </div>
 
                 <div className="mt-12 text-center relative z-20">
-                    <Link href="/catalogo?is_premium=1" className="inline-flex items-center gap-4 px-12 py-5 bg-gradient-to-r from-[#D4AF37] to-[#996515] text-black font-black uppercase tracking-[0.15em] text-sm rounded-full hover:scale-105 transition duration-300 shadow-[0_0_30px_rgba(212,175,55,0.4)]">
+                    <Link href="/catalogo?is_premium=1" className="inline-flex items-center gap-4 px-12 py-5 bg-gradient-to-r from-[#D4AF37] to-[#996515] text-black font-bold uppercase tracking-[0.15em] text-sm rounded-full hover:scale-105 transition duration-300 shadow-[0_0_30px_rgba(212,175,55,0.4)]">
                         Ver Colección Completa
                         <i className="fa-solid fa-arrow-right"></i>
                     </Link>
