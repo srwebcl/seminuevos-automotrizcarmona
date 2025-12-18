@@ -25,6 +25,7 @@ export default function FullBanner({ banner }: FullBannerProps) {
                         alt={banner.title || 'Promoción'}
                         fill
                         className="object-cover"
+                        unoptimized={true}
                     />
                 </div>
 
@@ -35,6 +36,7 @@ export default function FullBanner({ banner }: FullBannerProps) {
                         alt={banner.title || 'Promoción'}
                         fill
                         className="object-cover"
+                        unoptimized={true}
                     />
                 </div>
             </Link>

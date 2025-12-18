@@ -132,7 +132,7 @@ export default function HeroSection({ banner }: HeroSectionProps) {
                                                 {/* Image */}
                                                 <div className="w-16 h-12 bg-gray-200 rounded-lg overflow-hidden shrink-0 relative">
                                                     {auto.cover_photo ? (
-                                                        <Image src={auto.cover_photo} alt={auto.model} fill className="object-cover" />
+                                                        <Image src={auto.cover_photo} alt={auto.model} fill className="object-cover" unoptimized={true} />
                                                     ) : (
                                                         <div className="w-full h-full bg-gray-300"></div>
                                                     )}

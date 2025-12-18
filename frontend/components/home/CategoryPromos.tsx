@@ -66,6 +66,7 @@ export default function CategoryPromos({ promos }: CategoryPromosProps) {
                                 alt={promo.title || ''}
                                 fill
                                 className="object-cover transition-transform duration-700 group-hover:scale-110"
+                                unoptimized={true}
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent flex flex-col justify-end p-6">
                                 <h3 className="text-white font-bold text-xl mb-1 translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
