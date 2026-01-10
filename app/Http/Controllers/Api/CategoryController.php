@@ -10,7 +10,16 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::orderBy('menu_order')->get();
+        $categories = Category::where('is_active', true)->orderBy('name')->get();
+        return CategoryResource::collection($categories);
+    }
+
+    public function menu()
+    {
+        $categories = Category::where('is_menu_item', true)
+            ->orderBy('menu_order')
+            ->get();
+
         return CategoryResource::collection($categories);
     }
 }

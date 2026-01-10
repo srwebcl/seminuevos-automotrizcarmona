@@ -17,7 +17,8 @@ class VehicleAttributeResource extends Resource
 {
     protected static ?string $model = VehicleAttribute::class;
 
-    protected static ?string $navigationGroup = 'Inventario';
+    protected static ?string $navigationIcon = 'heroicon-o-adjustments-horizontal';
+    protected static ?string $navigationGroup = 'Configuración';
     protected static ?string $navigationLabel = 'Atributos Vehículo';
     protected static ?string $modelLabel = 'Atributo';
     protected static ?string $pluralModelLabel = 'Atributos';

@@ -78,95 +78,79 @@
     @endif
 
     @if(isset($premiumVehicles) && $premiumVehicles->count() > 0)
-        <section id="premiumSection" class="w-full bg-[#050505] relative overflow-hidden py-24 border-t border-white/5">
-             {{-- Luminous Effects (Vite-style) --}}
-             <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#D4AF37]/20 via-black/0 to-transparent pointer-events-none z-0"></div>
-             <div id="premiumGlow" class="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-premium-gold/30 blur-[100px] rounded-full mix-blend-screen pointer-events-none z-0 animate-pulse transition-transform duration-100 ease-out"></div>
-             <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 z-0"></div>
-
+        <section id="premiumSection" class="w-full bg-white relative overflow-hidden py-16">
+            
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                <div class="flex flex-col items-center text-center mb-16">
-                    <span class="order-1 inline-block text-premium-gold font-bold uppercase tracking-[0.25em] text-xs mb-4 border border-premium-gold/30 px-5 py-1.5 rounded-full bg-premium-gold/5 backdrop-blur-md shadow-[0_0_15px_rgba(212,175,55,0.1)]">Exclusividad Garantizada</span>
-                    
-                    {{-- Title Fix: Definitive Solution --}}
-                    {{-- 1. Order-2 ensures it's below badge --}}
-                    {{-- 2. Box-decoration-clone or padding trick for Italics --}}
-                    {{-- 3. pr-14 to catch the 'm' safely, but text-center centers the *box*, so we need to offset or just accept the visual center shift (which is minimal with centered text) --}}
-                    <h2 class="order-2 text-5xl md:text-7xl font-black text-white italic tracking-tighter mb-6 drop-shadow-2xl leading-tight py-2 relative z-10" style="padding-right: 0.3em; margin-right: -0.15em;">
-                        Autos <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#F9F1D8] via-[#D4AF37] to-[#F9F1D8] animate-pulse-slow inline-block pr-2">Premium</span>
-                    </h2>
-                    
-                    <p class="order-3 text-gray-400 max-w-2xl mx-auto text-base md:text-lg font-light leading-relaxed">
-                        Una selección curada de vehículos de alta gama, verificados y listos para entregar la máxima experiencia de conducción.
-                    </p>
+                <div class="flex flex-col md:flex-row items-end justify-between mb-12 gap-6">
+                    <div class="text-left max-w-2xl">
+                        <span class="inline-block text-premium-gold font-bold uppercase tracking-[0.25em] text-xs mb-3 px-3 py-1 border border-premium-gold/30 rounded-full">
+                            Exclusividad
+                        </span>
+                        <h2 class="text-4xl md:text-5xl font-black text-gray-900 italic tracking-tighter leading-none">
+                            Autos <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#b88c1c] to-[#996515]">Premium</span>
+                        </h2>
+                        <p class="text-gray-500 mt-4 text-sm md:text-base font-medium max-w-lg leading-relaxed">
+                            Una selección de vehículos de alta gama, verificados para entregar la máxima experiencia.
+                        </p>
+                    </div>
+
+                    <div class="flex gap-3">
+                        <button id="premiumScrollLeft"
+                            class="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-black hover:text-white hover:border-black transition duration-300">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <button id="premiumScrollRight"
+                            class="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-black hover:text-white hover:border-black transition duration-300">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
                 </div>
 
-                <div class="flex overflow-x-auto snap-x scrollbar-hide gap-8 pb-12 scroll-smooth -mx-4 px-4 md:mx-0 md:px-0">
+                <div id="premiumCarousel" class="flex overflow-x-auto snap-x scrollbar-hide gap-6 pb-8 scroll-smooth -mx-4 px-4 md:mx-0 md:px-0">
                     @foreach($premiumVehicles as $auto)
-                        <div class="snap-center shrink-0 w-[85%] sm:w-[380px] bg-neutral-900/60 backdrop-blur-xl rounded-3xl overflow-hidden border border-white/10 hover:border-premium-gold/70 transition duration-500 group relative shadow-2xl hover:shadow-[0_0_30px_rgba(212,175,55,0.15)]">
+                        <div class="snap-center shrink-0 w-[85%] sm:w-[320px] bg-[#1a1a1a] rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition duration-500 group relative">
                             <div class="relative aspect-[16/10] overflow-hidden">
-                                 <div class="absolute top-4 left-4 z-30 shadow-lg"><span class="bg-gradient-to-tr from-[#D4AF37] to-[#8a6e15] text-white text-[10px] font-black px-3 py-1.5 rounded uppercase flex items-center gap-1.5 shadow-md tracking-wider"><i class="fa-solid fa-crown text-yellow-100"></i> Elite</span></div>
-                                <img src="{{ Storage::url($auto->thumbnail) }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-90 group-hover:opacity-100">
-                                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+                                 <div class="absolute top-3 left-3 z-30 shadow-lg"><span class="bg-[#D4AF37] text-white text-[10px] font-black px-2.5 py-1 rounded-md uppercase tracking-wide shadow-md">Elite</span></div>
+                                <img src="{{ Storage::url($auto->thumbnail) }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100">
+                                <div class="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] via-transparent to-transparent"></div>
                             </div>
-                            <div class="p-7 relative">
-                                <div class="flex justify-between items-start mb-4">
+                            <div class="p-6 relative">
+                                <div class="flex justify-between items-start mb-3">
                                     <div class="min-w-0 pr-2">
-                                        <p class="text-xs font-bold text-premium-gold uppercase mb-1.5 tracking-widest flex items-center gap-2">
-                                            {{ $auto->brand->name }} <span class="w-8 h-[1px] bg-premium-gold/50"></span>
+                                        <p class="text-[10px] font-bold text-premium-gold uppercase mb-1 tracking-widest flex items-center gap-2">
+                                            {{ $auto->brand->name }}
                                         </p>
-                                        <h3 class="text-2xl font-black text-white truncate italic font-heading group-hover:text-premium-gold transition-colors" title="{{ $auto->model }}">{{ $auto->model }}</h3>
-                                    </div>
-                                    <div class="flex gap-2 shrink-0">
-                                         {{-- Share Actions (Moved to Header) --}}
-                                        <a href="https://wa.me/?text={{ urlencode('Hola, me interesa este auto Premium: ' . route('vehicles.show', $auto->slug)) }}"
-                                           target="_blank"
-                                           class="w-9 h-9 rounded-full bg-white/5 text-gray-400 flex items-center justify-center hover:bg-[#25D366] hover:text-white transition-colors border border-white/5 backdrop-blur-sm"
-                                           title="Compartir en WhatsApp">
-                                            <i class="fa-brands fa-whatsapp text-lg"></i>
-                                        </a>
-                                        <button onclick="copyLink('{{ route('vehicles.show', $auto->slug) }}', this)"
-                                                class="w-9 h-9 rounded-full bg-white/5 text-gray-400 flex items-center justify-center hover:bg-white hover:text-black transition-colors border border-white/5 backdrop-blur-sm"
-                                                title="Copiar Enlace">
-                                            <i class="fa-solid fa-link text-sm"></i>
-                                        </button>
+                                        <h3 class="text-xl font-bold text-white truncate italic font-heading" title="{{ $auto->model }}">{{ $auto->model }}</h3>
                                     </div>
                                 </div>
                                 
-                                <div class="grid grid-cols-3 gap-2 mb-6">
-                                    <div class="text-center bg-white/5 rounded-lg py-2 border border-white/5">
-                                        <p class="text-[10px] text-gray-500 uppercase font-bold">Año</p>
-                                        <p class="text-xs text-gray-200 font-bold">{{ $auto->year }}</p>
-                                    </div>
-                                    <div class="text-center bg-white/5 rounded-lg py-2 border border-white/5">
-                                        <p class="text-[10px] text-gray-500 uppercase font-bold">Kms</p>
-                                        <p class="text-xs text-gray-200 font-bold">{{ number_format($auto->km/1000, 0) }}K</p>
-                                    </div>
-                                    <div class="text-center bg-white/5 rounded-lg py-2 border border-white/5">
-                                        <p class="text-[10px] text-gray-500 uppercase font-bold">Trans.</p>
-                                        <p class="text-xs text-gray-200 font-bold">{{ substr($auto->transmission, 0, 3) }}</p>
-                                    </div>
+                                <div class="flex items-center gap-3 text-gray-400 text-xs font-medium mb-5 border-t border-white/10 pt-3">
+                                     <span>{{ $auto->year }}</span>
+                                     <span class="w-1 h-1 bg-white/20 rounded-full"></span>
+                                     <span>{{ number_format($auto->km/1000, 0) }}K km</span>
+                                     <span class="w-1 h-1 bg-white/20 rounded-full"></span>
+                                     <span>{{ substr($auto->transmission, 0, 3) }}</span>
                                 </div>
 
-                                <div class="flex justify-between items-end pt-5 border-t border-white/10">
-                                    <div>
-                                        <p class="text-xs text-gray-400 font-medium mb-0.5">Precio Contado</p>
-                                        <p class="text-2xl font-black text-white tracking-tight">${{ number_format($auto->price, 0, ',', '.') }}</p>
-                                    </div>
-                                    <a href="{{ route('vehicles.show', $auto->slug) }}" class="w-12 h-12 rounded-full bg-white text-black flex items-center justify-center hover:bg-premium-gold transition-all duration-300 transform group-hover:rotate-[-45deg] shadow-[0_0_15px_rgba(255,255,255,0.4)] hover:scale-110 ml-2">
-                                        <i class="fa-solid fa-arrow-right text-lg"></i>
+                                <div class="flex justify-between items-center">
+                                    <p class="text-xl font-black text-white tracking-tight">${{ number_format($auto->price, 0, ',', '.') }}</p>
+                                    <a href="{{ route('vehicles.show', $auto->slug) }}" class="w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-premium-gold hover:text-black transition-all duration-300">
+                                        <i class="fa-solid fa-arrow-right text-sm"></i>
                                     </a>
                                 </div>
                             </div>
                         </div>
                     @endforeach
-                </div>
-                
-                <div class="mt-12 text-center relative z-20">
-                    <a href="{{ route('vehicles.index', ['is_premium' => 1]) }}" class="inline-flex items-center gap-4 px-12 py-5 bg-gradient-to-r from-[#D4AF37] to-[#996515] text-black font-black uppercase tracking-[0.15em] text-sm rounded-full hover:scale-105 hover:shadow-[0_0_40px_rgba(212,175,55,0.6)] transition duration-300 group ring-1 ring-white/20">
-                        Ver Colección Completa
-                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
-                    </a>
+                    
+                    {{-- Tarjeta "Ver Todos" al final del carrusel --}}
+                    <div class="snap-center shrink-0 w-[150px] flex items-center justify-center">
+                        <a href="{{ route('vehicles.index', ['is_premium' => 1]) }}" class="group flex flex-col items-center gap-3 text-gray-400 hover:text-black transition duration-300">
+                             <div class="w-16 h-16 rounded-full border-2 border-gray-200 group-hover:border-black flex items-center justify-center transition duration-300">
+                                 <i class="fa-solid fa-arrow-right text-xl"></i>
+                             </div>
+                             <span class="font-bold text-sm uppercase tracking-wider">Ver Todo</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </section>
@@ -275,26 +259,14 @@
             document.getElementById('scrollRight').addEventListener('click', () => { scrollContainer.scrollBy({ left: 300, behavior: 'smooth' }); });
         }
 
-        // 2. PREMIUM GLOW EFFECT (Mouse Tracking)
-        const premiumSection = document.getElementById('premiumSection');
-        const premiumGlow = document.getElementById('premiumGlow');
-
-        if (premiumSection && premiumGlow) {
-            premiumSection.addEventListener('mousemove', (e) => {
-                const rect = premiumSection.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-
-                // Move the glow to cursor position (centering the glow)
-                premiumGlow.style.transform = `translate(${x - 300}px, ${y - 150}px)`;
-            });
+        // 2. PREMIUM CAROUSEL CONTROLS
+        const premiumScrollContainer = document.getElementById('premiumCarousel');
+        if (premiumScrollContainer) {
+            const btnLeft = document.getElementById('premiumScrollLeft');
+            const btnRight = document.getElementById('premiumScrollRight');
             
-            // Optional: Reset to center on leave? Or just leave it.
-            premiumSection.addEventListener('mouseleave', () => {
-                 premiumGlow.style.transition = 'transform 1s ease-out';
-                 premiumGlow.style.transform = 'translate(-50%, -50%)'; // Reset to center-ish
-                 setTimeout(() => { premiumGlow.style.transition = 'transform 0.1s ease-out'; }, 1000);
-            });
+            if(btnLeft) btnLeft.addEventListener('click', () => { premiumScrollContainer.scrollBy({ left: -340, behavior: 'smooth' }); });
+            if(btnRight) btnRight.addEventListener('click', () => { premiumScrollContainer.scrollBy({ left: 340, behavior: 'smooth' }); });
         }
 
         // 3. FILTROS AJAX (Lógica de clases corregida)

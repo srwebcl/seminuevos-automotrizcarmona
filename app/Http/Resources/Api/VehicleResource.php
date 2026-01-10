@@ -39,6 +39,10 @@ class VehicleResource extends JsonResource
             ],
             'price' => $this->price,
             'price_formatted' => '$' . number_format($this->price, 0, ',', '.'),
+            'price_financing' => $this->price_financing,
+            'price_financing_formatted' => $this->price_financing ? '$' . number_format($this->price_financing, 0, ',', '.') : null,
+            'price_offer' => $this->price_offer,
+            'price_offer_formatted' => $this->price_offer ? '$' . number_format($this->price_offer, 0, ',', '.') : null,
             'year' => $this->year,
             'km' => $this->km,
             'km_formatted' => number_format($this->km, 0, ',', '.') . ' km',
@@ -55,10 +59,21 @@ class VehicleResource extends JsonResource
             'is_published' => (bool) $this->is_published,
             'is_featured' => (bool) $this->is_featured,
             'is_premium' => (bool) $this->is_premium,
+            'is_offer' => (bool) $this->is_offer,
+            'is_clearance' => (bool) $this->is_clearance,
 
             // Media
             'cover_photo' => !empty($photos) ? $photos[0] : null,
             'photos' => $photos,
+
+            // Tags
+            'tags' => $this->tags->map(function ($tag) {
+                return [
+                    'name' => $tag->name,
+                    'bg_color' => $tag->bg_color,
+                    'text_color' => $tag->text_color,
+                ];
+            }),
 
             'created_at' => $this->created_at->toIso8601String(),
         ];

@@ -1,14 +1,32 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
-export default function Footer() {
+interface FooterProps {
+    settings?: {
+        contact?: {
+            address: string;
+            email: string;
+        };
+    };
+}
+
+export default function Footer({ settings }: FooterProps) {
+    const address = settings?.contact?.address || 'Av. Balmaceda 3570, La Serena';
+    const email = settings?.contact?.email || 'contacto@carmona.cl';
+
     return (
         <footer className="bg-black text-white pt-24 pb-12 border-t border-gray-900 relative overflow-hidden">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
                 <div className="flex flex-col md:flex-row justify-between items-start gap-16 mb-20">
                     <div className="md:w-1/3">
                         <div className="h-12 flex items-center mb-6">
-                            <span className="text-white font-black text-2xl italic tracking-tighter">CARMONA<span className="text-premium-gold">.</span></span>
-                            {/* <img src="/images/logo.png" class="h-12 w-auto brightness-0 invert mb-6 opacity-90" /> */}
+                            <Image
+                                src="/images/logo.png"
+                                alt="Automotriz Carmona"
+                                width={180}
+                                height={60}
+                                className="object-contain brightness-0 invert"
+                            />
                         </div>
                         <p className="text-gray-500 text-sm leading-relaxed mb-8">
                             Redefiniendo el estándar de seminuevos en Chile.
@@ -33,8 +51,8 @@ export default function Footer() {
                         <div>
                             <h4 className="text-white font-bold uppercase text-xs tracking-wider mb-6">Cliente</h4>
                             <ul className="space-y-4 text-sm text-gray-500">
-                                <li><Link href="#" className="hover:text-white">Financiamiento</Link></li>
-                                <li><Link href="#" className="hover:text-white">Vende tu auto</Link></li>
+                                <li><Link href="/financiamiento" className="hover:text-white">Financiamiento</Link></li>
+                                <li><Link href="/vendenos-tu-auto" className="hover:text-white">Vende tu auto</Link></li>
                             </ul>
                         </div>
                         <div className="col-span-2 md:col-span-1">
@@ -42,11 +60,11 @@ export default function Footer() {
                             <ul className="space-y-4 text-sm text-gray-500">
                                 <li className="flex items-start gap-3">
                                     <i className="fa-solid fa-location-dot mt-1 text-premium-gold"></i>
-                                    <span>Av. Balmaceda 3570,<br />La Serena</span>
+                                    <span dangerouslySetInnerHTML={{ __html: address.replace(',', '<br/>') }}></span>
                                 </li>
                                 <li className="flex items-center gap-3">
                                     <i className="fa-solid fa-envelope text-premium-gold"></i>
-                                    <span>contacto@carmona.cl</span>
+                                    <span>{email}</span>
                                 </li>
                             </ul>
                         </div>

@@ -1,113 +1,263 @@
-import Image from 'next/image';
+'use client';
 
-export const metadata = {
-    title: 'Financiamiento Automotriz | Automotriz Carmona',
-    description: 'Facilitamos la compra de tu próximo vehículo con las mejores opciones de financiamiento del mercado.',
-};
+import { useState } from 'react';
 
 export default function FinancingPage() {
+    const [formData, setFormData] = useState({
+        name: '',
+        rut: '',
+        phone: '',
+        email: '',
+        renta: '',
+        pie: ''
+    });
+
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        setIsSubmitting(false);
+        setSubmitted(true);
+    };
+
     return (
-        <main>
-            <div className="relative bg-black py-24 text-center text-white">
-                <div className="absolute inset-0 overflow-hidden opacity-50">
-                    <Image
-                        src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=1920"
-                        alt="Background Financiamiento"
-                        fill
-                        className="object-cover"
-                        priority
+        <main className="min-h-screen bg-white">
+            {/* Header/Hero for Financing */}
+            <div className="relative h-[500px] md:h-[600px] bg-black text-white overflow-hidden flex items-center justify-center">
+                <div className="absolute inset-0 z-0 opacity-60">
+                    <img
+                        src="/images/financiamiento.png"
+                        alt="Financiamiento Background"
+                        className="w-full h-full object-cover"
                     />
                 </div>
-                <div className="relative z-10 max-w-7xl mx-auto px-4">
-                    <h1 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight">Financiamiento Automotriz</h1>
-                    <p className="text-xl text-gray-300 max-w-2xl mx-auto">Facilitamos la compra de tu próximo vehículo con las mejores opciones del mercado.</p>
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/20 z-0"></div>
+                <div className="container mx-auto px-4 md:px-8 relative z-10 text-center">
+                    <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 drop-shadow-2xl">
+                        Financiamiento <span className="text-transparent bg-clip-text bg-gradient-to-b from-[#FFF5D1] via-[#D4AF37] to-[#8A6E2F] filter brightness-125">Automotriz</span>
+                    </h1>
+                    <p className="text-xl md:text-3xl font-light text-gray-200 max-w-3xl mx-auto leading-relaxed drop-shadow-lg">
+                        Obtén tu crédito de forma rápida, segura y 100% online.
+                    </p>
                 </div>
             </div>
 
-            <div className="bg-white py-20">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-                        <div>
-                            <h2 className="text-3xl font-bold text-gray-900 mb-6">¿Por qué financiar con Carmona?</h2>
-                            <p className="text-lg text-gray-600 mb-8 leading-relaxed">Trabajamos con las principales entidades financieras del país para entregarte una evaluación rápida, flexible y ajustada a tu presupuesto. Gestionamos todo el proceso para que solo te preocupes de disfrutar tu auto.</p>
+            <div className="container mx-auto px-4 md:px-8 py-12">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
 
-                            <ul className="space-y-6">
-                                <li className="flex items-start gap-4">
-                                    <div className="w-12 h-12 rounded-full bg-premium-gold/10 flex items-center justify-center shrink-0">
-                                        <i className="fa-solid fa-bolt text-premium-gold text-xl"></i>
-                                    </div>
-                                    <div>
-                                        <h3 className="font-bold text-gray-900 text-lg">Evaluación Express</h3>
-                                        <p className="text-gray-500 text-sm mt-1">Obtén tu pre-aprobación en minutos, solo con tu RUT.</p>
-                                    </div>
-                                </li>
-                                <li className="flex items-start gap-4">
-                                    <div className="w-12 h-12 rounded-full bg-premium-gold/10 flex items-center justify-center shrink-0">
-                                        <i className="fa-solid fa-percent text-premium-gold text-xl"></i>
-                                    </div>
-                                    <div>
-                                        <h3 className="font-bold text-gray-900 text-lg">Tasas Preferenciales</h3>
-                                        <p className="text-gray-500 text-sm mt-1">Accede a condiciones exclusivas gracias a nuestros convenios.</p>
-                                    </div>
-                                </li>
-                                <li className="flex items-start gap-4">
-                                    <div className="w-12 h-12 rounded-full bg-premium-gold/10 flex items-center justify-center shrink-0">
-                                        <i className="fa-regular fa-calendar-check text-premium-gold text-xl"></i>
-                                    </div>
-                                    <div>
-                                        <h3 className="font-bold text-gray-900 text-lg">Flexibilidad de Pago</h3>
-                                        <p className="text-gray-500 text-sm mt-1">Cuotas fijas, meses de gracia y opciones de renovación.</p>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                        <div className="relative">
-                            <div className="absolute inset-0 bg-gradient-to-tr from-premium-gold/20 to-transparent rounded-3xl transform translate-x-4 translate-y-4"></div>
-                            <div className="relative rounded-3xl shadow-2xl overflow-hidden aspect-[4/3]">
-                                <Image
-                                    src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=1000"
-                                    alt="Financiamiento"
-                                    fill
-                                    className="object-cover"
-                                />
+                    {/* Content Column (Information) */}
+                    <div className="lg:col-span-7 space-y-12">
+
+                        {/* Benefits/Intro */}
+                        <section>
+                            <h2 className="text-2xl font-black uppercase mb-6 flex items-center gap-3">
+                                <span className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-black">
+                                    <i className="fa-solid fa-hand-holding-dollar"></i>
+                                </span>
+                                ¿Por qué financiar con nosotros?
+                            </h2>
+                            <div className="grid md:grid-cols-3 gap-6">
+                                <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                                    <i className="fa-solid fa-bolt text-3xl mb-4 text-[#D4AF37]"></i>
+                                    <h3 className="font-bold text-lg mb-2">Aprobación Rápida</h3>
+                                    <p className="text-gray-500 text-sm">Evaluamos tu solicitud en tiempo récord para que disfrutes tu auto cuanto antes.</p>
+                                </div>
+                                <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                                    <i className="fa-solid fa-percent text-3xl mb-4 text-[#D4AF37]"></i>
+                                    <h3 className="font-bold text-lg mb-2">Tasas Preferenciales</h3>
+                                    <p className="text-gray-500 text-sm">Accede a condiciones exclusivas gracias a nuestros convenios comerciales.</p>
+                                </div>
+                                <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                                    <i className="fa-solid fa-file-contract text-3xl mb-4 text-[#D4AF37]"></i>
+                                    <h3 className="font-bold text-lg mb-2">Trámite Simplificado</h3>
+                                    <p className="text-gray-500 text-sm">Nos encargamos de toda la gestión administrativa y notarial.</p>
+                                </div>
                             </div>
-                        </div>
+                        </section>
+
+                        {/* Requirements */}
+                        <section>
+                            <h2 className="text-2xl font-black uppercase mb-6 flex items-center gap-3">
+                                <span className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-black">
+                                    <i className="fa-solid fa-list-check"></i>
+                                </span>
+                                Requisitos
+                            </h2>
+                            <div className="bg-white border-2 border-dashed border-gray-200 rounded-2xl p-6 md:p-8">
+                                <div className="grid md:grid-cols-2 gap-8">
+                                    <div>
+                                        <h3 className="font-bold text-nav-item uppercase mb-4 border-b pb-2">Trabajador Dependiente</h3>
+                                        <ul className="space-y-3">
+                                            {[
+                                                'Cédula de Identidad vigente',
+                                                '6 últimas liquidaciones de sueldo',
+                                                'Certificado de AFP (12 últimas cotizaciones)',
+                                                'Comprobante de domicilio',
+                                                'Antigüedad laboral mínima de 1 año'
+                                            ].map((item, i) => (
+                                                <li key={i} className="flex items-center gap-3 text-sm text-gray-600">
+                                                    <i className="fa-solid fa-check text-green-500"></i> {item}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-nav-item uppercase mb-4 border-b pb-2">Trabajador Independiente</h3>
+                                        <ul className="space-y-3">
+                                            {[
+                                                'Cédula de Identidad vigente',
+                                                'Carpeta Tributaria',
+                                                '2 últimos formularios 29 (IVA)',
+                                                'Declaración de Renta anual (DAI)',
+                                                'Comprobante de domicilio'
+                                            ].map((item, i) => (
+                                                <li key={i} className="flex items-center gap-3 text-sm text-gray-600">
+                                                    <i className="fa-solid fa-check text-green-500"></i> {item}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* FAQ */}
+                        <section>
+                            <h2 className="text-2xl font-black uppercase mb-6 flex items-center gap-3">
+                                <span className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-black">
+                                    <i className="fa-regular fa-circle-question"></i>
+                                </span>
+                                Preguntas Frecuentes
+                            </h2>
+                            <div className="space-y-4">
+                                <div className="bg-gray-50 rounded-xl p-5 hover:bg-gray-100 transition">
+                                    <h4 className="font-bold text-base mb-2">¿Cuál es el pie mínimo?</h4>
+                                    <p className="text-gray-600 text-sm">Generalmente solicitamos un pie mínimo del 20% del valor del vehículo, sujeto a evaluación crediticia.</p>
+                                </div>
+                                <div className="bg-gray-50 rounded-xl p-5 hover:bg-gray-100 transition">
+                                    <h4 className="font-bold text-base mb-2">¿Puedo dar mi auto en parte de pago?</h4>
+                                    <p className="text-gray-600 text-sm">¡Sí! Recibimos tu auto como parte del pie inicial. Lo tasamos al mejor precio de mercado.</p>
+                                </div>
+                                <div className="bg-gray-50 rounded-xl p-5 hover:bg-gray-100 transition">
+                                    <h4 className="font-bold text-base mb-2">¿Hasta cuántas cuotas puedo pagar?</h4>
+                                    <p className="text-gray-600 text-sm">Ofrecemos financiamiento desde 12 hasta 60 cuotas, dependiendo del año del vehículo y tu perfil.</p>
+                                </div>
+                            </div>
+                        </section>
+
                     </div>
-                </div>
-            </div>
 
-            <div className="bg-gray-50 py-20">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h2 className="text-3xl font-bold text-gray-900 mb-12">Requisitos Generales</h2>
+                    {/* Form Column (Sticky) */}
+                    <div className="lg:col-span-5 sticky top-24">
+                        <div className="bg-black text-white rounded-3xl p-6 md:p-8 shadow-2xl relative overflow-hidden">
+                            {/* Decorative blurry blob */}
+                            <div className="absolute -top-20 -right-20 w-40 h-40 bg-[#D4AF37] rounded-full blur-[80px] opacity-30"></div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-                            <i className="fa-solid fa-id-card text-4xl text-gray-300 mb-6"></i>
-                            <h3 className="font-bold text-gray-900 mb-2">Identidad</h3>
-                            <p className="text-sm text-gray-500">Cédula de identidad vigente y sin bloqueos.</p>
-                        </div>
-                        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-                            <i className="fa-solid fa-file-invoice-dollar text-4xl text-gray-300 mb-6"></i>
-                            <h3 className="font-bold text-gray-900 mb-2">Renta</h3>
-                            <p className="text-sm text-gray-500">Acreditación de ingresos (Liquidaciones o Carpeta Tributaria).</p>
-                        </div>
-                        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-                            <i className="fa-solid fa-house-chimney text-4xl text-gray-300 mb-6"></i>
-                            <h3 className="font-bold text-gray-900 mb-2">Domicilio</h3>
-                            <p className="text-sm text-gray-500">Comprobante de domicilio a nombre del titular.</p>
-                        </div>
-                    </div>
+                            <h2 className="text-2xl font-black uppercase mb-2 relative z-10">Evalúate Ahora</h2>
+                            <p className="text-gray-400 text-sm mb-6 relative z-10">Completa tus datos y un ejecutivo te contactará hoy mismo.</p>
 
-                    <div className="mt-16">
-                        <a href="https://wa.me/?text=Hola,%20quiero%20evaluar%20un%20financiamiento" target="_blank"
-                            className="inline-flex items-center gap-3 bg-black text-white px-10 py-5 rounded-full font-bold text-lg hover:bg-premium-gold hover:text-black transition shadow-xl hover:shadow-premium-gold/20 transform hover:-translate-y-1">
-                            <i className="fa-brands fa-whatsapp text-2xl"></i>
-                            Solicitar Evaluación Ahora
-                        </a>
+                            {submitted ? (
+                                <div className="bg-white/10 rounded-xl p-6 text-center animate-in fade-in">
+                                    <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <i className="fa-solid fa-check text-xl text-white"></i>
+                                    </div>
+                                    <h3 className="font-bold text-lg mb-2">¡Solicitud Enviada!</h3>
+                                    <p className="text-gray-300 text-sm">Te contactaremos a la brevedad.</p>
+                                    <button
+                                        onClick={() => setSubmitted(false)}
+                                        className="mt-6 text-xs text-gray-400 underline hover:text-white"
+                                    >
+                                        Enviar otra solicitud
+                                    </button>
+                                </div>
+                            ) : (
+                                <form onSubmit={handleSubmit} className="space-y-4 relative z-10">
+                                    <div>
+                                        <label className="text-xs font-bold text-gray-500 uppercase ml-1">Nombre</label>
+                                        <input
+                                            type="text"
+                                            required
+                                            className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-white focus:bg-white/20 transition"
+                                            placeholder="Tu nombre completo"
+                                            value={formData.name}
+                                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-xs font-bold text-gray-500 uppercase ml-1">RUT</label>
+                                        <input
+                                            type="text"
+                                            required
+                                            className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-white focus:bg-white/20 transition"
+                                            placeholder="12.345.678-9"
+                                            value={formData.rut}
+                                            onChange={(e) => setFormData({ ...formData, rut: e.target.value })}
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="text-xs font-bold text-gray-500 uppercase ml-1">Teléfono</label>
+                                            <input
+                                                type="tel"
+                                                required
+                                                className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-white focus:bg-white/20 transition"
+                                                placeholder="+56 9"
+                                                value={formData.phone}
+                                                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="text-xs font-bold text-gray-500 uppercase ml-1">Renta (Aprox)</label>
+                                            <input
+                                                type="text"
+                                                required
+                                                className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-white focus:bg-white/20 transition"
+                                                placeholder="$"
+                                                value={formData.renta}
+                                                onChange={(e) => setFormData({ ...formData, renta: e.target.value })}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="text-xs font-bold text-gray-500 uppercase ml-1">Correo</label>
+                                        <input
+                                            type="email"
+                                            required
+                                            className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-white focus:bg-white/20 transition"
+                                            placeholder="nombre@correo.com"
+                                            value={formData.email}
+                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-xs font-bold text-gray-500 uppercase ml-1">Pie Disponible</label>
+                                        <input
+                                            type="text"
+                                            className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-white focus:bg-white/20 transition"
+                                            placeholder="$ Tienes algún monto?"
+                                            value={formData.pie}
+                                            onChange={(e) => setFormData({ ...formData, pie: e.target.value })}
+                                        />
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        disabled={isSubmitting}
+                                        className="w-full bg-white text-black font-black uppercase tracking-wide py-4 rounded-xl hover:bg-gray-200 transition shadow-lg mt-4 flex items-center justify-center gap-2"
+                                    >
+                                        {isSubmitting ? <i className="fa-solid fa-spinner fa-spin"></i> : <i className="fa-regular fa-paper-plane"></i>}
+                                        Enviar Solicitud
+                                    </button>
+                                </form>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
         </main>
     );
 }
-

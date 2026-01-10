@@ -27,7 +27,7 @@ export default function CategoryPromos({ promos }: CategoryPromosProps) {
     if (!promos || promos.length === 0) return null;
 
     return (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16" data-aos="fade-up">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5" data-aos="fade-up">
             <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-gray-900">Explora por Categorías</h2>
                 <div className="flex gap-2">

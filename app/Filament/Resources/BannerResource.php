@@ -51,17 +51,18 @@ class BannerResource extends Resource
                     FileUpload::make('image_path')
                         ->label(fn(Get $get) => match ($get('type')) {
                             'hero' => 'Imagen de Fondo (PC)',
-                            'full' => 'Banner Versión PC (1920x400)',
+                            'full' => 'Banner Versión PC (1735x170)',
                             default => 'Imagen de Tarjeta',
                         })
                         ->image()
                         ->directory('banners')
+                        ->imagePreviewHeight('200')
                         ->columnSpan(fn(Get $get) => $get('type') === 'full' ? 1 : 2)
                         ->required(),
 
                     // Imagen Móvil (Solo para Full Width)
                     FileUpload::make('mobile_image_path')
-                        ->label('Banner Versión Móvil (600x600)')
+                        ->label('Banner Versión Móvil (767x301)')
                         ->image()
                         ->directory('banners')
                         ->visible(fn(Get $get) => $get('type') === 'full'),
@@ -89,19 +90,69 @@ class BannerResource extends Resource
                             ->visible(fn(Get $get) => $get('type') === 'promo'),
                     ]),
 
-                    Grid::make(2)->schema([
+                    Grid::make(1)->schema([
+                        // Selector Inteligente de Tipo de Enlace (Virtual, no se guarda en BD)
+                        Select::make('link_source')
+                            ->label('Destino del Enlace')
+                            ->options([
+                                'category' => 'Categoría Específica (BD)',
+                                'seminuevos' => 'Todo el Stock (Seminuevos)',
+                                'premium' => 'Sección Premium',
+                                'offers' => 'Sección Ofertas',
+                                'manual' => 'URL Manual Independiente',
+                            ])
+                            ->default('category')
+                            ->live()
+                            ->dehydrated(false) // !!! IMPORTANTE: No intentar guardar este campo en la BD
+                            ->afterStateHydrated(function (Select $component, $state, $record) {
+                                // Al cargar (Editar), deducimos qué tipo es según los datos guardados
+                                if (!$record)
+                                    return;
+
+                                if ($record->category_id) {
+                                    $component->state('category');
+                                } elseif ($record->link === '/catalogo') {
+                                    $component->state('seminuevos');
+                                } elseif ($record->link === '/catalogo?is_premium=1') {
+                                    $component->state('premium');
+                                } elseif ($record->link === '/catalogo?is_offer=1') {
+                                    $component->state('offers');
+                                } elseif (!empty($record->link)) {
+                                    $component->state('manual');
+                                }
+                            })
+                            ->afterStateUpdated(function ($state, Forms\Set $set) {
+                                // Auto-fill el link manual si seleccionan presets
+                                if ($state === 'seminuevos') {
+                                    $set('link', '/catalogo');
+                                    $set('category_id', null);
+                                } elseif ($state === 'premium') {
+                                    $set('link', '/catalogo?is_premium=1');
+                                    $set('category_id', null);
+                                } elseif ($state === 'offers') {
+                                    $set('link', '/catalogo?is_offer=1');
+                                    $set('category_id', null);
+                                } elseif ($state === 'category') {
+                                    $set('link', null);
+                                }
+                            }),
+
                         // Opción A: Link a Categoría
                         Select::make('category_id')
-                            ->label('Vincular a Categoría')
+                            ->label('Seleccionar Categoría')
                             ->relationship('category', 'name')
                             ->searchable()
-                            ->preload(),
+                            ->preload()
+                            ->visible(fn(Get $get) => $get('link_source') === 'category')
+                            ->required(fn(Get $get) => $get('link_source') === 'category'),
 
-                        // Opción B: Link Manual
+                        // Opción B: Link Manual (Visible y editable si es manual, o readonly si es preset)
                         TextInput::make('link')
-                            ->label('O link manual externo')
-                            ->url()
-                            ->placeholder('https://...'),
+                            ->label(fn(Get $get) => $get('link_source') === 'manual' ? 'URL Manual' : 'URL Generada Automáticamente')
+                            ->regex('/^(\/|https?:\/\/)/')
+                            ->placeholder('https://... o /catalogo')
+                            ->visible(fn(Get $get) => $get('link_source') !== 'category')
+                            ->readOnly(fn(Get $get) => $get('link_source') !== 'manual'),
                     ]),
 
                     TextInput::make('button_text')

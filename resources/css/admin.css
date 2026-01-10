@@ -1,0 +1,64 @@
+/* Custom Filament Admin Styles */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+/* Force Font Family override in case Filament's default takes precedence */
+:root {
+    --font-family: 'Outfit', sans-serif;
+}
+
+body {
+    font-family: var(--font-family);
+}
+
+/* Black Navbar */
+.fi-topbar {
+    background-color: black !important;
+    border-bottom: 1px solid #333 !important;
+}
+
+/* Make Topbar Navigation Items White */
+.fi-topbar nav, 
+.fi-topbar nav a,
+.fi-topbar button {
+    color: white !important;
+}
+
+/* Sidebar Customization */
+.fi-sidebar {
+    background-color: white !important;
+    border-right: 1px solid #f3f4f6;
+}
+
+/* Sidebar Header (Logo Area) */
+.fi-sidebar-header {
+    background-color: white !important; /* Keep logo area white for better contrast if logo is dark, or black if logo is white */
+}
+
+/* Active Sidebar Item - Gold/Amber Highlight */
+.fi-sidebar-item-active a {
+    background-color: #FEF3C7 !important; /* Amber-100 */
+    color: #D97706 !important; /* Amber-600 */
+}
+
+/* Buttons Gradient Premium Feel */
+.fi-btn-primary {
+    background: linear-gradient(135deg, #fbbf24, #d97706) !important;
+    border: none !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+}
+
+/* Table Headers Uppercase */
+.fi-ta-header-cell-label {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    font-weight: 800;
+    color: #64748b;
+}
+
+/* Tags in Table - Make them pop */
+.fi-ta-text-item .fi-badge {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}

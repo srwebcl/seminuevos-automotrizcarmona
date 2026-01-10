@@ -33,13 +33,27 @@ class Vehicle extends Model
         });
     }
 
-    public function brand() { return $this->belongsTo(Brand::class); }
-    public function location() { return $this->belongsTo(Location::class); }
-    public function category() { return $this->belongsTo(Category::class); }
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
+    }
+    public function location()
+    {
+        return $this->belongsTo(Location::class);
+    }
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 
     // Helper para obtener foto de portada (La primera del array)
     public function getThumbnailAttribute()
     {
         return $this->photos[0] ?? null;
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
     }
 }

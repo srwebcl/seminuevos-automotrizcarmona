@@ -1,0 +1,83 @@
+/* Filament Admin Custom Overrides */
+
+/* Force Black Navbar */
+.fi-topbar,
+header.fi-topbar,
+div.fi-topbar {
+    background-color: #000000 !important;
+    background-image: none !important;
+    border-bottom: 1px solid #333 !important;
+}
+
+/* Navbar Items - White Text */
+.fi-topbar nav .fi-btn,
+.fi-topbar nav .fi-user-menu-btn,
+header.fi-topbar nav button,
+.fi-topbar .fi-icon-btn {
+    color: #ffffff !important;
+    --c-400: 255, 255, 255;
+    /* Force gray icons to white */
+    --c-500: 255, 255, 255;
+    --c-600: 255, 255, 255;
+}
+
+.fi-topbar nav .fi-icon-btn {
+    color: #e5e7eb !important;
+    /* Gray-200 */
+}
+
+.fi-topbar nav .fi-icon-btn:hover,
+.fi-topbar nav .fi-btn:hover {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+}
+
+/* Brand Name/Logo Area in Sidebar */
+.fi-sidebar-header {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+/* Sidebar Active Item - Amber/Gold Highlight */
+.fi-sidebar-item-active a {
+    background-color: #FFFBEB !important;
+    /* Amber-50 */
+    color: #D97706 !important;
+    /* Amber-600 */
+}
+
+.fi-sidebar-item-active a:hover {
+    background-color: #FEF3C7 !important;
+}
+
+.fi-sidebar-item-active .fi-sidebar-item-icon {
+    color: #D97706 !important;
+}
+
+/* Primary Buttons - Gradient Gold */
+.fi-btn-primary {
+    background-image: linear-gradient(135deg, #fbbf24, #d97706) !important;
+    border: none !important;
+    text-transform: uppercase !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.05em !important;
+    color: white !important;
+}
+
+.fi-btn-primary:hover {
+    background-image: linear-gradient(135deg, #f59e0b, #b45309) !important;
+}
+
+/* Table Headers Uppercase */
+.fi-ta-header-cell-label {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #64748b;
+    letter-spacing: 0.05em;
+}
+
+/* General Font Tweaks */
+body {
+    --font-family: 'Poppins', sans-serif;
+}

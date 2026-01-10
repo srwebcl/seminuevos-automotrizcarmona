@@ -36,7 +36,6 @@ export default async function Home() {
       <FullBanner banner={fullBanner} />
       <CategoryPromos promos={promos} />
 
-      <PremiumSection vehicles={premiumVehicles.data} />
       <HomeStockSection initialVehicles={recentVehicles.data} categories={categories} />
       <ExperienceSection />
     </main>

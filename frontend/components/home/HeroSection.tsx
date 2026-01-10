@@ -77,7 +77,7 @@ export default function HeroSection({ banners }: HeroSectionProps) {
     };
 
     return (
-        <div className="relative h-[650px] flex items-center justify-center z-40 bg-black">
+        <div className="relative h-[650px] flex items-center justify-center bg-black">
             {/* Background Slideshow Container */}
             <div className="absolute inset-0 z-0 overflow-hidden">
                 {effectiveBanners.map((banner, index) => {
@@ -120,7 +120,7 @@ export default function HeroSection({ banners }: HeroSectionProps) {
             </div>
 
             {/* Content Container */}
-            <div className="relative z-30 w-full max-w-5xl px-4 text-center">
+            <div className="relative z-50 w-full max-w-5xl px-4 text-center">
                 {/* POWER TITLE - Enhanced Typography & Shadows */}
                 <h1 className="text-6xl md:text-8xl font-black text-white mb-10 tracking-tighter leading-[0.9] drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] relative">
                     <span className="block mb-2" data-aos="fade-down" data-aos-duration="1000">Tu próximo auto,</span>

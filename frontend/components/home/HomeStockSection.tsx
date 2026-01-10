@@ -41,14 +41,14 @@ export default function HomeStockSection({ initialVehicles, categories }: HomeSt
     };
 
     return (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 pt-16 md:pt-24" id="stock">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 pt-4 md:pt-8" id="stock">
             <div className="text-center mb-10">
-                <h2 className="text-4xl font-bold text-gray-900 tracking-tighter mb-4">
-                    Novedades en <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-600">Stock</span>
+                <h2 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tighter mb-8 drop-shadow-sm">
+                    Novedades en <span className="text-[#D4AF37]">Stock</span>
                 </h2>
 
-                {/* Mobile Filter Carousel */}
-                <div className="flex flex-nowrap overflow-x-auto pb-4 md:flex-wrap md:justify-center gap-3 scrollbar-hide snap-x px-4 -mx-4 md:px-0 md:mx-0">
+                {/* Filter List (Carousel on all devices, no arrows) */}
+                <div className="flex flex-nowrap overflow-x-auto gap-3 pb-4 px-4 -mx-4 md:mx-0 md:px-0 scrollbar-hide snap-x transition-all duration-300">
                     <button
                         onClick={() => handleFilter('todo')}
                         className={`filter-btn shrink-0 snap-center px-6 py-2.5 rounded-full border text-sm font-bold transition whitespace-nowrap ${activeFilter === 'todo' ? 'bg-black text-white border-black' : 'bg-white text-gray-700 border-gray-200 hover:bg-black hover:text-white'}`}
@@ -65,20 +65,22 @@ export default function HomeStockSection({ initialVehicles, categories }: HomeSt
 
                     <button
                         onClick={() => handleFilter('premium')}
-                        className={`filter-btn shrink-0 snap-center px-6 py-2.5 rounded-full border text-sm font-bold transition flex items-center gap-2 whitespace-nowrap ${activeFilter === 'premium' ? 'bg-black text-white border-black' : 'bg-white text-premium-gold border-premium-gold hover:bg-black hover:text-premium-gold'}`}
+                        className={`filter-btn shrink-0 snap-center px-6 py-2.5 rounded-full border text-sm font-bold transition flex items-center gap-2 whitespace-nowrap ${activeFilter === 'premium' ? 'bg-black text-white border-black' : 'bg-white text-premium-gold border-premium-gold hover:bg-black hover:text-white'}`}
                     >
                         <i className="fa-solid fa-crown"></i> Premium
                     </button>
 
-                    {categories.map((cat) => (
-                        <button
-                            key={cat.slug}
-                            onClick={() => handleFilter('category', cat.slug)}
-                            className={`filter-btn shrink-0 snap-center px-6 py-2.5 rounded-full border text-sm font-bold transition whitespace-nowrap ${activeFilter === cat.slug ? 'bg-black text-white border-black' : 'bg-white text-gray-700 border-gray-200 hover:bg-black hover:text-white'}`}
-                        >
-                            {cat.name}
-                        </button>
-                    ))}
+                    {categories
+                        .filter(cat => !['seminuevos', 'premium', 'ofertas'].includes(cat.slug))
+                        .map((cat) => (
+                            <button
+                                key={cat.slug}
+                                onClick={() => handleFilter('category', cat.slug)}
+                                className={`filter-btn shrink-0 snap-center px-6 py-2.5 rounded-full border text-sm font-bold transition whitespace-nowrap ${activeFilter === cat.slug ? 'bg-black text-white border-black' : 'bg-white text-gray-700 border-gray-200 hover:bg-black hover:text-white'}`}
+                            >
+                                {cat.name}
+                            </button>
+                        ))}
                 </div>
             </div>
 

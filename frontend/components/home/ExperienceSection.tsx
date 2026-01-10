@@ -1,6 +1,6 @@
 export default function ExperienceSection() {
     return (
-        <section className="relative py-24 overflow-hidden">
+        <section className="relative py-12 overflow-hidden">
             <div className="absolute inset-0 bg-black">
                 {/* Fallback pattern/image */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent"></div>
@@ -17,7 +17,7 @@ export default function ExperienceSection() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div className="bg-white/5 backdrop-blur-sm border border-white/10 p-8 rounded-2xl hover:bg-white/10 transition hover:-translate-y-2 duration-300 group">
                         <div className="w-16 h-16 mx-auto bg-premium-gold/20 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition">
-                            <i className="fa-solid fa-file-invoice-dollar text-3xl text-premium-gold"></i>
+                            <i className="fa-solid fa-file-invoice-dollar text-3xl text-yellow-500"></i>
                         </div>
                         <h3 className="text-xl font-bold text-white mb-3">Financiamiento</h3>
                         <p className="text-gray-400 text-sm">Gestionamos tu crédito con las tasas más competitivas.</p>

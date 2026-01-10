@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\LocationController;
 
 Route::prefix('vehicles')->group(function () {
     Route::get('/', [\App\Http\Controllers\Api\VehicleController::class, 'index']);
@@ -9,8 +10,13 @@ Route::prefix('vehicles')->group(function () {
     Route::get('/{slug}', [\App\Http\Controllers\Api\VehicleController::class, 'show']);
 });
 
+Route::get('brands', [\App\Http\Controllers\Api\BrandController::class, 'index']);
+Route::get('/locations', [LocationController::class, 'index']);
 Route::get('categories', [\App\Http\Controllers\Api\CategoryController::class, 'index']);
-// Route::get('banners', [\App\Http\Controllers\Api\BannerController::class, 'index']);
+Route::get('menu', [\App\Http\Controllers\Api\CategoryController::class, 'menu']);
+Route::get('settings', [\App\Http\Controllers\Api\SettingsController::class, 'index']);
+
+// Banners (Using dedicated controller or closure if simple)
 Route::get('banners', function () {
     $banners = \App\Models\Banner::where('is_active', true)->orderBy('sort_order')->get();
     $data = $banners->map(function ($b) {
@@ -19,10 +25,9 @@ Route::get('banners', function () {
             'type' => $b->type,
             'title' => $b->title,
             'subtitle' => $b->subtitle,
-            // Force HTTPS hardcoded to ensure parity
-            'image_url' => $b->image_path ? 'https://api-dev.automotrizcarmona.cl/storage/' . $b->image_path : null,
-            'mobile_image_url' => $b->mobile_image_path ? 'https://api-dev.automotrizcarmona.cl/storage/' . $b->mobile_image_path : null,
-            'video_url' => $b->video_path ? 'https://api-dev.automotrizcarmona.cl/storage/' . $b->video_path : null,
+            'image_url' => $b->image_path ? url('storage/' . $b->image_path) : null,
+            'mobile_image_url' => $b->mobile_image_path ? url('storage/' . $b->mobile_image_path) : null,
+            'video_url' => $b->video_path ? url('storage/' . $b->video_path) : null,
             'link' => $b->link,
             'category_slug' => $b->category ? $b->category->slug : null,
         ];

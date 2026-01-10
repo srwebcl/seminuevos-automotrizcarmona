@@ -16,27 +16,23 @@ export default function FullBanner({ banner }: FullBannerProps) {
         : (banner.link || '#');
 
     return (
-        <div className="w-full relative z-20 -mt-10 mx-auto max-w-7xl px-4" data-aos="fade-up" data-aos-delay="100">
-            <Link href={href} className="block w-full rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+        <div className="w-full relative z-[45] px-4 max-w-7xl mx-auto -mt-20 md:-mt-16 mb-8" data-aos="fade-up">
+            <Link href={href} className="block w-full group overflow-hidden rounded-xl md:rounded-3xl shadow-xl md:shadow-2xl">
                 {/* Desktop Image */}
-                <div className="relative w-full hidden md:block h-[250px]">
-                    <Image
+                <div className="hidden md:block w-full">
+                    <img
                         src={banner.image_url}
                         alt={banner.title || 'Promoción'}
-                        fill
-                        className="object-cover"
-                        unoptimized={true}
+                        className="w-full h-auto object-cover transform transition duration-700 group-hover:scale-105"
                     />
                 </div>
 
                 {/* Mobile Image */}
-                <div className="relative w-full block md:hidden aspect-[16/9]">
-                    <Image
+                <div className="block md:hidden w-full">
+                    <img
                         src={banner.mobile_image_url || banner.image_url}
                         alt={banner.title || 'Promoción'}
-                        fill
-                        className="object-cover"
-                        unoptimized={true}
+                        className="w-full h-auto object-cover transform transition duration-700 group-hover:scale-105"
                     />
                 </div>
             </Link>

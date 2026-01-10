@@ -25,18 +25,61 @@ export default function SmartWhatsAppButton() {
                 message: "Hola, estoy revisando el catálogo web y busco un auto específico."
             };
         } else if (pathname.startsWith('/auto/')) {
-            // Normally we would get the car name here, but for global button we keep it generic or need context context.
-            // Since this is a global layout component, we can use generic detail message or standard one.
-            newConfig = {
-                text: "¡Excelente elección! Cotízalo aquí.",
-                message: "Hola, estoy viendo un auto en la web y me gustaría cotizarlo o agendar una visita."
-            };
+            const slug = pathname.split('/auto/')[1];
+            if (slug) {
+                // Intelligent Name Cleaning
+                // Stops at years, technical terms, or engine sizes
+                const parts = slug.split('-');
+                const cleanParts = [];
+
+                const stopTerms = new Set([
+                    'cd', 'cc', 'cs', '4x2', '4x4', 'awd', 'wd',
+                    'aut', 'mec', 'at', 'mt', 'cvt',
+                    'full', 'base', 'sport', 'limited', 'ltd', 'xls', 'gli', 'glx', 'sel', 'xli', 'lx', 'sx', 'ga', 'gl',
+                    'bluehdi', 'tdi', 'tfsi', 'tsi', 'hdi',
+                    'v6', 'v8', 'turbo'
+                ]);
+
+                for (const part of parts) {
+                    // Check for Year (2010-2030)
+                    if (/^20[1-3][0-9]$/.test(part)) break;
+                    // Check for Engine (1.6, 2.0, etc)
+                    if (/^[0-9]\.[0-9]$/.test(part)) break;
+                    // Check for plain numbers that might be versions (e.g. 1500)
+                    if (/^\d{3,}$/.test(part)) break;
+                    // Check for stop terms
+                    if (stopTerms.has(part.toLowerCase())) break;
+
+                    // Capitalize and add
+                    cleanParts.push(part.charAt(0).toUpperCase() + part.slice(1));
+
+                    // Safety limit: rarely more than 3 words for Brand + Model (e.g. Land Rover Discovery)
+                    if (cleanParts.length >= 3) break;
+                }
+
+                const modelName = cleanParts.join(' ');
+
+                newConfig = {
+                    text: `¿Quieres más info del ${modelName}?`,
+                    message: `Hola, estoy viendo el ${modelName} en la web y me gustaría más información.`
+                };
+            } else {
+                newConfig = {
+                    text: "¡Excelente elección! Cotízalo aquí.",
+                    message: "Hola, estoy viendo un auto en la web y me gustaría cotizarlo o agendar una visita."
+                };
+            }
         } else if (pathname === '/financiamiento') {
             newConfig = {
                 text: "¿Dudas con el crédito? Resuélvelas ahora.",
                 message: "Hola, tengo dudas sobre las opciones de financiamiento."
             };
-        } else if (pathname === '/vende-tu-auto') {
+        } else if (pathname === '/vende-tu-auto') { // Changed route if needed, checking existing code used /vende-tu-auto? Wait, previous code used /vende-tu-auto but page is /vendenos-tu-auto. Correcting to startsWith or exact match.
+            newConfig = {
+                text: "¿Quieres vender rápido? Escríbenos.",
+                message: "Hola, quiero vender mi auto con ustedes / dejarlo en parte de pago."
+            };
+        } else if (pathname === '/vendenos-tu-auto') {
             newConfig = {
                 text: "¿Quieres vender rápido? Escríbenos.",
                 message: "Hola, quiero vender mi auto con ustedes / dejarlo en parte de pago."
@@ -45,14 +88,27 @@ export default function SmartWhatsAppButton() {
 
         setConfig(newConfig);
 
-        // Reset bubble state to animate again on route change
-        setShowBubble(false);
-        const timer = setTimeout(() => {
-            setShowBubble(true);
-        }, 2000); // Delay for user to settle
+        // Initial bubble state is open, but controlled by scroll
+        setShowBubble(true);
 
-        return () => clearTimeout(timer);
+        const handleScroll = () => {
+            // Show bubble only after scrolling 100px
+            if (window.scrollY > 100) {
+                // We don't auto-open it if user closed it, but we need a separate state for scroll
+            }
+        };
+        // actually simplest is to just checking window.scrollY in a separate state
     }, [pathname]);
+
+    const [hasScrolled, setHasScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setHasScrolled(window.scrollY > 100);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     const handleCloseBubble = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -67,25 +123,37 @@ export default function SmartWhatsAppButton() {
         <div className="fixed bottom-6 right-6 z-[60] flex flex-col items-end gap-3 group">
 
             {/* Context Bubble */}
+            {/* Context Bubble - Sophisticated Design */}
             <div
                 className={`
-                    relative max-w-[250px] bg-white text-gray-800 p-4 rounded-2xl rounded-br-none shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-gray-100
-                    transform transition-all duration-500 ease-out origin-bottom-right
-                    ${showBubble ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-90 translate-y-4 pointer-events-none'}
+                    relative max-w-[280px] bg-white text-gray-800 p-5 rounded-[2rem] rounded-br-sm shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] border border-gray-100
+                    transform transition-all duration-500 ease-spring origin-bottom-right
+                    ${showBubble && hasScrolled ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-75 translate-y-8 pointer-events-none'}
                 `}
             >
                 <button
                     onClick={handleCloseBubble}
-                    className="absolute -top-2 -right-2 bg-gray-200 text-gray-500 rounded-full p-1 hover:bg-red-500 hover:text-white transition-colors"
+                    className="absolute top-2 right-2 bg-gray-100 hover:bg-gray-200 text-gray-400 hover:text-gray-600 rounded-full p-1.5 transition-colors"
                 >
-                    <X size={12} />
+                    <X size={14} />
                 </button>
-                <p className="text-sm font-medium leading-relaxed">
-                    {config.text} 👋
-                </p>
+                <div className="flex items-start gap-3">
+                    <div className="relative shrink-0">
+                        <div className="w-12 h-12 rounded-full bg-gray-100 overflow-hidden border-2 border-white shadow-md">
+                            <img src="/images/ejecutivo_whatsapp.png" alt="Ejecutivo Carmona" className="w-full h-full object-cover" />
+                        </div>
+                        <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
+                    </div>
+                    <div>
+                        <p className="text-[13px] font-bold text-gray-900 mb-0.5">Asesor Virtual</p>
+                        <p className="text-[13px] font-medium leading-snug text-gray-600">
+                            {config.text} 👋
+                        </p>
+                    </div>
+                </div>
 
-                {/* Tail for speech bubble */}
-                <div className="absolute -bottom-2 right-0 w-4 h-4 bg-white transform rotate-45 border-r border-b border-gray-100 mask-triangle"></div>
+                {/* Tail for speech bubble - Smooth curve trick */}
+                {/* Obscured by rounded-br-sm but ensuring it looks connected */}
             </div>
 
             {/* Main Button */}

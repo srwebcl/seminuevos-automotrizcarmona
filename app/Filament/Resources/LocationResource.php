@@ -19,8 +19,8 @@ class LocationResource extends Resource
 {
     protected static ?string $model = Location::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = 'Inventario';
+    protected static ?string $navigationIcon = 'heroicon-o-map-pin';
+    protected static ?string $navigationGroup = 'Configuración';
     protected static ?int $navigationSort = 4;
     protected static ?string $navigationLabel = 'Sucursales';
     protected static ?string $modelLabel = 'Sucursal';
@@ -46,6 +46,12 @@ class LocationResource extends Resource
                 Toggle::make('is_active')
                     ->label('Visible')
                     ->default(true),
+                Forms\Components\FileUpload::make('image_path')
+                    ->label('Imagen de Sucursal')
+                    ->image()
+                    ->directory('locations')
+                    ->columnSpanFull()
+                    ->imagePreviewHeight('250'),
             ]);
     }
 

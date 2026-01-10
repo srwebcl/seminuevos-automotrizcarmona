@@ -1,7 +1,8 @@
 import { PaginatedResponse, Vehicle, VehicleCategory } from '@/types/vehicle';
 import { Banner } from '@/types/banner';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+export const BACKEND_URL = API_URL.replace('/api', '');
 
 async function fetchAPI<T>(endpoint: string): Promise<T> {
     const separator = endpoint.includes('?') ? '&' : '?';
@@ -23,9 +24,12 @@ async function fetchAPI<T>(endpoint: string): Promise<T> {
     return res.json();
 }
 
-export async function getVehicles(page = 1, filters?: { category?: string; is_premium?: boolean; is_featured?: boolean }): Promise<PaginatedResponse<Vehicle>> {
+export async function getVehicles(page = 1, filters?: { category?: string; brand?: string; q?: string; sort?: string; is_premium?: boolean; is_featured?: boolean }): Promise<PaginatedResponse<Vehicle>> {
     let query = `vehicles?page=${page}`;
     if (filters?.category) query += `&category=${filters.category}`;
+    if (filters?.brand) query += `&brand=${filters.brand}`;
+    if (filters?.q) query += `&q=${encodeURIComponent(filters.q)}`;
+    if (filters?.sort) query += `&sort=${filters.sort}`;
     if (filters?.is_premium) query += `&is_premium=1`;
     if (filters?.is_featured) query += `&is_featured=1`;
 
@@ -52,10 +56,37 @@ export async function getCategories(): Promise<{ data: VehicleCategory[] }> {
     return fetchAPI<{ data: VehicleCategory[] }>('categories');
 }
 
+export async function getBrands(category?: string): Promise<{ data: { id: number; name: string; slug: string; vehicles_count: number }[] }> {
+    let url = 'brands';
+    if (category) {
+        url += `?category=${category}`;
+    }
+    return fetchAPI<{ data: { id: number; name: string; slug: string; vehicles_count: number }[] }>(url);
+}
+
 export async function searchGlobal(query: string): Promise<{ categories: VehicleCategory[], vehicles: Vehicle[] }> {
     return fetchAPI<{ categories: VehicleCategory[], vehicles: Vehicle[] }>(`search/global?query=${encodeURIComponent(query)}`);
 }
 
 export async function getBanners(): Promise<{ data: Banner[] }> {
     return fetchAPI<{ data: Banner[] }>('banners');
+}
+
+export async function getMenu(): Promise<{ data: VehicleCategory[] }> {
+    return fetchAPI<{ data: VehicleCategory[] }>('menu');
+}
+
+export async function getSettings(): Promise<{ data: { seasonal_mode: string; whatsapp?: { number: string; message_template: string; is_active: boolean }; contact: any } }> {
+    return fetchAPI('settings');
+}
+
+export async function getRelatedVehicles(categorySlug: string, currentVehicleId: number): Promise<Vehicle[]> {
+    // Fetch vehicles from the same category
+    const { data } = await getVehicles(1, { category: categorySlug });
+    // Filter out the current vehicle and limit to 4
+    return data.filter(v => v.id !== currentVehicleId).slice(0, 4);
+}
+
+export async function getLocations(): Promise<{ data: { id: number; name: string; address: string; phone?: string; city: string; image_path?: string; is_active: boolean }[] }> {
+    return fetchAPI<{ data: { id: number; name: string; address: string; phone?: string; city: string; image_path?: string; is_active: boolean }[] }>('locations');
 }

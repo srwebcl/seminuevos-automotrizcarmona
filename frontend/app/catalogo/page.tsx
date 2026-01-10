@@ -1,57 +1,96 @@
-import { getVehicles } from '@/lib/api';
-import VehicleCard from '@/components/VehicleCard';
-import Link from 'next/link';
+import { getVehicles, getBanners, getBrands, getCategories } from '@/lib/api';
+import CategoryHero from '@/components/CategoryHero';
+import CatalogLayout from '@/components/catalogo/CatalogLayout';
 
 export const dynamic = 'force-dynamic';
 
 export default async function CatalogPage({
     searchParams,
 }: {
-    searchParams: { page?: string };
+    searchParams: Promise<{ page?: string; category?: string; brand?: string; q?: string; sort?: string; is_premium?: string }>;
 }) {
-    const currentPage = Number(searchParams.page) || 1;
-    const { data: vehicles, meta, links } = await getVehicles(currentPage);
+    const params = await searchParams;
+    const { page, category, brand, q, sort, is_premium } = params;
+    const currentPage = Number(page) || 1;
+    const isPremium = is_premium === '1' || is_premium === 'true';
+
+    const filters = {
+        category,
+        brand,
+        q,
+        sort,
+        is_premium: isPremium
+    };
+
+    // Parallel fetching
+    const [vehiclesResponse, bannersResponse, brandsResponse, categoriesResponse] = await Promise.all([
+        getVehicles(currentPage, filters),
+        getBanners().catch(() => ({ data: [] })),
+        getBrands(category).catch(() => ({ data: [] })),
+        getCategories().catch(() => ({ data: [] }))
+    ]);
+
+    const { data: vehicles, meta, links } = vehiclesResponse;
+    const banners = bannersResponse.data;
+    const brands = brandsResponse.data;
+    const categories = categoriesResponse.data;
+
+    // Determine Page Configuration
+    let heroTitle = 'Catálogo Completo';
+    let heroImage = '/images/default-hero.jpg'; // Needs a real default
+    let heroSubtitle = `Mostrando ${meta.total} vehículos disponibles`;
+
+    // 1. Try to find a specific banner for this category
+    const categoryBanner = category
+        ? banners.find(b => b.category_slug === category)
+        : null;
+
+    if (categoryBanner) {
+        heroTitle = categoryBanner.title || category?.toUpperCase() || 'CATÁLOGO';
+        heroImage = categoryBanner.image_url;
+        heroSubtitle = categoryBanner.subtitle || heroSubtitle;
+    } else if (category) {
+        heroTitle = category === 'camionemen' ? 'CAMIONETAS' : // Prevent typo
+            category === 'camioneta' ? 'CAMIONETAS' :
+                category.replace('-', ' ').toUpperCase();
+        // Fallback image for categories without specific banner?
+        heroImage = '/images/hero-bg-2.jpg';
+    }
+
+    // 2. Premium Override
+    if (isPremium) {
+        heroTitle = 'COLECCIÓN PREMIUM';
+        heroSubtitle = 'Vehículos de alta gama verificados.';
+        const premiumBanner = banners.find(b => b.title?.toLowerCase().includes('premium'));
+        if (premiumBanner) heroImage = premiumBanner.image_url;
+        else heroImage = '/images/premium-hero.jpg';
+    }
+
+    // 3. Fallback if still default image (and we have banners, use first hero as generic background)
+    if (heroImage.includes('default-hero') && banners.length > 0) {
+        const firstHero = banners.find(b => b.type === 'hero');
+        if (firstHero) heroImage = firstHero.image_url;
+    }
 
     return (
-        <div className="py-12 bg-gray-50 min-h-screen">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900">Catálogo Completo</h1>
-                    <p className="text-gray-500 mt-2">
-                        Mostrando {vehicles.length} de {meta.total} vehículos
-                    </p>
-                </div>
+        <div className="bg-gray-50 min-h-screen">
+            {/* Dynamic Hero */}
+            <CategoryHero
+                title={heroTitle}
+                subtitle={heroSubtitle}
+                backgroundImage={heroImage}
+            />
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-                    {vehicles.map((vehicle) => (
-                        <VehicleCard key={vehicle.id} vehicle={vehicle} />
-                    ))}
-                </div>
-
-                {/* Pagination */}
-                <div className="flex justify-center gap-2">
-                    {links.prev && (
-                        <Link
-                            href={`/catalogo?page=${currentPage - 1}`}
-                            className="px-4 py-2 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-                        >
-                            Anterior
-                        </Link>
-                    )}
-
-                    <span className="px-4 py-2 text-gray-500">
-                        Página {currentPage} de {meta.last_page}
-                    </span>
-
-                    {links.next && (
-                        <Link
-                            href={`/catalogo?page=${currentPage + 1}`}
-                            className="px-4 py-2 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-                        >
-                            Siguiente
-                        </Link>
-                    )}
-                </div>
+            {/* Layout with Sidebar & Content */}
+            <div className="relative">
+                <CatalogLayout
+                    vehicles={vehicles}
+                    meta={meta}
+                    links={links}
+                    brands={brands}
+                    categories={categories}
+                    searchParams={params}
+                />
             </div>
         </div>
     );
