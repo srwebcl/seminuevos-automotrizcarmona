@@ -89,7 +89,7 @@ export default function Navbar({ categories = [] }: NavbarProps) {
 
             {/* Mobile Menu Full Screen Overlay */}
             {open && (
-                <div className="md:hidden fixed inset-0 z-[200] bg-black/95 backdrop-blur-2xl animate-in slide-in-from-top-4 duration-300 flex flex-col">
+                <div className="md:hidden fixed inset-0 z-[200] bg-black/95 backdrop-blur-2xl animate-slide-down flex flex-col">
                     {/* Header inside overlay to match position */}
                     <div className="flex justify-between items-center px-4 h-20 border-b border-white/10">
                         <div className="flex-shrink-0 flex items-center">

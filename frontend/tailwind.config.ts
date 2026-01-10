@@ -41,12 +41,22 @@ const config: Config = {
                     '0%': { transform: 'scale(1)' },
                     '50%': { transform: 'scale(1.1)' },
                     '100%': { transform: 'scale(1)' },
+                },
+                'fade-in': {
+                    '0%': { opacity: '0' },
+                    '100%': { opacity: '1' },
+                },
+                'slide-down': {
+                    '0%': { transform: 'translateY(-100%)' },
+                    '100%': { transform: 'translateY(0)' },
                 }
             },
             animation: {
                 'pulse-gold': 'pulse-gold 2s infinite',
                 'pulse-green': 'pulse-green 2s infinite',
                 'ken-burns': 'ken-burns 20s infinite alternate ease-in-out',
+                'fade-in': 'fade-in 0.3s ease-out forwards',
+                'slide-down': 'slide-down 0.3s ease-out forwards',
             }
         },
     },
