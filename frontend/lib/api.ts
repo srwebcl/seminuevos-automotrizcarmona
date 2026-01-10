@@ -2,7 +2,8 @@ import { PaginatedResponse, Vehicle, VehicleCategory } from '@/types/vehicle';
 import { Banner } from '@/types/banner';
 
 export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
-export const BACKEND_URL = API_URL.replace('/api', '');
+// Safe backend URL derivation: remove trailing /api (and optional slash) only if it's at the end
+export const BACKEND_URL = API_URL.replace(/\/api\/?$/, '');
 
 async function fetchAPI<T>(endpoint: string): Promise<T> {
     const separator = endpoint.includes('?') ? '&' : '?';
