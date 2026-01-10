@@ -40,8 +40,8 @@ const nextConfig = {
                 pathname: '/storage/**',
             }
         ],
-        // Disable optimization locally to prevent "resolved to private ip" errors
-        unoptimized: true,
+        // Enable optimization for Vercel
+        unoptimized: false,
     },
 };
 

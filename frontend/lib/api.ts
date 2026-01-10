@@ -9,11 +9,9 @@ async function fetchAPI<T>(endpoint: string): Promise<T> {
     const url = `${API_URL}/${endpoint}${separator}_t=${Date.now()}`;
 
     const res = await fetch(url, {
-        cache: 'no-store',
+        next: { revalidate: 60 }, // ISR: Cache for 60 seconds
         headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': '0',
+            'Accept': 'application/json',
         }
     });
 
