@@ -44,6 +44,17 @@ if (file_exists($public_storage)) {
         echo "<p style='color:red'>⚠️ Es una CARPETA REAL (Esto está mal si debería ser enlace).</p>";
     }
     scan_dir_recursive($public_storage);
+
+    echo "<h3>📍 Verificando Carpeta 'locations' específica</h3>";
+    $loc_path = $public_storage . '/locations';
+    if (file_exists($loc_path)) {
+        echo "<p>✅ La carpeta 'locations' existe.</p>";
+        echo "Permisos: " . substr(sprintf('%o', fileperms($loc_path)), -4);
+        scan_dir_recursive($loc_path);
+    } else {
+        echo "<p style='color:red'>❌ La carpeta 'locations' NO EXISTE en public/storage.</p>";
+    }
+
 } else {
     echo "<p style='color:red'>❌ El enlace 'public/storage' NO EXISTE.</p>";
 }

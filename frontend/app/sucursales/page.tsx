@@ -37,7 +37,6 @@ export default async function LocationsPage() {
                                                 alt={location.name}
                                                 fill
                                                 className="object-cover group-hover:scale-105 transition duration-700"
-                                                unoptimized={true}
                                             />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-300">
