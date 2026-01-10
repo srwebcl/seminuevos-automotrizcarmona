@@ -87,28 +87,65 @@ export default function Navbar({ categories = [] }: NavbarProps) {
                 </div>
             </div>
 
-            {/* Mobile Menu Dropdown */}
+            {/* Mobile Menu Full Screen Overlay */}
             {open && (
-                <div className="md:hidden fixed inset-0 z-40 bg-black/95 backdrop-blur-xl pt-24 px-6">
-                    <div className="space-y-4">
-                        <Link href="/" onClick={() => setOpen(false)} className="block text-xl font-bold text-white hover:text-premium-gold">
-                            Inicio
+                <div className="md:hidden fixed inset-0 z-[200] bg-black/95 backdrop-blur-2xl animate-in slide-in-from-top-4 duration-300 flex flex-col">
+                    {/* Header inside overlay to match position */}
+                    <div className="flex justify-between items-center px-4 h-20 border-b border-white/10">
+                        <div className="flex-shrink-0 flex items-center">
+                            <Image
+                                src="/images/logo.png"
+                                alt="Automotriz Carmona"
+                                width={150}
+                                height={50}
+                                className="h-8 w-auto object-contain brightness-0 invert"
+                            />
+                        </div>
+                        <button onClick={() => setOpen(false)} className="text-white p-2 rounded-full hover:bg-white/10 transition">
+                            <i className="fa-solid fa-xmark text-2xl"></i>
+                        </button>
+                    </div>
+
+                    {/* Menu Items */}
+                    <div className="flex-1 flex flex-col justify-center items-center space-y-8 p-6 overflow-y-auto">
+                        <Link
+                            href="/"
+                            onClick={() => setOpen(false)}
+                            className="text-3xl font-black text-white hover:text-premium-gold tracking-tight transition-all hover:scale-105"
+                        >
+                            INICIO
                         </Link>
+
                         {menuItems.map((item) => (
                             <Link
                                 key={item.slug}
                                 href={item.href}
                                 onClick={() => setOpen(false)}
-                                className={`block text-xl font-bold hover:text-premium-gold flex items-center gap-2 ${item.isSpecial ? 'text-premium-gold' : 'text-white'}`}
+                                className={`text-3xl font-black tracking-tight transition-all hover:scale-105 flex items-center gap-3 ${item.isSpecial ? 'text-premium-gold' : 'text-white hover:text-premium-gold'}`}
                             >
-                                {item.name === 'Premium' && <i className="fa-solid fa-crown"></i>}
-                                {item.name}
+                                {item.name === 'Premium' && <i className="fa-solid fa-crown text-2xl"></i>}
+                                {item.name.toUpperCase()}
                             </Link>
                         ))}
-                        <div className="pt-6 border-t border-gray-800">
-                            <Link href="/sucursales" onClick={() => setOpen(false)} className="block w-full text-center bg-white text-black py-3 rounded-xl font-bold uppercase tracking-widest">
-                                Sucursales
-                            </Link>
+
+                        <div className="w-20 h-1 bg-white/10 rounded-full my-6"></div>
+
+                        <Link
+                            href="/sucursales"
+                            onClick={() => setOpen(false)}
+                            className="bg-white text-black px-8 py-3 rounded-full text-sm font-black uppercase tracking-widest hover:bg-premium-gold hover:text-white transition-all shadow-xl shadow-white/5"
+                        >
+                            Ver Sucursales
+                        </Link>
+                    </div>
+
+                    {/* Footer Info in Menu */}
+                    <div className="p-8 text-center text-gray-500 text-xs border-t border-white/5">
+                        <p className="mb-2">AUTOMOTRIZ CARMONA & CIA</p>
+                        <div className="flex justify-center gap-6 text-lg text-gray-400">
+                            <a href="#" className="hover:text-white"><i className="fa-brands fa-instagram"></i></a>
+                            <a href="#" className="hover:text-white"><i className="fa-brands fa-facebook"></i></a>
+                            <a href="#" className="hover:text-white"><i className="fa-brands fa-tiktok"></i></a>
                         </div>
                     </div>
                 </div>

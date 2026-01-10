@@ -20,6 +20,16 @@ Route::get('/', function () {
     ]);
 });
 
+// HELPER: Create Storage Link (Run once in production)
+Route::get('/fix-storage', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('storage:link');
+        return 'Storage Link Created: ' . \Illuminate\Support\Facades\Artisan::output();
+    } catch (\Exception $e) {
+        return 'Error: ' . $e->getMessage();
+    }
+});
+
 // DIAGNOSTIC TOOL
 Route::get('/debug-storage', function () {
     $results = [];
