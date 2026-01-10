@@ -11,20 +11,32 @@ interface NavbarProps {
 }
 
 export default function Navbar({ categories = [] }: NavbarProps) {
-    // Lock body scroll when menu is open
+    const [open, setOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
+    const pathname = usePathname();
+
     useEffect(() => {
-        if (open) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'unset';
-        }
-        return () => {
-            document.body.style.overflow = 'unset';
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 20);
         };
-    }, [open]);
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    // Menu Structure: Fixed Segments + Dynamic API Segments
+    const menuItems = [
+        { name: 'Seminuevos', slug: 'seminuevos', href: '/catalogo' },
+        { name: 'Premium', slug: 'premium', href: '/catalogo?is_premium=1', isSpecial: true },
+        // Dynamic segments from API
+        ...categories.map(cat => ({
+            name: cat.slug === 'camion' ? 'Camiones' : (cat.slug === 'moto' ? 'Motos' : (cat.slug === 'camioneta' ? 'Camionetas' : cat.name)), // Manual pluralization for menu
+            slug: cat.slug,
+            href: `/catalogo?category=${cat.slug}`
+        }))
+    ];
 
     return (
-        <nav className={`fixed w-full z-[100] transition-all duration-300 ${scrolled ? 'bg-black/95 backdrop-blur-md border-b border-white/10' : 'bg-transparent border-transparent'} text-white`}>
+        <nav className={`fixed w-full z-[100] border-b bg-black/90 backdrop-blur-md border-white/10 text-white`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-20 items-center">
                     {/* Logo */}
@@ -67,9 +79,9 @@ export default function Navbar({ categories = [] }: NavbarProps) {
                     </div>
 
                     {/* Mobile Hamburger Button */}
-                    <div className="flex items-center md:hidden z-[201]">
+                    <div className="flex items-center md:hidden">
                         <button onClick={() => setOpen(!open)} className="text-white focus:outline-none p-2">
-                            {open ? <i className="fa-solid fa-xmark text-3xl"></i> : <i className={`fa-solid fa-bars text-2xl ${scrolled ? 'text-white' : 'text-white drop-shadow-md'}`}></i>}
+                            {open ? <i className="fa-solid fa-xmark text-2xl"></i> : <i className="fa-solid fa-bars text-2xl"></i>}
                         </button>
                     </div>
                 </div>
@@ -77,45 +89,60 @@ export default function Navbar({ categories = [] }: NavbarProps) {
 
             {/* Mobile Menu Full Screen Overlay */}
             {open && (
-                <div className="md:hidden fixed inset-0 z-[200] bg-black/95 backdrop-blur-2xl animate-slide-down flex flex-col justify-center items-center">
+                <div className="md:hidden fixed inset-0 z-[200] bg-black/95 backdrop-blur-2xl animate-slide-down flex flex-col h-[100dvh]">
+                    {/* Header inside overlay to match position */}
+                    <div className="flex justify-between items-center px-4 h-20 border-b border-white/10 shrink-0">
+                        <div className="flex-shrink-0 flex items-center">
+                            <Image
+                                src="/images/logo.png"
+                                alt="Automotriz Carmona"
+                                width={150}
+                                height={50}
+                                className="h-8 w-auto object-contain brightness-0 invert"
+                            />
+                        </div>
+                        <button onClick={() => setOpen(false)} className="text-white p-2 rounded-full hover:bg-white/10 transition">
+                            <i className="fa-solid fa-xmark text-2xl"></i>
+                        </button>
+                    </div>
 
-                    {/* Menu Items Container */}
-                    <div className="flex flex-col items-center space-y-8 p-6 w-full">
+                    {/* Menu Items */}
+                    <div className="flex-1 flex flex-col justify-center items-center space-y-6 p-6 overflow-y-auto">
                         <Link
                             href="/"
                             onClick={() => setOpen(false)}
-                            className="text-4xl font-black text-white hover:text-premium-gold tracking-tighter transition-all hover:scale-105 animate-fade-in"
-                            style={{ animationDelay: '0.1s' }}
+                            className="text-2xl font-black text-white hover:text-premium-gold tracking-tight transition-all hover:scale-105"
                         >
                             INICIO
                         </Link>
 
-                        {menuItems.map((item, index) => (
+                        {menuItems.map((item) => (
                             <Link
                                 key={item.slug}
                                 href={item.href}
                                 onClick={() => setOpen(false)}
-                                className={`text-4xl font-black tracking-tighter transition-all hover:scale-105 flex items-center gap-3 animate-fade-in ${item.isSpecial ? 'text-premium-gold' : 'text-white hover:text-premium-gold'}`}
-                                style={{ animationDelay: `${0.15 + (index * 0.05)}s` }}
+                                className={`text-2xl font-black tracking-tight transition-all hover:scale-105 flex items-center gap-3 ${item.isSpecial ? 'text-premium-gold' : 'text-white hover:text-premium-gold'}`}
                             >
-                                {item.name === 'Premium' && <i className="fa-solid fa-crown text-2xl"></i>}
+                                {item.name === 'Premium' && <i className="fa-solid fa-crown text-xl"></i>}
                                 {item.name.toUpperCase()}
                             </Link>
                         ))}
 
-                        <div className="w-20 h-1 bg-gray-800 rounded-full my-8 animate-fade-in" style={{ animationDelay: '0.4s' }}></div>
+                        <div className="w-16 h-1 bg-white/10 rounded-full my-4"></div>
 
                         <Link
                             href="/sucursales"
                             onClick={() => setOpen(false)}
-                            className="bg-white text-black px-10 py-4 rounded-full text-sm font-black uppercase tracking-widest hover:bg-premium-gold hover:text-white transition-all shadow-2xl shadow-white/5 animate-fade-in"
-                            style={{ animationDelay: '0.5s' }}
+                            className="bg-white text-black px-8 py-3 rounded-full text-xs font-black uppercase tracking-widest hover:bg-premium-gold hover:text-white transition-all shadow-xl shadow-white/5"
                         >
                             Ver Sucursales
                         </Link>
+                    </div>
 
-                        {/* Social Footer */}
-                        <div className="flex gap-8 text-2xl text-gray-500 mt-12 animate-fade-in" style={{ animationDelay: '0.6s' }}>
+                    {/* Footer Info in Menu */}
+                    <div className="p-6 text-center text-gray-500 text-[10px] border-t border-white/5 shrink-0">
+                        <p className="mb-2 uppercase tracking-wider">Automotriz Carmona & Cia</p>
+                        <div className="flex justify-center gap-6 text-lg text-gray-400">
                             <a href="#" className="hover:text-white transition-colors"><i className="fa-brands fa-instagram"></i></a>
                             <a href="#" className="hover:text-white transition-colors"><i className="fa-brands fa-facebook"></i></a>
                             <a href="#" className="hover:text-white transition-colors"><i className="fa-brands fa-tiktok"></i></a>
