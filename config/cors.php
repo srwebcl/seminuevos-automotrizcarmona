@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => ['*', 'https://seminuevos-automotrizcarmona.vercel.app', 'http://localhost:3000', 'http://localhost:3001'],
 
     'allowed_origins_patterns' => [],
 
