@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import { Inter, Outfit } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
@@ -25,8 +26,11 @@ export default async function RootLayout({
     getMenu().catch(() => ({ data: [] })),
     getSettings().catch(() => ({
       data: {
-        seasonal_mode: 'none',
+        seasonal_mode: 'none' as const,
         whatsapp_numbers: [],
+        main_categories: [],
+        locations: [],
+        social_links: {},
         contact: { address: 'Av. Balmaceda 3570, La Serena', email: 'contacto@carmona.cl' }
       }
     }))
@@ -49,7 +53,9 @@ export default async function RootLayout({
           {children}
         </main>
         <Footer settings={settings} />
-        <SmartWhatsAppButton numbers={settings.whatsapp_numbers} />
+        <Suspense fallback={null}>
+          <SmartWhatsAppButton numbers={settings.whatsapp_numbers} />
+        </Suspense>
         <AosInit />
       </body>
     </html>

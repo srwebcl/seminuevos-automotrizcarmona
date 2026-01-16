@@ -29,8 +29,18 @@ export default async function VehicleDetailPage({
     const relatedVehicles = await getRelatedVehicles(categoryIdentifier, vehicle.id).catch(() => []);
 
     // Fallback for settings if needed
-    const { data: settings } = await getSettings().catch(() => ({ data: { contact: { whatsapp: '56912345678' } } }));
-    const whatsappNumber = settings?.contact?.whatsapp || '56934160477';
+    const { data: settings } = await getSettings().catch(() => ({
+        data: {
+            seasonal_mode: 'none' as const,
+            contact: { address: '', email: '' },
+            whatsapp_numbers: [{ number: '56934160477', label: 'Ventas', for_premium_only: false }]
+        }
+    }));
+
+    // Logic to select WhatsApp number (prioritize based on vehicle type if needed, or just take first)
+    // For now, let's take the first available number or fallback
+    const defaultWhatsapp = settings?.whatsapp_numbers?.[0]?.number || '56934160477';
+    const whatsappNumber = defaultWhatsapp;
 
     // Prepare images array (Cover + Photos)
     const galleryImages = [vehicle.cover_photo, ...vehicle.photos].filter(Boolean) as string[];
