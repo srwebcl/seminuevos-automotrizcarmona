@@ -16,7 +16,7 @@ interface VehicleListCardProps {
 }
 
 export default function VehicleListCard({ vehicle }: VehicleListCardProps) {
-    const whatsappLink = `https://wa.me/56934160477?text=${encodeURIComponent(`Hola, me interesa el ${vehicle.brand.name} ${vehicle.model} (${vehicle.year})`)}`;
+
 
     return (
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300 group flex flex-row min-h-[145px] md:h-40 h-auto">
@@ -145,15 +145,7 @@ export default function VehicleListCard({ vehicle }: VehicleListCardProps) {
                     </div>
 
                     {/* WhatsApp Button (Contact) - Icon Only on Mobile */}
-                    <a
-                        href={whatsappLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-9 h-9 md:w-10 md:h-10 shrink-0 rounded-lg bg-[#25D366]/10 text-[#25D366] flex items-center justify-center hover:bg-[#25D366] hover:text-white transition"
-                        aria-label="Contactar por WhatsApp"
-                    >
-                        <i className="fa-brands fa-whatsapp text-lg"></i>
-                    </a>
+
                 </div>
             </div>
         </div>
