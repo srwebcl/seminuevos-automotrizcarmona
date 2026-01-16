@@ -108,7 +108,7 @@ export async function POST(request: Request) {
         <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #000000; color: #ffffff;">
             <!-- Header -->
             <div style="padding: 30px; text-align: center; border-bottom: 1px solid #333;">
-                <h1 style="color: #D4AF37; margin: 0; font-size: 24px; letter-spacing: 1px;">AUTOMOTRIZ CARMONA</h1>
+                <img src="https://seminuevos-automotrizcarmona.vercel.app/images/logo.png" alt="Automotriz Carmona" style="max-height: 50px; width: auto;" />
             </div>
 
             <!-- Body -->
@@ -125,7 +125,9 @@ export async function POST(request: Request) {
                     </p>
                 </div>
 
-                <p style="color: #cccccc;">Si tienes dudas urgentes, puedes escribirnos directamente respondiendo a este correo.</p>
+                <p style="color: #cccccc; font-size: 12px; margin-top: 30px; border-top: 1px solid #333; padding-top: 20px;">
+                    * Por favor no respondas a este correo, es un mensaje automático. Un ejecutivo te contactará pronto.
+                </p>
             </div>
 
             <!-- Footer -->
@@ -153,6 +155,7 @@ export async function POST(request: Request) {
             await resend.emails.send({
                 from: 'Automotriz Carmona <marketing@carmonaycia.cl>',
                 to: [data.email],
+                replyTo: 'no-reply@carmonaycia.cl',
                 subject: clientSubject,
                 html: clientHtml,
             });
