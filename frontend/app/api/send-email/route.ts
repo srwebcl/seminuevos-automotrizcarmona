@@ -43,6 +43,28 @@ export async function POST(request: Request) {
         // --- 2. PLANTILLAS HTML (INLINE PARA COMPATIBILIDAD) ---
 
         // Plantilla Interna (Tabla de Datos)
+        // Traducción de campos
+        const fieldTranslations: Record<string, string> = {
+            name: 'Nombre',
+            rut: 'RUT',
+            email: 'Correo Electrónico',
+            phone: 'Teléfono',
+            salary: 'Renta Líquida',
+            downPayment: 'Pie Inicial',
+            brand: 'Marca',
+            model: 'Modelo',
+            year: 'Año',
+            version: 'Versión',
+            mileage: 'Kilometraje',
+            color: 'Color',
+            price: 'Precio Esperado',
+            renta: 'Renta Aproximada',
+            pie: 'Pie Disponible'
+        };
+
+        const vehicleLink = vehicle ? `https://seminuevos.automotrizcarmona.cl/auto/${vehicle.slug}` : '#';
+
+        // Plantilla Interna (Tabla de Datos)
         internalHtml = `
         <div style="font-family: Arial, sans-serif; color: #333;">
             <h2 style="color: #000; border-bottom: 2px solid #D4AF37; padding-bottom: 10px;">${subject}</h2>
@@ -52,8 +74,12 @@ export async function POST(request: Request) {
                 <h3 style="margin-top: 0;">Vehículo de Interés</h3>
                 <p><strong>Auto:</strong> ${vehicle.brand.name} ${vehicle.model} (${vehicle.year})</p>
                 <p><strong>Precio:</strong> ${vehicle.price_formatted}</p>
-                <p><strong>SKU/ID:</strong> #${vehicle.id}</p>
-                ${vehicle.is_premium ? '<p style="color: #D4AF37; font-weight: bold;">⭐ VEHÍCULO PREMIUM</p>' : ''}
+                <p style="margin-top: 10px;">
+                    <a href="${vehicleLink}" style="background-color: #000; color: #fff; padding: 8px 12px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 14px;">
+                        Ver Vehículo en la Web
+                    </a>
+                </p>
+                ${vehicle.is_premium ? '<p style="color: #D4AF37; font-weight: bold; margin-top: 10px;">⭐ VEHÍCULO PREMIUM</p>' : ''}
             </div>
             ` : ''}
 
@@ -61,7 +87,9 @@ export async function POST(request: Request) {
             <table style="width: 100%; border-collapse: collapse;">
                 ${Object.entries(data).map(([key, value]) => `
                 <tr>
-                    <td style="padding: 8px; border-bottom: 1px solid #eee; font-weight: bold; width: 30%; text-transform: capitalize;">${key.replace(/_/g, ' ')}</td>
+                    <td style="padding: 8px; border-bottom: 1px solid #eee; font-weight: bold; width: 30%; text-transform: capitalize;">
+                        ${fieldTranslations[key] || key}
+                    </td>
                     <td style="padding: 8px; border-bottom: 1px solid #eee;">${value}</td>
                 </tr>
                 `).join('')}
