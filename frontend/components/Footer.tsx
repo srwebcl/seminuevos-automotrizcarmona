@@ -8,7 +8,7 @@ interface FooterProps {
 
 export default function Footer({ settings }: FooterProps) {
     const defaultAddress = 'Av. Balmaceda 3570, La Serena';
-    const email = settings?.contact?.email || 'contacto@carmona.cl';
+
 
     // Fallback locations if none from API
     const locations = settings?.locations && settings.locations.length > 0
@@ -93,10 +93,7 @@ export default function Footer({ settings }: FooterProps) {
                                         </div>
                                     </li>
                                 ))}
-                                <li className="flex items-center gap-3 mt-2">
-                                    <i className="fa-solid fa-envelope text-premium-gold"></i>
-                                    <span>{email}</span>
-                                </li>
+
                             </ul>
                         </div>
                     </div>

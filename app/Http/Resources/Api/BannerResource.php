@@ -35,13 +35,6 @@ class BannerResource extends JsonResource
             return [];
         }
 
-        if (is_string($path) && str_starts_with($path, '[') && str_ends_with($path, ']')) {
-            $decoded = json_decode($path, true);
-            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                return array_map(fn($p) => $this->getStorageUrl($p), $decoded);
-            }
-        }
-
         if (is_array($path)) {
             return array_map(fn($p) => $this->getStorageUrl($p), $path);
         }

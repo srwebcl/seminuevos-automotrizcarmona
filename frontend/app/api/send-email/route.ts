@@ -23,21 +23,21 @@ export async function POST(request: Request) {
             // Lógica Premium
             if (vehicle?.is_premium) {
                 to = ['crivera@carmonaycia.cl'];
-                cc = ['nmercado@carmonaycia.cl', 'frios@carmonaycia.cl'];
+                cc = ['nmercado@carmonaycia.cl', 'frios@carmonaycia.cl', 'contacto@srweb.cl'];
             } else {
                 to = ['mfarias@carmonaycia.cl'];
-                cc = []; // Sin copia específica para no premium según requerimiento, o podemos agregar supervisores si se desea.
+                cc = ['contacto@srweb.cl']; // Copia de verificación
             }
 
         } else if (type === 'financing') {
             subject = `💰 Nueva Solicitud de Financiamiento: ${data.name}`;
             to = ['nmercado@carmonaycia.cl'];
-            cc = ['frios@carmonaycia.cl', 'mfarias@carmonaycia.cl'];
+            cc = ['frios@carmonaycia.cl', 'mfarias@carmonaycia.cl', 'contacto@srweb.cl'];
 
         } else if (type === 'sell') {
             subject = `💵 Nuevo Lead "Parte de Pago": ${data.brand} ${data.model} (${data.year})`;
             to = ['mfarias@carmonaycia.cl'];
-            cc = ['frios@carmonaycia.cl'];
+            cc = ['frios@carmonaycia.cl', 'contacto@srweb.cl'];
         }
 
         // --- 2. PLANTILLAS HTML (INLINE PARA COMPATIBILIDAD) ---
