@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -13,6 +13,13 @@ interface HeroSectionProps {
     banners: Banner[];
 }
 
+interface Slide {
+    id: string; // unique key combining banner id and index
+    type: 'image' | 'video';
+    url: string;
+    banner: Banner;
+}
+
 export default function HeroSection({ banners }: HeroSectionProps) {
     const [searchTerm, setSearchTerm] = useState('');
     const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
@@ -21,31 +28,67 @@ export default function HeroSection({ banners }: HeroSectionProps) {
     const [showResults, setShowResults] = useState(false);
 
     // Slideshow Logic
-    const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
+    const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+    const [mounted, setMounted] = useState(false);
     const router = useRouter();
 
-    // Default fallback banner if none provided
-    const effectiveBanners = banners.length > 0 ? banners : [{
-        id: 0,
-        title: "Hero Background",
-        image_url: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1920&auto=format&fit=crop",
-        type: 'hero',
-        video_url: null,
-        subtitle: null,
-        link: null,
-        category_slug: null
-    }];
-
-    // Use specific useEffect for banners change to handle generic array dependency issue if possible, but simplest is length check above.
-    // Actually we need to reference the current banners array.
-    // Let's refine the interval logic to be safer with state updates.
     useEffect(() => {
-        if (effectiveBanners.length <= 1) return;
+        setMounted(true);
+    }, []);
+
+    // Generate flattened slides
+    const slides: Slide[] = useMemo(() => {
+        if (!banners || banners.length === 0) {
+            return [{
+                id: 'fallback-0',
+                type: 'image',
+                url: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1920&auto=format&fit=crop",
+                banner: {
+                    id: 0,
+                    title: "Hero Background",
+                    image_url: [],
+                    type: 'hero',
+                    video_url: null,
+                    subtitle: null,
+                    link: null,
+                    category_slug: null,
+                    mobile_image_url: null,
+                    sort_order: 0
+                }
+            }];
+        }
+
+        return banners.flatMap((banner) => {
+            if (banner.video_url) {
+                return [{
+                    id: `video-${banner.id}`,
+                    type: 'video',
+                    url: banner.video_url,
+                    banner: banner
+                } as Slide];
+            }
+
+            // Map multiple images to slides
+            if (banner.image_url && banner.image_url.length > 0) {
+                return banner.image_url.map((url, idx) => ({
+                    id: `img-${banner.id}-${idx}`,
+                    type: 'image',
+                    url: url,
+                    banner: banner
+                } as Slide));
+            }
+
+            return [];
+        });
+    }, [banners]);
+
+    useEffect(() => {
+        if (slides.length <= 1) return;
         const timer = setInterval(() => {
-            setCurrentBannerIndex(prev => (prev + 1) % effectiveBanners.length);
-        }, 8000);
+            setCurrentSlideIndex(prev => (prev + 1) % slides.length);
+        }, 5000); // 5 seconds per slide (Faster change)
         return () => clearInterval(timer);
-    }, [effectiveBanners.length]); // Only reset timer if number of banners changes
+    }, [slides.length]);
 
 
     useEffect(() => {
@@ -80,14 +123,15 @@ export default function HeroSection({ banners }: HeroSectionProps) {
         <div className="relative h-[650px] flex items-center justify-center bg-black">
             {/* Background Slideshow Container */}
             <div className="absolute inset-0 z-0 overflow-hidden">
-                {effectiveBanners.map((banner, index) => {
-                    const isActive = index === currentBannerIndex;
-                    const isVideo = !!banner.video_url;
+                {slides.map((slide, index) => {
+                    const isActive = index === currentSlideIndex;
+                    const isVideo = slide.type === 'video';
 
                     return (
                         <div
-                            key={banner.id || index}
-                            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${isActive ? 'opacity-100' : 'opacity-0'}`}
+                            key={slide.id}
+                            className={`absolute inset-0 transition-opacity duration-[2000ms] ease-in-out ${isActive ? 'opacity-100 z-10' : 'opacity-0 z-0'
+                                }`}
                         >
                             {isVideo ? (
                                 <video
@@ -96,13 +140,16 @@ export default function HeroSection({ banners }: HeroSectionProps) {
                                     loop
                                     playsInline
                                     className="object-cover w-full h-full"
-                                    src={banner.video_url!}
+                                    src={slide.url}
                                 />
                             ) : (
-                                <div className={`relative w-full h-full ${isActive ? 'animate-ken-burns' : ''}`}>
+                                <div
+                                    className={`relative w-full h-full transform-gpu transition-transform duration-[7000ms] ease-out ${isActive && mounted ? 'scale-110' : 'scale-100'
+                                        }`}
+                                >
                                     <Image
-                                        src={banner.image_url!}
-                                        alt={banner.title || "Hero Background"}
+                                        src={slide.url}
+                                        alt={slide.banner.title || "Hero Background"}
                                         fill
                                         className="object-cover"
                                         priority={index === 0}
@@ -110,7 +157,6 @@ export default function HeroSection({ banners }: HeroSectionProps) {
                                     />
                                 </div>
                             )}
-                            {/* Gradient Overlay specific to slide if needed, but we use a global one below */}
                         </div>
                     );
                 })}

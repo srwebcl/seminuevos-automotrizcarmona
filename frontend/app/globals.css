@@ -33,20 +33,19 @@ body {
   }
 }
 
-/* === MODOS FESTIVOS (Ported) === */
+/* === MODOS FESTIVOS & CYBER === */
 
-/* Protección Identidad Global */
-body[class*="theme-"] .text-premium-gold {
-  color: #D4AF37 !important;
-  background: none !important;
-  -webkit-text-fill-color: initial !important;
+/* --- 1. NAVIDAD (Elegante Red & Gold) --- */
+body.theme-christmas {
+  --primary: #c0392b;
+  --primary-foreground: #ffffff;
+  --accent: #f1c40f;
 }
 
-nav .flex-shrink-0 {
-  position: relative;
+body.theme-christmas nav {
+  border-bottom: 2px solid var(--primary);
 }
 
-/* --- 1. NAVIDAD --- */
 body.theme-christmas nav .flex-shrink-0::after {
   content: '🎅';
   position: absolute;
@@ -55,27 +54,25 @@ body.theme-christmas nav .flex-shrink-0::after {
   font-size: 24px;
   transform: rotate(15deg);
   filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.5));
-  pointer-events: none;
+  animation: bounce-subtle 3s infinite;
 }
 
-body.theme-christmas h1::after,
-body.theme-christmas h2::after {
-  content: '🎄';
-  font-size: 0.6em;
-  margin-left: 10px;
-  vertical-align: middle;
+body.theme-christmas .text-premium-gold {
+  color: #f1c40f !important;
 }
 
-body.theme-christmas .seasonal-word {
-  background: linear-gradient(45deg, #D42426, #165B33);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  display: inline-block;
-  font-weight: 900;
+/* --- 2. AÑO NUEVO (Black, Silver & Gold) --- */
+body.theme-new_year {
+  --primary: #000000;
+  --primary-foreground: #ffffff;
+  --accent: #FFD700;
 }
 
-/* --- 2. AÑO NUEVO --- */
+body.theme-new_year nav {
+  background: linear-gradient(to right, #000000, #1a1a1a);
+  border-bottom: 1px solid #FFD700;
+}
+
 body.theme-new_year nav .flex-shrink-0::after {
   content: '🥂';
   position: absolute;
@@ -84,15 +81,6 @@ body.theme-new_year nav .flex-shrink-0::after {
   font-size: 26px;
   transform: rotate(10deg);
   filter: drop-shadow(0 0 5px #FFD700);
-  pointer-events: none;
-}
-
-body.theme-new_year h1::after,
-body.theme-new_year h2::after {
-  content: '🎉';
-  font-size: 0.6em;
-  margin-left: 10px;
-  vertical-align: middle;
 }
 
 body.theme-new_year .seasonal-word {
@@ -105,58 +93,122 @@ body.theme-new_year .seasonal-word {
   display: inline-block;
 }
 
-/* --- 3. FIESTAS PATRIAS --- */
+/* --- 3. FIESTAS PATRIAS (Tricolor) --- */
+body.theme-18sept nav {
+  border-bottom: 3px solid transparent;
+  border-image: linear-gradient(to right, #0039A6 33%, #FFFFFF 33%, #FFFFFF 66%, #D52B1E 66%) 1;
+}
+
 body.theme-18sept nav .flex-shrink-0::after {
-  content: '🤠';
+  content: '🇨🇱';
   position: absolute;
   top: -15px;
   right: -12px;
   font-size: 26px;
   transform: rotate(10deg);
   filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.5));
-  pointer-events: none;
 }
 
-body.theme-18sept h1::after,
-body.theme-18sept h2::after {
-  content: '🇨🇱';
-  font-size: 0.6em;
-  margin-left: 10px;
-  vertical-align: middle;
+/* --- 4. CYBER DAY (Cyberpunk Neon) --- */
+body.theme-cyber {
+  --primary: #7c3aed;
+  /* Violet */
+  --primary-foreground: #ffffff;
+  --accent: #d946ef;
+  /* Fuchsia */
+  background-color: #0f172a;
+  /* Dark background override */
+  color: #e2e8f0;
 }
 
-body.theme-18sept .seasonal-word {
-  background: linear-gradient(90deg, #0039A6, #D52B1E);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  display: inline-block;
+body.theme-cyber nav {
+  background-color: #1e1b4b !important;
+  /* Indigo 950 */
+  border-bottom: 2px solid #d946ef;
+  box-shadow: 0 0 20px rgba(217, 70, 239, 0.3);
 }
 
+body.theme-cyber nav .text-gray-900 {
+  color: #ffffff !important;
+}
+
+body.theme-cyber nav .text-gray-500 {
+  color: #94a3b8 !important;
+}
+
+body.theme-cyber .bg-white {
+  background-color: #1e293b !important;
+  /* Slate 800 */
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+
+body.theme-cyber .text-gray-900 {
+  color: #f1f5f9 !important;
+}
+
+body.theme-cyber .text-gray-700,
+body.theme-cyber .text-gray-600 {
+  color: #cbd5e1 !important;
+}
+
+/* Cyber Badge for Navigation */
+body.theme-cyber nav .flex-shrink-0::after {
+  content: '🔥 CYBER';
+  position: absolute;
+  top: -20px;
+  right: -30px;
+  background: #d946ef;
+  color: white;
+  font-size: 10px;
+  font-weight: 900;
+  padding: 2px 6px;
+  border-radius: 4px;
+  box-shadow: 0 0 10px #d946ef;
+  transform: rotate(10deg);
+  animation: flash 2s infinite;
+}
+
+/* Cyber Buttons Override */
+body.theme-cyber button.bg-black {
+  background: linear-gradient(90deg, #7c3aed, #d946ef) !important;
+  border: none !important;
+  box-shadow: 0 0 15px rgba(124, 58, 237, 0.5);
+  transition: all 0.3s ease;
+}
+
+body.theme-cyber button.bg-black:hover {
+  box-shadow: 0 0 25px rgba(217, 70, 239, 0.7);
+  transform: scale(1.05);
+}
+
+/* Animations */
 @keyframes shine {
   to {
     background-position: 200% center;
   }
 }
 
-.festive-particle {
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  animation: particles-explode 1.5s ease-out forwards;
-  pointer-events: none;
-  z-index: 10;
+@keyframes bounce-subtle {
+
+  0%,
+  100% {
+    transform: rotate(15deg) translateY(0);
+  }
+
+  50% {
+    transform: rotate(15deg) translateY(-3px);
+  }
 }
 
-@keyframes particles-explode {
-  0% {
-    transform: scale(1);
+@keyframes flash {
+
+  0%,
+  100% {
     opacity: 1;
   }
 
-  100% {
-    transform: translate(var(--tx), var(--ty));
-    opacity: 0;
+  50% {
+    opacity: 0.5;
   }
 }

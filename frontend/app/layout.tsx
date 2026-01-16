@@ -26,6 +26,7 @@ export default async function RootLayout({
     getSettings().catch(() => ({
       data: {
         seasonal_mode: 'none',
+        whatsapp_numbers: [],
         contact: { address: 'Av. Balmaceda 3570, La Serena', email: 'contacto@carmona.cl' }
       }
     }))
@@ -48,7 +49,7 @@ export default async function RootLayout({
           {children}
         </main>
         <Footer settings={settings} />
-        <SmartWhatsAppButton />
+        <SmartWhatsAppButton numbers={settings.whatsapp_numbers} />
         <AosInit />
       </body>
     </html>

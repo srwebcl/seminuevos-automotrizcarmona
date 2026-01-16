@@ -43,6 +43,14 @@ class LocationResource extends Resource
                 TextInput::make('phone')
                     ->label('Teléfono Fijo')
                     ->tel(),
+                TextInput::make('schedule')
+                    ->label('Horario de Atención')
+                    ->placeholder('Ej: Lunes a Viernes 09:00 - 18:00')
+                    ->required(),
+                TextInput::make('google_maps_url')
+                    ->label('URL Google Maps')
+                    ->url()
+                    ->placeholder('https://maps.app.goo.gl/...'),
                 Toggle::make('is_active')
                     ->label('Visible')
                     ->default(true),
@@ -58,6 +66,8 @@ class LocationResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->reorderable('sort_order')
+            ->defaultSort('sort_order')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nombre')

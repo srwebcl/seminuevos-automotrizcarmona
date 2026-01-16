@@ -1,9 +1,9 @@
 export interface Banner {
     id: number;
-    type: 'hero' | 'full' | 'promo';
+    type: 'hero' | 'full' | 'promo' | 'catalog';
     title: string | null;
     subtitle: string | null;
-    image_url: string;
+    image_url: string[];
     mobile_image_url: string | null;
     video_url: string | null;
     link: string | null;

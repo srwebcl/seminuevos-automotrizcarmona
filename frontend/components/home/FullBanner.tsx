@@ -21,7 +21,7 @@ export default function FullBanner({ banner }: FullBannerProps) {
                 {/* Desktop Image */}
                 <div className="hidden md:block w-full">
                     <img
-                        src={banner.image_url}
+                        src={banner.image_url?.[0] || ''}
                         alt={banner.title || 'Promoción'}
                         className="w-full h-auto object-cover transform transition duration-700 group-hover:scale-105"
                     />
@@ -30,7 +30,7 @@ export default function FullBanner({ banner }: FullBannerProps) {
                 {/* Mobile Image */}
                 <div className="block md:hidden w-full">
                     <img
-                        src={banner.mobile_image_url || banner.image_url}
+                        src={banner.mobile_image_url || banner.image_url?.[0] || ''}
                         alt={banner.title || 'Promoción'}
                         className="w-full h-auto object-cover transform transition duration-700 group-hover:scale-105"
                     />

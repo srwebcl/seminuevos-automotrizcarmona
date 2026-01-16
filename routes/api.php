@@ -18,21 +18,8 @@ Route::get('settings', [\App\Http\Controllers\Api\SettingsController::class, 'in
 
 // Banners (Using dedicated controller or closure if simple)
 Route::get('banners', function () {
-    $banners = \App\Models\Banner::where('is_active', true)->orderBy('sort_order')->get();
-    $data = $banners->map(function ($b) {
-        return [
-            'id' => $b->id,
-            'type' => $b->type,
-            'title' => $b->title,
-            'subtitle' => $b->subtitle,
-            'image_url' => $b->image_path ? url('storage/' . $b->image_path) : null,
-            'mobile_image_url' => $b->mobile_image_path ? url('storage/' . $b->mobile_image_path) : null,
-            'video_url' => $b->video_path ? url('storage/' . $b->video_path) : null,
-            'link' => $b->link,
-            'category_slug' => $b->category ? $b->category->slug : null,
-        ];
-    });
-    return response()->json(['data' => $data]);
+    $banners = \App\Models\Banner::where('is_active', '=', true)->orderBy('sort_order')->get();
+    return \App\Http\Resources\Api\BannerResource::collection($banners);
 });
 
 Route::get('search/global', [\App\Http\Controllers\Api\SearchController::class, 'index']);

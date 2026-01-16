@@ -10,6 +10,11 @@ class Banner extends Model
     use HasFactory;
     protected $guarded = [];
 
+    protected $casts = [
+        'image_path' => 'array',
+        'is_active' => 'boolean',
+    ];
+
     public function category()
     {
         return $this->belongsTo(Category::class);

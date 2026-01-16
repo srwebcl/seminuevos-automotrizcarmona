@@ -39,8 +39,7 @@ const config: Config = {
                 },
                 'ken-burns': {
                     '0%': { transform: 'scale(1)' },
-                    '50%': { transform: 'scale(1.1)' },
-                    '100%': { transform: 'scale(1)' },
+                    '100%': { transform: 'scale(1.25)' },
                 },
                 'fade-in': {
                     '0%': { opacity: '0' },
@@ -54,7 +53,7 @@ const config: Config = {
             animation: {
                 'pulse-gold': 'pulse-gold 2s infinite',
                 'pulse-green': 'pulse-green 2s infinite',
-                'ken-burns': 'ken-burns 20s infinite alternate ease-in-out',
+                'ken-burns': 'ken-burns 10s ease-out forwards', // 10s for faster, more visible zoom
                 'fade-in': 'fade-in 0.3s ease-out forwards',
                 'slide-down': 'slide-down 0.3s ease-out forwards',
             }

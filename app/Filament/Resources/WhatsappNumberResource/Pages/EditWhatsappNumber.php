@@ -10,6 +10,8 @@ class EditWhatsappNumber extends EditRecord
 {
     protected static string $resource = WhatsappNumberResource::class;
 
+    protected static ?string $title = 'Editar Número WhatsApp';
+
     protected function getHeaderActions(): array
     {
         return [

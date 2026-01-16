@@ -62,7 +62,7 @@ export default function CategoryPromos({ promos }: CategoryPromosProps) {
                             className="snap-center shrink-0 w-[80%] md:w-[32%] h-60 rounded-2xl overflow-hidden relative shadow-lg group"
                         >
                             <Image
-                                src={promo.image_url}
+                                src={promo.image_url?.[0] || '/images/placeholder.jpg'} // Fallback to avoid empty src error
                                 alt={promo.title || ''}
                                 fill
                                 className="object-cover transition-transform duration-700 group-hover:scale-110"

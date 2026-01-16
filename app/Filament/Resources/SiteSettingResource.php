@@ -37,10 +37,31 @@ class SiteSettingResource extends Resource
                                 'christmas' => '🎄 Navidad (Diciembre)',
                                 'new_year' => '✨ Año Nuevo (Enero)',
                                 '18sept' => '🇨🇱 Fiestas Patrias (Septiembre)',
+                                'cyber' => '🔥 Cyber Day (Ofertas)',
                             ])
                             ->required()
                             ->native(false),
-                    ])
+                    ]),
+                Section::make('Redes Sociales')
+                    ->description('Enlaces a perfiles sociales (Footer).')
+                    ->schema([
+                        Forms\Components\TextInput::make('instagram_url')
+                            ->label('Instagram URL')
+                            ->url()
+                            ->prefixIcon('heroicon-o-link'),
+                        Forms\Components\TextInput::make('facebook_url')
+                            ->label('Facebook URL')
+                            ->url()
+                            ->prefixIcon('heroicon-o-link'),
+                        Forms\Components\TextInput::make('linkedin_url')
+                            ->label('LinkedIn URL')
+                            ->url()
+                            ->prefixIcon('heroicon-o-link'),
+                        Forms\Components\TextInput::make('youtube_url')
+                            ->label('YouTube URL')
+                            ->url()
+                            ->prefixIcon('heroicon-o-link'),
+                    ])->columns(2)
             ]);
     }
 
@@ -56,6 +77,7 @@ class SiteSettingResource extends Resource
                         'success' => 'christmas',
                         'warning' => 'new_year',
                         'danger' => '18sept',
+                        'info' => 'cyber', // Using info (blue/cyan) or we can use custom hex if Filament supports it, but 'info' or 'primary' is safer for standard badges. Let's stick to standard colors for now or 'purple' if custom colors are registered. Assuming standard colors: info is distinct enough.
                     ]),
             ])
             ->actions([

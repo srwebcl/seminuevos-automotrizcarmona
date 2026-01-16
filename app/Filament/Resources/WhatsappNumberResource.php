@@ -39,7 +39,11 @@ class WhatsappNumberResource extends Resource
                     ->numeric()
                     ->required(),
                 Toggle::make('is_active')
+                    ->label('Activo')
                     ->default(true),
+                Toggle::make('for_premium_only')
+                    ->label('Solo para Autos Premium')
+                    ->default(false),
             ]);
     }
 
@@ -55,6 +59,9 @@ class WhatsappNumberResource extends Resource
                     ->searchable(),
                 Tables\Columns\IconColumn::make('is_active')
                     ->label('Activo')
+                    ->boolean(),
+                Tables\Columns\IconColumn::make('for_premium_only')
+                    ->label('Solo Premium')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Creado el')

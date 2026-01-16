@@ -18,10 +18,26 @@ export default function FinancingPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        setIsSubmitting(false);
-        setSubmitted(true);
+
+        try {
+            const response = await fetch('/api/send-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    type: 'financing',
+                    data: formData
+                })
+            });
+
+            if (!response.ok) throw new Error('Error al enviar');
+
+            setSubmitted(true);
+        } catch (error) {
+            console.error(error);
+            alert('Hubo un error al enviar tu solicitud. Por favor intenta nuevamente.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (

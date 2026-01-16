@@ -258,141 +258,117 @@ class VehicleResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                ImageColumn::make('thumbnail')
-                    ->label('Portada')
-                    ->circular(),
-
-                TextColumn::make('brand.name')
-                    ->label('Marca')
-                    ->sortable()
-                    ->searchable(),
-
-                Tables\Columns\TextInputColumn::make('model')
-                    ->label('Modelo')
-                    ->searchable()
-                    ->sortable()
-                    ->rules(['required', 'string', 'max:255']),
-
-                Tables\Columns\TextInputColumn::make('year')
-                    ->label('Año')
-                    ->type('number')
-                    ->sortable()
-                    ->rules(['numeric', 'min:1900', 'max:2026']),
-
-                Tables\Columns\TextInputColumn::make('price')
-                    ->label('Precio (CLP)')
-                    ->type('number')
-                    ->sortable()
-                    ->rules(['numeric', 'min:0']),
-
-                Tables\Columns\SelectColumn::make('category_id')
-                    ->label('Categoría')
-                    ->options(\App\Models\Category::pluck('name', 'id'))
-                    ->sortable()
-                    ->searchable(),
-
-                Tables\Columns\ToggleColumn::make('is_published')
-                    ->label('Disponible')
-                    ->sortable(),
-            ])
-            ->filters([
-                Tables\Filters\SelectFilter::make('category_id')
-                    ->label('Categoría')
-                    ->relationship('category', 'name')
-                    ->searchable()
-                    ->preload(),
-
-                Tables\Filters\SelectFilter::make('brand_id')
-                    ->label('Marca')
-                    ->relationship('brand', 'name')
-                    ->searchable()
-                    ->preload(),
-
-                Tables\Filters\Filter::make('is_premium')
-                    ->label('Solo Premium')
-                    ->query(fn($query) => $query->where('is_premium', true)),
-
-                Tables\Filters\Filter::make('is_offer')
-                    ->label('En Oferta')
-                    ->query(fn($query) => $query->where('is_offer', true)),
-            ])
-            ->actions([
-                Tables\Actions\Action::make('manage_tags')
-                    ->label('')
-                    ->tooltip('Gestionar Etiquetas')
-                    ->icon('heroicon-o-tag')
-                    ->color('warning')
-                    ->fillForm(fn(Vehicle $record): array => [
-                        'attributes' => array_merge(
-                            // Add system flags if true
-                            $record->is_premium ? ['is_premium'] : [],
-                            $record->is_featured ? ['is_featured'] : [],
-                            $record->is_offer ? ['is_offer'] : [],
-                            $record->is_clearance ? ['is_clearance'] : [],
-                            // Add tag IDs
-                            $record->tags->pluck('id')->toArray()
-                        ),
-                    ])
-                    ->form([
-                        Forms\Components\CheckboxList::make('attributes')
-                            ->label('Selección de Atributos y Etiquetas')
-                            ->options(function () {
-                                // System options
-                                $options = [
-                                    'is_premium' => '💎 Premium',
-                                    'is_featured' => '⭐ Destacado',
-                                    'is_offer' => '🔥 Oferta',
-                                    'is_clearance' => '⚠️ Liquidación',
-                                ];
-
-                                // Append dynamic tags
-                                $tags = \App\Models\Tag::pluck('name', 'id')->toArray();
-
-                                return $options + $tags;
-                            })
-                            ->columns(3)
-                            ->gridDirection('row')
-                            ->searchable()
-                            ->bulkToggleable(),
-                    ])
-                    ->action(function (Vehicle $record, array $data): void {
-                        $selected = $data['attributes'] ?? [];
-
-                        // Separate system flags (strings) from tag IDs (integers)
-                        $systemFlags = ['is_premium', 'is_featured', 'is_offer', 'is_clearance'];
-                        $updateData = [];
-                        $tagIds = [];
-
-                        foreach ($systemFlags as $flag) {
-                            $updateData[$flag] = in_array($flag, $selected);
-                        }
-
-                        foreach ($selected as $item) {
-                            if (is_numeric($item)) {
-                                $tagIds[] = $item;
-                            }
-                        }
-
-                        $record->update($updateData);
-                        $record->tags()->sync($tagIds);
-                    }),
-                Tables\Actions\Action::make('view_frontend')
-                    ->label('')
-                    ->tooltip('Ver en Sitio')
-                    ->icon('heroicon-o-eye')
-                    ->url(fn(Vehicle $record) => env('FRONTEND_URL', 'https://automotrizcarmona.cl') . '/auto/' . $record->slug)
-                    ->openUrlInNewTab(),
-                Tables\Actions\EditAction::make()->label('')->tooltip('Editar'),
-                Tables\Actions\DeleteAction::make()->label('')->tooltip('Borrar'),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ])
+            ->columns(self::getColumns())
+            ->filters(self::getFilters())
+            ->actions(self::getActions())
+            ->bulkActions(self::getBulkActions())
+            ->bulkActions(self::getBulkActions())
             ->defaultSort('created_at', 'desc');
     }
+
+    private static function getColumns(): array
+    {
+        return [
+            ImageColumn::make('thumbnail')
+                ->label('Portada')
+                ->circular(),
+
+            TextColumn::make('brand.name')
+                ->label('Marca')
+                ->sortable()
+                ->searchable(),
+
+            Tables\Columns\TextInputColumn::make('model')
+                ->label('Modelo')
+                ->searchable()
+                ->sortable()
+                ->rules(['required', 'string', 'max:255']),
+
+            Tables\Columns\TextInputColumn::make('year')
+                ->label('Año')
+                ->type('number')
+                ->sortable()
+                ->rules(['numeric', 'min:1900', 'max:2026']),
+
+            Tables\Columns\TextInputColumn::make('price')
+                ->label('Precio (CLP)')
+                ->type('number')
+                ->sortable()
+                ->rules(['numeric', 'min:0']),
+
+            Tables\Columns\SelectColumn::make('category_id')
+                ->label('Categoría')
+                ->options(\App\Models\Category::pluck('name', 'id'))
+                ->sortable()
+                ->searchable(),
+
+            Tables\Columns\ToggleColumn::make('is_published')
+                ->label('Disponible')
+                ->sortable(),
+
+            Tables\Columns\ToggleColumn::make('is_premium')
+                ->label('Premium')
+                ->sortable(),
+
+            Tables\Columns\ToggleColumn::make('is_featured')
+                ->label('Destacado')
+                ->sortable(),
+
+            Tables\Columns\ToggleColumn::make('is_offer')
+                ->label('Oferta')
+                ->sortable(),
+        ];
+    }
+
+    private static function getFilters(): array
+    {
+        return [
+            Tables\Filters\SelectFilter::make('category_id')
+                ->label('Categoría')
+                ->relationship('category', 'name')
+                ->searchable()
+                ->preload(),
+
+            Tables\Filters\SelectFilter::make('brand_id')
+                ->label('Marca')
+                ->relationship('brand', 'name')
+                ->searchable()
+                ->preload(),
+
+            Tables\Filters\Filter::make('is_premium')
+                ->label('Solo Premium')
+                ->query(fn($query) => $query->where('is_premium', true)),
+
+            Tables\Filters\Filter::make('is_offer')
+                ->label('En Oferta')
+                ->query(fn($query) => $query->where('is_offer', true)),
+        ];
+    }
+
+    private static function getActions(): array
+    {
+        return [
+            Tables\Actions\Action::make('view_frontend')
+                ->label('')
+                ->tooltip('Ver en Sitio')
+                ->icon('heroicon-o-eye')
+                ->url(fn(Vehicle $record) => env('FRONTEND_URL', 'https://automotrizcarmona.cl') . '/auto/' . $record->slug)
+                ->openUrlInNewTab(),
+            Tables\Actions\EditAction::make()->label('')->tooltip('Editar'),
+            Tables\Actions\DeleteAction::make()->label('')->tooltip('Borrar'),
+        ];
+    }
+
+    private static function getBulkActions(): array
+    {
+        return [
+            Tables\Actions\BulkActionGroup::make([
+                Tables\Actions\DeleteBulkAction::make(),
+            ]),
+        ];
+    }
+
+
 
     public static function getRelations(): array
     {

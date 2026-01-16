@@ -32,6 +32,8 @@ export default async function CatalogPage({
 
     const { data: vehicles, meta, links } = vehiclesResponse;
     const banners = bannersResponse.data;
+    console.log('Banners fetched:', banners.length);
+    console.log('Catalog banners:', banners.filter(b => b.type === 'catalog'));
     const brands = brandsResponse.data;
     const categories = categoriesResponse.data;
 
@@ -47,7 +49,7 @@ export default async function CatalogPage({
 
     if (categoryBanner) {
         heroTitle = categoryBanner.title || category?.toUpperCase() || 'CATÁLOGO';
-        heroImage = categoryBanner.image_url;
+        heroImage = categoryBanner.image_url[0] || '/images/hero-bg-2.jpg';
         heroSubtitle = categoryBanner.subtitle || heroSubtitle;
     } else if (category) {
         heroTitle = category === 'camionemen' ? 'CAMIONETAS' : // Prevent typo
@@ -62,14 +64,25 @@ export default async function CatalogPage({
         heroTitle = 'COLECCIÓN PREMIUM';
         heroSubtitle = 'Vehículos de alta gama verificados.';
         const premiumBanner = banners.find(b => b.title?.toLowerCase().includes('premium'));
-        if (premiumBanner) heroImage = premiumBanner.image_url;
+        if (premiumBanner) heroImage = premiumBanner.image_url[0] || '/images/premium-hero.jpg';
         else heroImage = '/images/premium-hero.jpg';
     }
 
-    // 3. Fallback if still default image (and we have banners, use first hero as generic background)
+    // 3. Main Catalog Banner (If no specific filters active or just fallback)
     if (heroImage.includes('default-hero') && banners.length > 0) {
-        const firstHero = banners.find(b => b.type === 'hero');
-        if (firstHero) heroImage = firstHero.image_url;
+        // Prioritize "catalog" type banner that is NOT specific to a category
+        const catalogBanner = banners.find(b => b.type === 'catalog' && !b.category_slug);
+
+        if (catalogBanner) {
+            heroImage = catalogBanner.image_url[0] || '/images/hero-bg-2.jpg';
+            // Optionally update title/subtitle if provided in banner
+            if (catalogBanner.title) heroTitle = catalogBanner.title;
+            if (catalogBanner.subtitle) heroSubtitle = catalogBanner.subtitle;
+        } else {
+            // Fallback to first Hero banner
+            const firstHero = banners.find(b => b.type === 'hero');
+            if (firstHero) heroImage = firstHero.image_url[0] || '/images/hero-bg-2.jpg';
+        }
     }
 
     return (

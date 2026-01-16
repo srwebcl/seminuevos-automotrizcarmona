@@ -9,4 +9,6 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateWhatsappNumber extends CreateRecord
 {
     protected static string $resource = WhatsappNumberResource::class;
+
+    protected static ?string $title = 'Crear Número WhatsApp';
 }

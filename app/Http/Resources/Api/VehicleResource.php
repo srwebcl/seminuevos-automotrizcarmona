@@ -9,6 +9,16 @@ use Illuminate\Support\Str;
 class VehicleResource extends JsonResource
 {
     /**
+     * Create a new resource instance.
+     *
+     * @param  mixed  $resource
+     * @return void
+     */
+    public function __construct($resource)
+    {
+        parent::__construct($resource);
+    }
+    /**
      * Transform the resource into an array.
      *
      * @return array<string, mixed>
@@ -19,8 +29,7 @@ class VehicleResource extends JsonResource
         $photos = [];
         if (!empty($this->photos) && is_array($this->photos)) {
             foreach ($this->photos as $photo) {
-                // Ensure we handle both local storage and potential S3/external correctly if needed later
-                // For now, per instructions: asset('storage/' . $path)
+                // Use asset() to automatically generate the correct URL (Local or Production)
                 $photos[] = asset('storage/' . $photo);
             }
         }

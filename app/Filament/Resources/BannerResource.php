@@ -50,7 +50,7 @@ class BannerResource extends Resource
                     // Imagen Principal (Para todos)
                     FileUpload::make('image_path')
                         ->label(fn(Get $get) => match ($get('type')) {
-                            'hero' => 'Imagen de Fondo (PC)',
+                            'hero' => 'Imágenes de Fondo (PC) - Soporta Galería',
                             'full' => 'Banner Versión PC (1735x170)',
                             default => 'Imagen de Tarjeta',
                         })
@@ -58,6 +58,9 @@ class BannerResource extends Resource
                         ->directory('banners')
                         ->imagePreviewHeight('200')
                         ->columnSpan(fn(Get $get) => $get('type') === 'full' ? 1 : 2)
+                        ->multiple()
+                        ->reorderable()
+                        ->appendFiles()
                         ->required(),
 
                     // Imagen Móvil (Solo para Full Width)

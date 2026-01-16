@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Vehicle } from '@/types/vehicle';
 
 interface FinancingModalProps {
@@ -10,7 +11,12 @@ interface FinancingModalProps {
 }
 
 export default function FinancingModal({ isOpen, onClose, vehicle }: FinancingModalProps) {
-    if (!isOpen) return null;
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+        return () => setMounted(false);
+    }, []);
 
     const [formData, setFormData] = useState({
         name: '',
@@ -28,37 +34,48 @@ export default function FinancingModal({ isOpen, onClose, vehicle }: FinancingMo
         e.preventDefault();
         setIsSubmitting(true);
 
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        try {
+            const response = await fetch('/api/send-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    type: 'evaluation',
+                    data: formData,
+                    vehicle: vehicle
+                })
+            });
 
-        console.log('Datos enviados:', { ...formData, vehicle_id: vehicle.id, vehicle_name: `${vehicle.brand.name} ${vehicle.model}` });
+            if (!response.ok) throw new Error('Error al enviar');
 
-        setIsSubmitting(false);
-        setSubmitted(true);
+            setSubmitted(true);
+        } catch (error) {
+            console.error(error);
+            alert('Hubo un error al enviar tu solicitud. Por favor intenta nuevamente.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
-    if (submitted) {
-        return (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-                <div className="bg-white rounded-3xl p-8 max-w-md w-full text-center relative shadow-2xl scale-in-95 animate-in zoom-in-95 duration-200">
-                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i className="fa-solid fa-check text-2xl text-green-600"></i>
-                    </div>
-                    <h3 className="text-2xl font-black text-gray-900 mb-2">¡Solicitud Recibida!</h3>
-                    <p className="text-gray-500 mb-6">Hemos recibido tus datos correctamente. Un ejecutivo comercial te contactará a la brevedad para gestionar el financiamiento de tu <strong>{vehicle.brand.name} {vehicle.model}</strong>.</p>
-                    <button
-                        onClick={onClose}
-                        className="w-full bg-black text-white font-bold py-3 rounded-xl hover:bg-gray-800 transition shadow-lg shadow-black/20"
-                    >
-                        Entendido
-                    </button>
-                </div>
-            </div>
-        );
-    }
+    if (!isOpen || !mounted) return null;
 
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+    const content = submitted ? (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="bg-white rounded-3xl p-8 max-w-md w-full text-center relative shadow-2xl scale-in-95 animate-in zoom-in-95 duration-200">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i className="fa-solid fa-check text-2xl text-green-600"></i>
+                </div>
+                <h3 className="text-2xl font-black text-gray-900 mb-2">¡Solicitud Recibida!</h3>
+                <p className="text-gray-500 mb-6">Hemos recibido tus datos correctamente. Un ejecutivo comercial te contactará a la brevedad para gestionar el financiamiento de tu <strong>{vehicle.brand.name} {vehicle.model}</strong>.</p>
+                <button
+                    onClick={onClose}
+                    className="w-full bg-black text-white font-bold py-3 rounded-xl hover:bg-gray-800 transition shadow-lg shadow-black/20"
+                >
+                    Entendido
+                </button>
+            </div>
+        </div>
+    ) : (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
             {/* Modal Container */}
             <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl relative scale-in-95 animate-in zoom-in-95 duration-200">
 
@@ -214,4 +231,6 @@ export default function FinancingModal({ isOpen, onClose, vehicle }: FinancingMo
             </div>
         </div>
     );
+
+    return createPortal(content, document.body);
 }

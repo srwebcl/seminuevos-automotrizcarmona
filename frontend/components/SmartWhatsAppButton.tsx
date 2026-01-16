@@ -1,16 +1,85 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { MessageCircle, X } from 'lucide-react';
+import { WhatsappNumber } from '@/lib/api';
 
-export default function SmartWhatsAppButton() {
+interface SmartWhatsAppButtonProps {
+    numbers?: WhatsappNumber[];
+}
+
+export default function SmartWhatsAppButton({ numbers = [] }: SmartWhatsAppButtonProps) {
     const pathname = usePathname();
+    const searchParams = useSearchParams();
     const [showBubble, setShowBubble] = useState(false);
     const [config, setConfig] = useState({
         text: "¡Hola! ¿Necesitas ayuda con tu compra?",
         message: "Hola, estoy en el sitio web de Automotriz Carmona y me gustaría recibir asesoría."
     });
+    const [selectedNumber, setSelectedNumber] = useState<string>("56912345678"); // Default fallback
+
+    // Logic to select the best WhatsApp number
+    useEffect(() => {
+        if (!numbers || numbers.length === 0) return;
+
+        // Context Detection
+        const isPremiumContext =
+            pathname.includes('premium') ||
+            (searchParams.get('is_premium') === '1') ||
+            (pathname.includes('/auto/')); // Assuming looking at a specific car might warrant premium checks, but for now we trust the tagging.
+
+        // Actually, the user rule is: "X numero solo recibe autos premium". 
+        // So if (isPremiumContext) -> Use specific pool? Or use ALL pool?
+        // Usually: Premium numbers for Premium context. General numbers for General context.
+        // We will define: 
+        // Premium Context = Looking at Premium Catalog or Explicitly Premium.
+
+        // Filter Numbers
+        let availableNumbers = [];
+
+        if (isPremiumContext) {
+            // In premium context, we prioritize premium numbers. 
+            // If there are premium-only numbers, use ONLY them? Or mix with general?
+            // "X numero solo reciba autos premium" implies this number CANNOT start a conversation from a non-premium page.
+            // It does NOT imply that a general number cannot receive a premium lead.
+            // BUT usually you want the specialized executive.
+            // Let's filter: Include 'for_premium_only' numbers AND general numbers? 
+            // Or just 'for_premium_only' if available?
+            // Let's try: If premium context, include ALL numbers (unless we strictly want to segregate executives).
+            // Let's interpret "X number ONLY receives premium" as: This number shows up ONLY on premium pages.
+            // General numbers show up everywhere? Or ONLY on general pages?
+            // User: "si implemento más de 2 números se deben asociar, pero de forma aleatoria"
+            // Let's assume:
+            // Premium Page -> Pool includes Premium-only numbers + General numbers.
+            // Regular Page -> Pool includes ONLY General numbers (exclude Premium-only).
+
+            // Wait, if I have a "Premium Executive", I probably want them to handle Premium.
+            // If I have a "General Executive", they handle General.
+            // Ideally: Premium Page -> Random(Premium Numbers). If none, Random(General).
+            // General Page -> Random(General Numbers).
+
+            const premiumNumbers = numbers.filter(n => n.for_premium_only);
+            if (premiumNumbers.length > 0) {
+                availableNumbers = premiumNumbers;
+            } else {
+                availableNumbers = numbers.filter(n => !n.for_premium_only);
+            }
+        } else {
+            // General Context -> Exclude Premium-only numbers
+            availableNumbers = numbers.filter(n => !n.for_premium_only);
+        }
+
+        // Fallback if no numbers available after filter (shouldn't happen if data exists)
+        if (availableNumbers.length === 0) availableNumbers = numbers;
+
+        // Select Random
+        if (availableNumbers.length > 0) {
+            const randomIndex = Math.floor(Math.random() * availableNumbers.length);
+            setSelectedNumber(availableNumbers[randomIndex].number);
+        }
+
+    }, [pathname, searchParams, numbers]);
 
     useEffect(() => {
         // Dynamic Logic based on Path
@@ -74,12 +143,7 @@ export default function SmartWhatsAppButton() {
                 text: "¿Dudas con el crédito? Resuélvelas ahora.",
                 message: "Hola, tengo dudas sobre las opciones de financiamiento."
             };
-        } else if (pathname === '/vende-tu-auto') { // Changed route if needed, checking existing code used /vende-tu-auto? Wait, previous code used /vende-tu-auto but page is /vendenos-tu-auto. Correcting to startsWith or exact match.
-            newConfig = {
-                text: "¿Quieres vender rápido? Escríbenos.",
-                message: "Hola, quiero vender mi auto con ustedes / dejarlo en parte de pago."
-            };
-        } else if (pathname === '/vendenos-tu-auto') {
+        } else if (pathname === '/parte-de-pago' || pathname === '/vendenos-tu-auto') {
             newConfig = {
                 text: "¿Quieres vender rápido? Escríbenos.",
                 message: "Hola, quiero vender mi auto con ustedes / dejarlo en parte de pago."
@@ -88,16 +152,8 @@ export default function SmartWhatsAppButton() {
 
         setConfig(newConfig);
 
-        // Initial bubble state is open, but controlled by scroll
+        // Initial bubble state
         setShowBubble(true);
-
-        const handleScroll = () => {
-            // Show bubble only after scrolling 100px
-            if (window.scrollY > 100) {
-                // We don't auto-open it if user closed it, but we need a separate state for scroll
-            }
-        };
-        // actually simplest is to just checking window.scrollY in a separate state
     }, [pathname]);
 
     const [hasScrolled, setHasScrolled] = useState(false);
@@ -115,15 +171,12 @@ export default function SmartWhatsAppButton() {
         setShowBubble(false);
     };
 
-    // Placeholder number - User needs to update this for the bot
-    const whatsappNumber = "56912345678";
-    const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(config.message)}`;
+    const whatsappLink = `https://wa.me/${selectedNumber}?text=${encodeURIComponent(config.message)}`;
 
     return (
         <div className="fixed bottom-6 right-6 z-[60] flex flex-col items-end gap-3 group">
 
             {/* Context Bubble */}
-            {/* Context Bubble - Sophisticated Design */}
             <div
                 className={`
                     relative max-w-[280px] bg-white text-gray-800 p-5 rounded-[2rem] rounded-br-sm shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] border border-gray-100
@@ -151,9 +204,6 @@ export default function SmartWhatsAppButton() {
                         </p>
                     </div>
                 </div>
-
-                {/* Tail for speech bubble - Smooth curve trick */}
-                {/* Obscured by rounded-br-sm but ensuring it looks connected */}
             </div>
 
             {/* Main Button */}
@@ -172,3 +222,4 @@ export default function SmartWhatsAppButton() {
         </div>
     );
 }
+

@@ -11,7 +11,7 @@ class LocationController extends Controller
     public function index()
     {
         $locations = Location::where('is_active', true)
-            ->orderBy('name')
+            ->orderBy('sort_order', 'asc') // Order by sort_order
             ->get();
 
         return response()->json([

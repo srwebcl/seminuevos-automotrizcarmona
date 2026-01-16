@@ -77,7 +77,39 @@ export async function getMenu(): Promise<{ data: VehicleCategory[] }> {
     return fetchAPI<{ data: VehicleCategory[] }>('menu');
 }
 
-export async function getSettings(): Promise<{ data: { seasonal_mode: string; whatsapp?: { number: string; message_template: string; is_active: boolean }; contact: any } }> {
+export interface WhatsappNumber {
+    number: string;
+    label: string;
+    for_premium_only: boolean;
+}
+
+export interface Settings {
+    seasonal_mode: 'none' | 'christmas' | 'new_year' | '18sept' | 'cyber';
+    whatsapp_numbers?: WhatsappNumber[];
+    contact: {
+        address: string;
+        email: string;
+    };
+    social_links?: {
+        instagram?: string;
+        facebook?: string;
+        linkedin?: string;
+        youtube?: string;
+    };
+    locations?: {
+        name: string;
+        address: string;
+        city: string;
+        phone?: string;
+        google_maps_url?: string;
+    }[];
+    main_categories?: {
+        name: string;
+        slug: string;
+    }[];
+}
+
+export async function getSettings(): Promise<{ data: Settings }> {
     return fetchAPI('settings');
 }
 
@@ -88,6 +120,6 @@ export async function getRelatedVehicles(categorySlug: string, currentVehicleId:
     return data.filter(v => v.id !== currentVehicleId).slice(0, 4);
 }
 
-export async function getLocations(): Promise<{ data: { id: number; name: string; address: string; phone?: string; city: string; image_path?: string; is_active: boolean }[] }> {
-    return fetchAPI<{ data: { id: number; name: string; address: string; phone?: string; city: string; image_path?: string; is_active: boolean }[] }>('locations');
+export async function getLocations(): Promise<{ data: { id: number; name: string; address: string; phone?: string; city: string; image_path?: string; is_active: boolean; schedule?: string; google_maps_url?: string }[] }> {
+    return fetchAPI<{ data: { id: number; name: string; address: string; phone?: string; city: string; image_path?: string; is_active: boolean; schedule?: string; google_maps_url?: string }[] }>('locations');
 }
