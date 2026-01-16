@@ -112,7 +112,7 @@ export async function POST(request: Request) {
 
         // A) Correo Interno
         await resend.emails.send({
-            from: 'Automotriz Carmona <contacto@resend.dev>', // Debe actualizarse a un dominio verificado en prod
+            from: 'Automotriz Carmona <marketing@carmonaycia.cl>', // Debe actualizarse a un dominio verificado en prod
             to: to,
             cc: cc,
             replyTo: data.email,
@@ -123,7 +123,7 @@ export async function POST(request: Request) {
         // B) Correo al Cliente (Auto-reply)
         if (data.email) {
             await resend.emails.send({
-                from: 'Automotriz Carmona <contacto@resend.dev>',
+                from: 'Automotriz Carmona <marketing@carmonaycia.cl>',
                 to: [data.email],
                 subject: clientSubject,
                 html: clientHtml,
