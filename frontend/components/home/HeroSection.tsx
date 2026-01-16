@@ -69,7 +69,7 @@ export default function HeroSection({ banners }: HeroSectionProps) {
             }
 
             // Map multiple images to slides
-            if (banner.image_url && banner.image_url.length > 0) {
+            if (banner.image_url && Array.isArray(banner.image_url) && banner.image_url.length > 0) {
                 return banner.image_url.map((url, idx) => ({
                     id: `img-${banner.id}-${idx}`,
                     type: 'image',
