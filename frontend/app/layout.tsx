@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { Inter, Outfit } from 'next/font/google';
 import './globals.css';
@@ -49,7 +50,9 @@ export default async function RootLayout({
           {children}
         </main>
         <Footer settings={settings} />
-        <SmartWhatsAppButton numbers={settings.whatsapp_numbers} />
+        <Suspense fallback={null}>
+          <SmartWhatsAppButton numbers={settings.whatsapp_numbers} />
+        </Suspense>
         <AosInit />
       </body>
     </html>
