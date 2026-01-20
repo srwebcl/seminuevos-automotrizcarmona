@@ -243,9 +243,7 @@ class VehicleResource extends Resource
                                     ->imageResizeMode('cover')
                                     ->imageResizeTargetWidth('1280')
                                     ->imageResizeTargetHeight('720')
-                                    ->imageQuality(80)
                                     ->maxSize(10240)
-                                    ->optimize('webp')
                                     ->required(),
 
                                 Textarea::make('description')
