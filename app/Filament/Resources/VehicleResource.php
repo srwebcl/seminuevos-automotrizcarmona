@@ -21,6 +21,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\IconColumn;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Collection;
 
 class VehicleResource extends Resource
 {
@@ -365,6 +366,51 @@ class VehicleResource extends Resource
         return [
             Tables\Actions\BulkActionGroup::make([
                 Tables\Actions\DeleteBulkAction::make(),
+
+                // DISPONIBILIDAD
+                Tables\Actions\BulkAction::make('mark_as_published')
+                    ->label('Publicar Seleccionados')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->action(fn(Collection $records) => $records->each->update(['is_published' => true]))
+                    ->deselectRecordsAfterCompletion(),
+
+                Tables\Actions\BulkAction::make('mark_as_hidden')
+                    ->label('Despublicar Seleccionados')
+                    ->icon('heroicon-o-x-circle')
+                    ->color('warning')
+                    ->action(fn(Collection $records) => $records->each->update(['is_published' => false]))
+                    ->deselectRecordsAfterCompletion(),
+
+                // DESTACADOS
+                Tables\Actions\BulkAction::make('mark_as_featured')
+                    ->label('Destacar Seleccionados')
+                    ->icon('heroicon-o-star')
+                    ->color('warning')
+                    ->action(fn(Collection $records) => $records->each->update(['is_featured' => true]))
+                    ->deselectRecordsAfterCompletion(),
+
+                Tables\Actions\BulkAction::make('unmark_as_featured')
+                    ->label('Quitar Destacado')
+                    ->icon('heroicon-o-star')
+                    ->color('gray')
+                    ->action(fn(Collection $records) => $records->each->update(['is_featured' => false]))
+                    ->deselectRecordsAfterCompletion(),
+
+                // OFERTAS
+                Tables\Actions\BulkAction::make('mark_as_offer')
+                    ->label('Marcar en Oferta')
+                    ->icon('heroicon-o-tag')
+                    ->color('danger')
+                    ->action(fn(Collection $records) => $records->each->update(['is_offer' => true]))
+                    ->deselectRecordsAfterCompletion(),
+
+                Tables\Actions\BulkAction::make('unmark_as_offer')
+                    ->label('Quitar Oferta')
+                    ->icon('heroicon-o-tag')
+                    ->color('gray')
+                    ->action(fn(Collection $records) => $records->each->update(['is_offer' => false]))
+                    ->deselectRecordsAfterCompletion(),
             ]),
         ];
     }
