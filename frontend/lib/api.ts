@@ -7,7 +7,7 @@ export const BACKEND_URL = API_URL.replace(/\/api\/?$/, '');
 
 async function fetchAPI<T>(endpoint: string): Promise<T> {
     const separator = endpoint.includes('?') ? '&' : '?';
-    const url = `${API_URL}/${endpoint}${separator}_t=${Date.now()}`;
+    const url = `${API_URL}/${endpoint}`;
 
     const res = await fetch(url, {
         next: { revalidate: 60 }, // ISR: Cache for 60 seconds

@@ -241,8 +241,11 @@ class VehicleResource extends Resource
                                     ->panelLayout('grid')
                                     ->imagePreviewHeight('200')
                                     ->imageResizeMode('cover')
-                                    ->imageCropAspectRatio('16:9')
-                                    ->maxSize(5120)
+                                    ->imageResizeTargetWidth('1280')
+                                    ->imageResizeTargetHeight('720')
+                                    ->imageQuality(80)
+                                    ->maxSize(10240)
+                                    ->optimize('webp')
                                     ->required(),
 
                                 Textarea::make('description')

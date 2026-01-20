@@ -11,7 +11,11 @@ class VehicleController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Vehicle::with(['brand', 'category', 'tags'])
+        $query = Vehicle::with([
+            'brand:id,name,slug',
+            'category:id,name,slug',
+            'tags:id,name,color'
+        ])
             ->where('is_published', true);
 
         if ($request->has('category')) {
