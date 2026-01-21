@@ -23,6 +23,7 @@ export default function CategoryHero({ title, subtitle, backgroundImage }: Categ
                     src={backgroundImage}
                     alt={title}
                     fill
+                    sizes="100vw"
                     className="object-cover opacity-60"
                     priority
                     fetchPriority="high"

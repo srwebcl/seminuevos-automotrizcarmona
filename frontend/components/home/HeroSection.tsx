@@ -151,6 +151,7 @@ export default function HeroSection({ banners }: HeroSectionProps) {
                                         src={slide.url}
                                         alt={slide.banner.title || "Hero Background"}
                                         fill
+                                        sizes="100vw"
                                         className="object-cover"
                                         priority={index === 0}
                                         fetchPriority={index === 0 ? "high" : "auto"}
@@ -169,12 +170,9 @@ export default function HeroSection({ banners }: HeroSectionProps) {
             <div className="relative z-50 w-full max-w-5xl px-4 text-center">
                 {/* POWER TITLE - Enhanced Typography & Shadows */}
                 <h1 className="text-6xl md:text-8xl font-black text-white mb-10 tracking-tighter leading-[0.9] drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] relative">
-                    <span className="block mb-2" data-aos="fade-down" data-aos-duration="1000">Tu próximo auto,</span>
+                    <span className="block mb-2">Tu próximo auto,</span>
                     <span
                         className="text-transparent bg-clip-text bg-gradient-to-b from-[#FFF5D1] via-[#D4AF37] to-[#8A6E2F] filter brightness-125 drop-shadow-[0_0_25px_rgba(212,175,55,0.4)]"
-                        data-aos="fade-up"
-                        data-aos-duration="1000"
-                        data-aos-delay="200"
                     >
                         está aquí.
                     </span>
@@ -183,8 +181,6 @@ export default function HeroSection({ banners }: HeroSectionProps) {
                 {/* Search Bar Container */}
                 <div
                     className="mt-12 relative max-w-2xl mx-auto group"
-                    data-aos="fade-up"
-                    data-aos-delay="400"
                 >
                     <div className="relative z-50 transition-transform duration-300 group-focus-within:scale-105">
                         <i className={`fa-solid fa-magnifying-glass absolute left-6 top-1/2 -translate-y-1/2 z-10 text-xl transition-colors duration-300 ${showResults ? 'text-premium-gold' : 'text-gray-400'}`}></i>
