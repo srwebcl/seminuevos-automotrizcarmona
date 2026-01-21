@@ -25,7 +25,6 @@ export default function CategoryHero({ title, subtitle, backgroundImage }: Categ
                     fill
                     className="object-cover opacity-60"
                     priority
-                    unoptimized={true}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/60"></div>
             </div>

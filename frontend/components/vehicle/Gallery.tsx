@@ -78,7 +78,6 @@ export default function Gallery({ images, model }: GalleryProps) {
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                     priority
-                    unoptimized={true}
                 />
                 <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-1 rounded-full text-xs font-bold backdrop-blur-sm pointer-events-none">
                     <i className="fa-solid fa-expand mr-1.5"></i> Ampliar
@@ -90,12 +89,14 @@ export default function Gallery({ images, model }: GalleryProps) {
                         <button
                             onClick={handlePrev}
                             className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white text-black flex items-center justify-center transition shadow-lg opacity-0 group-hover:opacity-100"
+                            aria-label="Imagen anterior"
                         >
                             <i className="fa-solid fa-chevron-left text-sm"></i>
                         </button>
                         <button
                             onClick={handleNext}
                             className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white text-black flex items-center justify-center transition shadow-lg opacity-0 group-hover:opacity-100"
+                            aria-label="Siguiente imagen"
                         >
                             <i className="fa-solid fa-chevron-right text-sm"></i>
                         </button>
@@ -120,7 +121,6 @@ export default function Gallery({ images, model }: GalleryProps) {
                                 alt={`${model} - view ${index + 1}`}
                                 fill
                                 className="object-cover"
-                                unoptimized={true}
                             />
                         </div>
                     ))}
@@ -149,7 +149,6 @@ export default function Gallery({ images, model }: GalleryProps) {
                                 alt={`${model} view ${index + 1}`}
                                 fill
                                 className="object-cover"
-                                unoptimized={true}
                             />
                         </button>
                     ))}
@@ -162,6 +161,7 @@ export default function Gallery({ images, model }: GalleryProps) {
                     <button
                         onClick={() => setIsLightboxOpen(false)}
                         className="absolute top-4 right-4 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition z-[110]"
+                        aria-label="Cerrar galería"
                     >
                         <i className="fa-solid fa-xmark text-xl"></i>
                     </button>
@@ -169,6 +169,7 @@ export default function Gallery({ images, model }: GalleryProps) {
                     <button
                         onClick={handlePrev}
                         className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition z-[110] backdrop-blur-sm"
+                        aria-label="Imagen anterior"
                     >
                         <i className="fa-solid fa-chevron-left text-xl"></i>
                     </button>
@@ -180,7 +181,6 @@ export default function Gallery({ images, model }: GalleryProps) {
                                 alt={model}
                                 fill
                                 className="object-contain"
-                                unoptimized={true}
                             />
                         </div>
                     </div>
@@ -188,6 +188,7 @@ export default function Gallery({ images, model }: GalleryProps) {
                     <button
                         onClick={handleNext}
                         className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition z-[110] backdrop-blur-sm"
+                        aria-label="Siguiente imagen"
                     >
                         <i className="fa-solid fa-chevron-right text-xl"></i>
                     </button>

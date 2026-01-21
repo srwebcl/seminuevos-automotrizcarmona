@@ -17,7 +17,7 @@ const config: Config = {
                     gray: '#f3f4f6',
                 },
                 premium: {
-                    gold: '#D4AF37',
+                    gold: '#B5952F', // Darkened for better contrast on white (Accessibility)
                     light: '#F3E5AB',
                     dark: '#996515',
                 }

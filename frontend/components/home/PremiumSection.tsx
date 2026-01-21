@@ -24,7 +24,6 @@ const PremiumCard = ({ auto }: { auto: Vehicle }) => {
                         alt={auto.model}
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100"
-                        unoptimized={true}
                     />
                 ) : (
                     <div className="w-full h-full bg-gray-800 flex items-center justify-center">
@@ -128,12 +127,16 @@ export default function PremiumSection({ vehicles: initialVehicles }: { vehicles
                     <div className="flex gap-3">
                         <button
                             onClick={() => scroll('left')}
-                            className="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-black hover:text-white hover:border-black transition duration-300">
+                            className="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-black hover:text-white hover:border-black transition duration-300"
+                            aria-label="Anterior"
+                        >
                             <i className="fa-solid fa-arrow-left"></i>
                         </button>
                         <button
                             onClick={() => scroll('right')}
-                            className="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-black hover:text-white hover:border-black transition duration-300">
+                            className="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-black hover:text-white hover:border-black transition duration-300"
+                            aria-label="Siguiente"
+                        >
                             <i className="fa-solid fa-arrow-right"></i>
                         </button>
                     </div>

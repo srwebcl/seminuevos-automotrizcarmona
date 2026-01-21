@@ -28,7 +28,6 @@ export default function VehicleListCard({ vehicle }: VehicleListCardProps) {
                         alt={`${vehicle.brand.name} ${vehicle.model}`}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-700"
-                        unoptimized={true}
                     />
                     {vehicle.is_premium && (
                         <div className="absolute top-1.5 left-1.5 md:top-2 md:left-2 bg-black/90 backdrop-blur text-white text-[8px] md:text-[9px] font-bold px-1.5 py-0.5 md:px-2 md:py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1 z-10 border border-white/10">

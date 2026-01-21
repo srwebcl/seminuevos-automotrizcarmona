@@ -153,7 +153,6 @@ export default function HeroSection({ banners }: HeroSectionProps) {
                                         fill
                                         className="object-cover"
                                         priority={index === 0}
-                                        unoptimized={true}
                                     />
                                 </div>
                             )}
@@ -206,6 +205,7 @@ export default function HeroSection({ banners }: HeroSectionProps) {
                             <button
                                 onClick={() => { setSearchTerm(''); setShowResults(false); }}
                                 className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition-colors"
+                                aria-label="Limpiar búsqueda"
                             >
                                 <i className="fa-solid fa-xmark text-xl"></i>
                             </button>
