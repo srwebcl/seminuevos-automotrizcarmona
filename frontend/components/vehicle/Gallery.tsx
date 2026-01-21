@@ -68,31 +68,19 @@ export default function Gallery({ images, model }: GalleryProps) {
     return (
         <div className="mb-8 lg:mb-0">
             {/* Desktop Main Image */}
-            {/* Desktop Main Image - Blur Effect Implementation */}
             <div
-                className="hidden lg:block relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-gray-200 mb-4 shadow-sm border border-gray-100 group cursor-zoom-in"
+                className="hidden lg:block relative aspect-video w-full overflow-hidden rounded-xl bg-gray-100 mb-4 shadow-sm border border-gray-100 group cursor-zoom-in"
                 onClick={() => setIsLightboxOpen(true)}
             >
-                {/* 1. Blurred Background Layer */}
                 <Image
                     src={mainImage}
                     alt={model}
                     fill
-                    className="object-cover blur-xl scale-110 opacity-50"
-                    unoptimized={true}
-                />
-
-                {/* 2. Main Contained Image */}
-                <Image
-                    src={mainImage}
-                    alt={model}
-                    fill
-                    className="object-contain relative z-10 transition-transform duration-500 group-hover:scale-105"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
                     priority
                     unoptimized={true}
                 />
-
-                <div className="absolute bottom-4 right-4 z-20 bg-black/70 text-white px-3 py-1 rounded-full text-xs font-bold backdrop-blur-sm pointer-events-none">
+                <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-1 rounded-full text-xs font-bold backdrop-blur-sm">
                     <i className="fa-solid fa-expand mr-1.5"></i> Ampliar
                 </div>
             </div>
@@ -106,23 +94,14 @@ export default function Gallery({ images, model }: GalleryProps) {
                     {images.map((img, index) => (
                         <div
                             key={index}
-                            className="relative flex-shrink-0 w-full aspect-[4/3] snap-center rounded-xl overflow-hidden bg-gray-200 shadow-sm"
+                            className="relative flex-shrink-0 w-full aspect-video snap-center rounded-xl overflow-hidden bg-gray-100 shadow-sm"
                             onClick={() => handleImageClick(img, index)}
                         >
-                            {/* Mobile Blur Background */}
-                            <Image
-                                src={img}
-                                alt={`${model} - background`}
-                                fill
-                                className="object-cover blur-lg scale-110 opacity-50"
-                                unoptimized={true}
-                            />
-                            {/* Mobile Contained Image */}
                             <Image
                                 src={img}
                                 alt={`${model} - view ${index + 1}`}
                                 fill
-                                className="object-contain relative z-10"
+                                className="object-cover"
                                 unoptimized={true}
                             />
                         </div>
@@ -144,7 +123,7 @@ export default function Gallery({ images, model }: GalleryProps) {
                                 setMainImage(img);
                                 setCurrentIndex(index);
                             }}
-                            className={`relative aspect-[4/3] rounded-lg overflow-hidden border-2 transition-all duration-200 ${mainImage === img ? 'border-black opacity-100 ring-2 ring-black/10' : 'border-transparent opacity-70 hover:opacity-100'
+                            className={`relative aspect-video rounded-lg overflow-hidden border-2 transition-all duration-200 ${mainImage === img ? 'border-black opacity-100 ring-2 ring-black/10' : 'border-transparent opacity-70 hover:opacity-100'
                                 }`}
                         >
                             <Image
