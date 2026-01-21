@@ -227,7 +227,7 @@ export default async function VehicleDetailPage({
                                         <i className="fa-solid fa-gears text-xs"></i>
                                     </div>
                                     <div className="min-w-0">
-                                        <p className="text-[9px] text-gray-400 uppercase font-bold tracking-wider">Caja</p>
+                                        <p className="text-[9px] text-gray-400 uppercase font-bold tracking-wider">Transmisión</p>
                                         <p className="text-sm font-bold text-gray-900 truncate">{vehicle.transmission || '-'}</p>
                                     </div>
                                 </div>
@@ -259,10 +259,6 @@ export default async function VehicleDetailPage({
                                     <div className="flex justify-between border-b border-gray-200/50 pb-2 border-dashed">
                                         <dt className="text-gray-500 font-medium">Tracción</dt>
                                         <dd className="font-bold text-gray-900">{vehicle.traction || 'No especificado'}</dd>
-                                    </div>
-                                    <div className="flex justify-between pt-1">
-                                        <dt className="text-gray-500 font-medium">Patente</dt>
-                                        <dd className="font-bold text-gray-900 blur-[2px] select-none text-xs bg-gray-200 px-1 rounded">XX-XX-XX</dd>
                                     </div>
                                 </dl>
                             </div>
