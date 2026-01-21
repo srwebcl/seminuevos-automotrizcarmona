@@ -23,9 +23,9 @@ export default function FullBanner({ banner }: FullBannerProps) {
         <div className="w-full relative z-[45] px-4 max-w-7xl mx-auto -mt-20 md:-mt-16 mb-8" data-aos="fade-up">
 
             {/* 1. VERSIÓN MÓVIL (Visible solo en md-) */}
-            {/* Aspect Ratio 4:5 (Vertical/Cuadrado alto) para mejor impacto en teléfonos */}
+            {/* Aspect Ratio exacto según imagen real: 767x301 */}
             <div className="block md:hidden w-full relative">
-                <Link href={href} className="block w-full group overflow-hidden rounded-xl shadow-xl relative aspect-[4/5]">
+                <Link href={href} className="block w-full group overflow-hidden rounded-xl shadow-xl relative aspect-[767/301]">
                     <Image
                         src={mobileImage}
                         alt={banner.title || 'Promoción'}
@@ -38,9 +38,9 @@ export default function FullBanner({ banner }: FullBannerProps) {
             </div>
 
             {/* 2. VERSIÓN ESCRITORIO (Visible solo en md+) */}
-            {/* Aspect Ratio 3.5:1 (Panorámico) para banner web estándar */}
+            {/* Aspect Ratio exacto según imagen real: 1735x170 */}
             <div className="hidden md:block w-full relative">
-                <Link href={href} className="block w-full group overflow-hidden rounded-3xl shadow-2xl relative aspect-[3.5/1]">
+                <Link href={href} className="block w-full group overflow-hidden rounded-3xl shadow-2xl relative aspect-[1735/170]">
                     <Image
                         src={desktopImage}
                         alt={banner.title || 'Promoción'}
