@@ -24,11 +24,28 @@ export default async function CatalogPage({
 
     // Parallel fetching
     const [vehiclesResponse, bannersResponse, brandsResponse, categoriesResponse] = await Promise.all([
-        getVehicles(currentPage, filters),
+        getVehicles(currentPage, filters).catch(() => null),
         getBanners().catch(() => ({ data: [] })),
         getBrands(category).catch(() => ({ data: [] })),
         getCategories().catch(() => ({ data: [] }))
     ]);
+
+    if (!vehiclesResponse || !vehiclesResponse.data) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[50vh] p-8 text-center bg-gray-50">
+                <h1 className="text-2xl font-bold text-gray-800 mb-2">¡Ups! Algo salió mal</h1>
+                <p className="text-gray-600 mb-4">No pudimos cargar el catálogo de vehículos.</p>
+                <div className="flex gap-4">
+                    <a href="/" className="px-4 py-2 border border-black text-black rounded hover:bg-gray-100 transition">
+                        Volver al Inicio
+                    </a>
+                    <a href="/catalogo" className="px-4 py-2 bg-black text-white rounded hover:bg-gray-800 transition">
+                        Recargar Catálogo
+                    </a>
+                </div>
+            </div>
+        );
+    }
 
     const { data: vehicles, meta, links } = vehiclesResponse;
     const banners = bannersResponse.data;
