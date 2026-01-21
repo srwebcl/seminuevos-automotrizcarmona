@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 import { MessageCircle, X } from 'lucide-react';
 import { WhatsappNumber } from '@/lib/api';
 
@@ -192,8 +193,14 @@ export default function SmartWhatsAppButton({ numbers = [] }: SmartWhatsAppButto
                 </button>
                 <div className="flex items-start gap-3">
                     <div className="relative shrink-0">
-                        <div className="w-12 h-12 rounded-full bg-gray-100 overflow-hidden border-2 border-white shadow-md">
-                            <img src="/images/ejecutivo_whatsapp.png" alt="Ejecutivo Carmona" className="w-full h-full object-cover" />
+                        <div className="w-12 h-12 rounded-full bg-gray-100 overflow-hidden border-2 border-white shadow-md relative">
+                            <Image
+                                src="/images/ejecutivo_whatsapp.png"
+                                alt="Ejecutivo Carmona"
+                                fill
+                                className="object-cover"
+                                sizes="48px"
+                            />
                         </div>
                         <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
                     </div>

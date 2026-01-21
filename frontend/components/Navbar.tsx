@@ -80,7 +80,7 @@ export default function Navbar({ categories = [] }: NavbarProps) {
 
                     {/* Mobile Hamburger Button */}
                     <div className="flex items-center md:hidden">
-                        <button onClick={() => setOpen(!open)} className="text-white focus:outline-none p-2">
+                        <button onClick={() => setOpen(!open)} className="text-white focus:outline-none p-2" aria-label="Abrir menú de navegación">
                             {open ? <i className="fa-solid fa-xmark text-2xl"></i> : <i className="fa-solid fa-bars text-2xl"></i>}
                         </button>
                     </div>
@@ -101,7 +101,7 @@ export default function Navbar({ categories = [] }: NavbarProps) {
                                 className="h-8 w-auto object-contain brightness-0 invert"
                             />
                         </div>
-                        <button onClick={() => setOpen(false)} className="text-white p-2 rounded-full hover:bg-white/10 transition">
+                        <button onClick={() => setOpen(false)} className="text-white p-2 rounded-full hover:bg-white/10 transition" aria-label="Cerrar menú">
                             <i className="fa-solid fa-xmark text-2xl"></i>
                         </button>
                     </div>

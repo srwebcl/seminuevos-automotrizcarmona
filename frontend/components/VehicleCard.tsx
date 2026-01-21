@@ -38,7 +38,7 @@ export default function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
 
                 {vehicle.is_premium && (
                     <div className="absolute top-3 right-3 z-30">
-                        <span className="bg-[#D4AF37] text-white text-[10px] font-black px-2 py-1 rounded uppercase tracking-widest flex items-center gap-1 shadow-sm">
+                        <span className="bg-[#B5952F] text-white text-[10px] font-black px-2 py-1 rounded uppercase tracking-widest flex items-center gap-1 shadow-sm">
                             <i className="fa-solid fa-crown"></i> Premium
                         </span>
                     </div>
@@ -166,7 +166,7 @@ export default function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
                                 variant="stack"
                             />
                         </div>
-                        <Link href={`/auto/${vehicle.slug}`} className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-black flex items-center justify-center text-white hover:bg-gray-800 transition-colors">
+                        <Link href={`/auto/${vehicle.slug}`} className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-black flex items-center justify-center text-white hover:bg-gray-800 transition-colors" aria-label={`Ver detalles de ${vehicle.brand.name} ${vehicle.model}`}>
                             <i className="fa-solid fa-arrow-right text-xs"></i>
                         </Link>
                     </div>

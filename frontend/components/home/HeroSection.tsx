@@ -153,6 +153,7 @@ export default function HeroSection({ banners }: HeroSectionProps) {
                                         fill
                                         className="object-cover"
                                         priority={index === 0}
+                                        fetchPriority={index === 0 ? "high" : "auto"}
                                     />
                                 </div>
                             )}
