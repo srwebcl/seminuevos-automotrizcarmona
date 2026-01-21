@@ -367,7 +367,7 @@ class VehicleResource extends Resource
                 ->label('')
                 ->tooltip('Ver en Sitio')
                 ->icon('heroicon-o-eye')
-                ->url(fn(Vehicle $record) => env('FRONTEND_URL', 'https://automotrizcarmona.cl') . '/auto/' . $record->slug)
+                ->url(fn(Vehicle $record) => env('FRONTEND_URL', 'https://seminuevos-automotrizcarmona.vercel.app') . '/auto/' . $record->slug)
                 ->openUrlInNewTab(),
             Tables\Actions\EditAction::make()->label('')->tooltip('Editar'),
             Tables\Actions\DeleteAction::make()->label('')->tooltip('Borrar'),
