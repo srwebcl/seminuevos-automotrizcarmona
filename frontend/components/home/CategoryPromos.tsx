@@ -69,6 +69,7 @@ export default function CategoryPromos({ promos }: CategoryPromosProps) {
                                 fill
                                 className="object-cover transition-transform duration-700 group-hover:scale-110"
                                 sizes="(max-width: 768px) 80vw, 33vw"
+                                quality={60}
                                 loading="lazy"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent flex flex-col justify-end p-6">

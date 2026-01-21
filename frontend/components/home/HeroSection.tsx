@@ -152,6 +152,7 @@ export default function HeroSection({ banners }: HeroSectionProps) {
                                         alt={slide.banner.title || "Hero Background"}
                                         fill
                                         sizes="100vw"
+                                        quality={60}
                                         className="object-cover"
                                         priority={index === 0}
                                         fetchPriority={index === 0 ? "high" : "auto"}

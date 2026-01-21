@@ -8,8 +8,19 @@ import AosInit from '@/components/AosInit';
 import SmartWhatsAppButton from '@/components/SmartWhatsAppButton';
 import { getMenu, getSettings } from '@/lib/api';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
-const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit', display: 'swap' });
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+  adjustFontFallback: false
+});
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  variable: '--font-outfit',
+  display: 'swap',
+  adjustFontFallback: false
+});
 
 export const metadata: Metadata = {
   title: 'Automotriz Carmona | Venta de Seminuevos',
