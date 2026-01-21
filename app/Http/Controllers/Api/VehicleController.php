@@ -14,7 +14,7 @@ class VehicleController extends Controller
         $query = Vehicle::with([
             'brand:id,name,slug',
             'category:id,name,slug',
-            'tags:id,name,color'
+            'tags:id,name,bg_color,text_color'
         ])
             ->where('is_published', true);
 
