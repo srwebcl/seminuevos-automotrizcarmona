@@ -38,7 +38,7 @@ export default function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
 
                 {vehicle.is_premium && (
                     <div className="absolute top-3 right-3 z-30">
-                        <span className="bg-[#B58900] text-white text-[10px] font-black px-2 py-1 rounded uppercase tracking-widest flex items-center gap-1 shadow-sm">
+                        <span className="bg-[#856404] text-white text-[10px] font-black px-2 py-1 rounded uppercase tracking-widest flex items-center gap-1 shadow-sm">
                             <i className="fa-solid fa-crown"></i> Premium
                         </span>
                     </div>

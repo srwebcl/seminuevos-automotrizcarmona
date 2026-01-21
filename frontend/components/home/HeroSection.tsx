@@ -248,7 +248,7 @@ export default function HeroSection({ banners }: HeroSectionProps) {
                                                                 alt={auto.model}
                                                                 fill
                                                                 className="object-cover transition-transform duration-500 group-hover:scale-110"
-                                                                unoptimized={true}
+                                                                sizes="100px"
                                                             />
                                                         ) : (
                                                             <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-300">
