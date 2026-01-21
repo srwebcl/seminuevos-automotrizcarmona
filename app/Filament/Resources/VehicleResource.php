@@ -264,7 +264,6 @@ class VehicleResource extends Resource
             ->filters(self::getFilters())
             ->actions(self::getActions())
             ->bulkActions(self::getBulkActions())
-            ->bulkActions(self::getBulkActions())
             ->defaultSort('created_at', 'desc');
     }
 
@@ -337,10 +336,24 @@ class VehicleResource extends Resource
                 ->searchable()
                 ->preload(),
 
+            // 1. FILTRO DE DISPONIBILIDAD (Publicados vs Ocultos)
+            Tables\Filters\TernaryFilter::make('is_published')
+                ->label('Disponibilidad')
+                ->placeholder('Todos los Vehículos')
+                ->trueLabel('Publicados (Visibles)')
+                ->falseLabel('Borradores (Ocultos)'),
+
+            // 2. FILTRO DE DESTACADOS (Home)
+            Tables\Filters\Filter::make('is_featured')
+                ->label('Solo Destacados')
+                ->query(fn($query) => $query->where('is_featured', true)),
+
+            // 3. FILTRO PREMIUM
             Tables\Filters\Filter::make('is_premium')
                 ->label('Solo Premium')
                 ->query(fn($query) => $query->where('is_premium', true)),
 
+            // 4. FILTRO DE OFERTAS
             Tables\Filters\Filter::make('is_offer')
                 ->label('En Oferta')
                 ->query(fn($query) => $query->where('is_offer', true)),
@@ -382,6 +395,21 @@ class VehicleResource extends Resource
                     ->action(fn(Collection $records) => $records->each->update(['is_published' => false]))
                     ->deselectRecordsAfterCompletion(),
 
+                // PREMIUM (Nuevo)
+                Tables\Actions\BulkAction::make('mark_as_premium')
+                    ->label('Hacer Premium')
+                    ->icon('heroicon-o-sparkles') // Sparkles for premium
+                    ->color('warning') // Gold-ish
+                    ->action(fn(Collection $records) => $records->each->update(['is_premium' => true]))
+                    ->deselectRecordsAfterCompletion(),
+
+                Tables\Actions\BulkAction::make('unmark_as_premium')
+                    ->label('Quitar Premium')
+                    ->icon('heroicon-o-sparkles')
+                    ->color('gray')
+                    ->action(fn(Collection $records) => $records->each->update(['is_premium' => false]))
+                    ->deselectRecordsAfterCompletion(),
+
                 // DESTACADOS
                 Tables\Actions\BulkAction::make('mark_as_featured')
                     ->label('Destacar Seleccionados')
@@ -414,8 +442,6 @@ class VehicleResource extends Resource
             ]),
         ];
     }
-
-
 
     public static function getRelations(): array
     {
