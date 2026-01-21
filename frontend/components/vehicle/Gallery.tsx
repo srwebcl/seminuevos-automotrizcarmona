@@ -80,9 +80,27 @@ export default function Gallery({ images, model }: GalleryProps) {
                     priority
                     unoptimized={true}
                 />
-                <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-1 rounded-full text-xs font-bold backdrop-blur-sm">
+                <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-1 rounded-full text-xs font-bold backdrop-blur-sm pointer-events-none">
                     <i className="fa-solid fa-expand mr-1.5"></i> Ampliar
                 </div>
+
+                {/* Desktop Navigation Arrows */}
+                {images.length > 1 && (
+                    <>
+                        <button
+                            onClick={handlePrev}
+                            className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white text-black flex items-center justify-center transition shadow-lg opacity-0 group-hover:opacity-100"
+                        >
+                            <i className="fa-solid fa-chevron-left text-sm"></i>
+                        </button>
+                        <button
+                            onClick={handleNext}
+                            className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white text-black flex items-center justify-center transition shadow-lg opacity-0 group-hover:opacity-100"
+                        >
+                            <i className="fa-solid fa-chevron-right text-sm"></i>
+                        </button>
+                    </>
+                )}
             </div>
 
             {/* Mobile Swipeable Gallery */}
