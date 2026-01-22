@@ -51,10 +51,7 @@ class VehicleController extends Controller
             });
         }
 
-        // Default sort priority: Featured first, then newest
-        $query->orderByDesc('is_featured');
-
-        if ($request->has('sort')) {
+        if ($request->has('sort') && !empty($request->query('sort'))) {
             $sort = $request->query('sort');
             switch ($sort) {
                 case 'price_asc':
@@ -76,9 +73,11 @@ class VehicleController extends Controller
                     ');
                     break;
                 default:
+                    $query->orderByDesc('is_featured');
                     $query->orderBy('created_at', 'desc');
             }
         } else {
+            $query->orderByDesc('is_featured');
             $query->orderBy('created_at', 'desc');
         }
 
