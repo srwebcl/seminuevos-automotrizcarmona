@@ -39,8 +39,8 @@ export async function getVehicles(page = 1, filters?: { category?: string; brand
     if (filters?.is_offer) query += `&is_offer=1`;
     if (filters?.tag) query += `&tag=${filters.tag}`;
 
-    // Catalog: 5 minutes cache (300s)
-    return fetchAPI<PaginatedResponse<Vehicle>>(query, { revalidate: 300 });
+    // Catalog: 1 minute cache (60s) for faster updates
+    return fetchAPI<PaginatedResponse<Vehicle>>(query, { revalidate: 60 });
 }
 
 export async function getPremiumVehicles(): Promise<PaginatedResponse<Vehicle>> {
@@ -49,8 +49,8 @@ export async function getPremiumVehicles(): Promise<PaginatedResponse<Vehicle>> 
 }
 
 export async function getFeaturedVehicles(): Promise<{ data: Vehicle[] }> {
-    // Featured home: 5 minutes (300s)
-    return fetchAPI<{ data: Vehicle[] }>('vehicles/featured', { revalidate: 300 });
+    // Featured home: 1 minute (60s)
+    return fetchAPI<{ data: Vehicle[] }>('vehicles/featured', { revalidate: 60 });
 }
 
 export async function getVehicleBySlug(slug: string): Promise<{ data: Vehicle }> {
