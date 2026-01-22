@@ -141,23 +141,12 @@ export default function VehicleListCard({ vehicle }: VehicleListCardProps) {
                     {/* COL 1: Info & Specs (Merged) */}
                     <div className="col-span-7 flex flex-col justify-center h-full border-r border-gray-100 pr-6">
                         <div className="flex flex-col gap-1">
-                            {/* Row 1: Brand | Year | Share */}
+                            {/* Row 1: Brand | Year */}
                             <div className="flex items-center gap-2.5">
                                 <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest leading-none mt-0.5">{vehicle.brand.name}</span>
                                 <span className="bg-gray-100 text-gray-500 text-[10px] font-bold px-1.5 py-0.5 rounded-md leading-none border border-gray-200/50">
                                     {vehicle.year}
                                 </span>
-                                {/* Share Button (Inline) - Subtle */}
-                                <div className="scale-75 origin-left -ml-1 opacity-40 hover:opacity-100 transition-opacity">
-                                    <ShareButton
-                                        title={`${vehicle.brand.name} ${vehicle.model}`}
-                                        slug={vehicle.slug}
-                                        brand={vehicle.brand.name}
-                                        model={vehicle.model}
-                                        year={vehicle.year}
-                                        price={vehicle.price_offer_formatted || vehicle.price_financing_formatted || vehicle.price_formatted}
-                                    />
-                                </div>
                             </div>
 
                             {/* Row 2: Model */}
@@ -209,12 +198,27 @@ export default function VehicleListCard({ vehicle }: VehicleListCardProps) {
                             )}
                         </div>
 
-                        <Link
-                            href={`/auto/${vehicle.slug}`}
-                            className="h-9 px-5 bg-gray-900 text-white text-[11px] font-semibold rounded-lg hover:bg-black transition flex items-center justify-center shadow-sm active:scale-95 group/btn"
-                        >
-                            Ver Detalle <i className="fa-solid fa-arrow-right ml-2 group-hover/btn:translate-x-1 transition-transform text-[9px]"></i>
-                        </Link>
+                        <div className="flex items-center gap-3">
+                            {/* Share Button (Bubble Variant) */}
+                            <div className="scale-90">
+                                <ShareButton
+                                    title={`${vehicle.brand.name} ${vehicle.model}`}
+                                    slug={vehicle.slug}
+                                    brand={vehicle.brand.name}
+                                    model={vehicle.model}
+                                    year={vehicle.year}
+                                    price={vehicle.price_offer_formatted || vehicle.price_financing_formatted || vehicle.price_formatted}
+                                    variant="stack"
+                                />
+                            </div>
+
+                            <Link
+                                href={`/auto/${vehicle.slug}`}
+                                className="h-9 px-5 bg-gray-900 text-white text-[11px] font-semibold rounded-lg hover:bg-black transition flex items-center justify-center shadow-sm active:scale-95 group/btn"
+                            >
+                                Ver Detalle <i className="fa-solid fa-arrow-right ml-2 group-hover/btn:translate-x-1 transition-transform text-[9px]"></i>
+                            </Link>
+                        </div>
                     </div>
 
                 </div>
