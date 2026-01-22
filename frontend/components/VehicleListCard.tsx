@@ -141,13 +141,13 @@ export default function VehicleListCard({ vehicle }: VehicleListCardProps) {
                     {/* COL 1: Info & Specs (Merged) */}
                     <div className="col-span-7 flex flex-col justify-center border-r border-gray-100 pr-6">
                         {/* Row 1: Brand | Year | Share */}
-                        <div className="flex items-center gap-3 mb-1">
-                            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{vehicle.brand.name}</span>
-                            <span className="bg-gray-100 text-gray-600 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wide">
+                        <div className="flex items-center gap-3 mb-1.5">
+                            <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">{vehicle.brand.name}</span>
+                            <span className="bg-gray-50 text-gray-500 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wide border border-gray-100">
                                 {vehicle.year}
                             </span>
                             {/* Share Button (Inline) */}
-                            <div className="scale-90 origin-left">
+                            <div className="scale-90 origin-left opacity-80 hover:opacity-100 transition-opacity">
                                 <ShareButton
                                     title={`${vehicle.brand.name} ${vehicle.model}`}
                                     slug={vehicle.slug}
@@ -161,11 +161,11 @@ export default function VehicleListCard({ vehicle }: VehicleListCardProps) {
 
                         {/* Row 2: Model */}
                         <Link href={`/auto/${vehicle.slug}`} className="group-hover:text-premium-gold transition-colors block mb-2">
-                            <h3 className="text-2xl font-black text-gray-900 leading-none truncate" title={vehicle.model}>{vehicle.model}</h3>
+                            <h3 className="text-xl font-bold text-gray-900 leading-none truncate" title={vehicle.model}>{vehicle.model}</h3>
                         </Link>
 
                         {/* Row 3: Specs */}
-                        <div className="flex items-center gap-6 text-sm font-medium text-gray-500">
+                        <div className="flex items-center gap-5 text-xs font-medium text-gray-400">
                             <div className="flex items-center gap-2" title="Kilometraje">
                                 <i className="fa-solid fa-gauge-high text-gray-300"></i>
                                 <span>{vehicle.km_formatted}</span>
@@ -183,33 +183,33 @@ export default function VehicleListCard({ vehicle }: VehicleListCardProps) {
 
                     {/* COL 2: Price & Actions (Right Aligned) */}
                     <div className="col-span-5 flex flex-col justify-center items-end text-right pl-2">
-                        <div className="mb-4">
+                        <div className="mb-3">
                             {vehicle.is_offer && vehicle.price_offer_formatted ? (
                                 <div className="flex flex-col items-end">
                                     <div className="flex items-center gap-2 justify-end mb-1">
-                                        <span className="bg-red-100 text-red-600 text-[10px] font-black px-2 py-0.5 rounded uppercase">Oferta</span>
+                                        <span className="bg-red-50 text-red-600 text-[9px] font-bold px-2 py-0.5 rounded uppercase">Oferta</span>
                                         <span className="text-xs text-gray-400 line-through">{vehicle.price_formatted}</span>
                                     </div>
-                                    <p className="text-4xl font-black text-red-600 tracking-tight leading-none">{vehicle.price_offer_formatted}</p>
+                                    <p className="text-3xl font-bold text-red-600 tracking-tight leading-none">{vehicle.price_offer_formatted}</p>
                                 </div>
                             ) : vehicle.price_financing_formatted ? (
                                 <div className="flex flex-col items-end">
-                                    <p className="text-[10px] text-blue-600 font-bold uppercase flex items-center gap-1 justify-end mb-1">
+                                    <p className="text-[9px] text-blue-600 font-bold uppercase flex items-center gap-1 justify-end mb-1">
                                         <i className="fa-solid fa-credit-card"></i> Financiamiento
                                     </p>
-                                    <p className="text-4xl font-black text-blue-700 tracking-tight leading-none mb-1">{vehicle.price_financing_formatted}</p>
-                                    <p className="text-xs text-gray-400 font-medium">Contado: <strong className="text-gray-600">{vehicle.price_formatted}</strong></p>
+                                    <p className="text-3xl font-bold text-blue-700 tracking-tight leading-none mb-1">{vehicle.price_financing_formatted}</p>
+                                    <p className="text-[10px] text-gray-400 font-medium">Contado: <strong className="text-gray-600">{vehicle.price_formatted}</strong></p>
                                 </div>
                             ) : (
-                                <p className="text-4xl font-black text-gray-900 tracking-tight leading-none">{vehicle.price_formatted}</p>
+                                <p className="text-3xl font-bold text-gray-900 tracking-tight leading-none">{vehicle.price_formatted}</p>
                             )}
                         </div>
 
                         <Link
                             href={`/auto/${vehicle.slug}`}
-                            className="h-10 px-8 bg-black text-white text-sm font-bold rounded-xl hover:bg-gray-800 transition flex items-center justify-center shadow-lg shadow-black/10 active:scale-95 group/btn"
+                            className="h-10 px-6 bg-gray-900 text-white text-xs font-semibold rounded-lg hover:bg-black transition flex items-center justify-center shadow-md active:scale-95 group/btn"
                         >
-                            Ver Detalle <i className="fa-solid fa-arrow-right ml-2 group-hover/btn:translate-x-1 transition-transform"></i>
+                            Ver Detalle <i className="fa-solid fa-arrow-right ml-2 group-hover/btn:translate-x-1 transition-transform text-[10px]"></i>
                         </Link>
                     </div>
 
