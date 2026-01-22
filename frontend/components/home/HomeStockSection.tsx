@@ -27,6 +27,8 @@ export default function HomeStockSection({ initialVehicles, categories }: HomeSt
                 response = await getVehicles(1, { is_featured: true });
             } else if (filterType === 'premium') {
                 response = await getVehicles(1, { is_premium: true });
+            } else if (filterType === 'offers') {
+                response = await getVehicles(1, { is_offer: true });
             } else if (filterType === 'category' && slug) {
                 response = await getVehicles(1, { category: slug });
             } else {
@@ -61,6 +63,13 @@ export default function HomeStockSection({ initialVehicles, categories }: HomeSt
                         className={`filter-btn shrink-0 snap-center px-6 py-2.5 rounded-full border text-sm font-bold transition flex items-center gap-2 whitespace-nowrap ${activeFilter === 'featured' ? 'bg-black text-white border-black' : 'bg-white text-gray-700 border-gray-200 hover:bg-black hover:text-white'}`}
                     >
                         <i className="fa-solid fa-star text-yellow-500"></i> Destacados
+                    </button>
+
+                    <button
+                        onClick={() => handleFilter('offers')}
+                        className={`filter-btn shrink-0 snap-center px-6 py-2.5 rounded-full border text-sm font-bold transition flex items-center gap-2 whitespace-nowrap ${activeFilter === 'offers' ? 'bg-black text-white border-black' : 'bg-white text-red-600 border-red-200 hover:bg-red-600 hover:text-white hover:border-red-600'}`}
+                    >
+                        <i className="fa-solid fa-fire-flame-curved"></i> Ofertas
                     </button>
 
                     <button
