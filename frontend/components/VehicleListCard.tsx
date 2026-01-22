@@ -20,8 +20,8 @@ export default function VehicleListCard({ vehicle }: VehicleListCardProps) {
 
     return (
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300 group flex flex-row min-h-[145px] md:h-40 h-auto">
-            {/* Image Section - Compact width Responsive */}
-            <div className="w-[125px] xs:w-[135px] md:w-[240px] relative shrink-0 overflow-hidden">
+            {/* Image Section - Responsive Width */}
+            <div className="w-[125px] xs:w-[135px] md:w-[280px] relative shrink-0 overflow-hidden">
                 <Link href={`/auto/${vehicle.slug}`} className="block h-full w-full relative">
                     <Image
                         src={vehicle.cover_photo || '/images/placeholder-car.jpg'}
@@ -63,87 +63,158 @@ export default function VehicleListCard({ vehicle }: VehicleListCardProps) {
                 </Link>
             </div>
 
-            {/* Content Section */}
-            <div className="flex-1 p-2.5 md:p-4 flex flex-col justify-between min-w-0">
-                <div>
-                    {/* Header: Brand/Model/Price */}
-                    <div className="mb-1">
-                        <div className="flex justify-between items-start">
-                            <div className="min-w-0 pr-2">
-                                <Link href={`/auto/${vehicle.slug}`}>
-                                    {/* Brand + Model (Single Line) */}
-                                    <h3 className="text-gray-900 text-base md:text-lg leading-tight uppercase mb-1 truncate">
-                                        <span className="font-extrabold mr-1.5">{vehicle.brand.name}</span>
-                                        <span className="font-bold text-gray-700">{vehicle.model}</span>
-                                    </h3>
+            {/* Content Section - Adaptive Layout */}
+            <div className="flex-1 p-2.5 md:p-0 min-w-0">
 
-                                    {/* Specs Subtitle */}
-                                    <p className="text-[10px] md:text-xs text-gray-500 font-medium uppercase truncate">
-                                        {[
-                                            formatEngine(vehicle.motor),
-                                            vehicle.traction,
-                                            vehicle.transmission === 'MECANICO' || vehicle.transmission === 'MECÁNICO' ? 'MEC' : (vehicle.transmission === 'AUTOMATICO' || vehicle.transmission === 'AUTOMÁTICO' ? 'AUT' : vehicle.transmission),
-                                            vehicle.year
-                                        ].filter(Boolean).join(' • ')}
-                                    </p>
-                                </Link>
+                {/* MOBILE LAYOUT (Stack) - Visible ONLY on Mobile */}
+                <div className="md:hidden flex flex-col justify-between h-full">
+                    <div>
+                        <div className="mb-1">
+                            <Link href={`/auto/${vehicle.slug}`}>
+                                <h3 className="text-gray-900 text-base leading-tight uppercase mb-1 truncate">
+                                    <span className="font-extrabold mr-1.5">{vehicle.brand.name}</span>
+                                    <span className="font-bold text-gray-700">{vehicle.model}</span>
+                                </h3>
+                                <p className="text-[10px] text-gray-500 font-medium uppercase truncate">
+                                    {[
+                                        formatEngine(vehicle.motor),
+                                        vehicle.traction,
+                                        vehicle.transmission === 'MECANICO' || vehicle.transmission === 'MECÁNICO' ? 'MEC' : (vehicle.transmission === 'AUTOMATICO' || vehicle.transmission === 'AUTOMÁTICO' ? 'AUT' : vehicle.transmission),
+                                        vehicle.year
+                                    ].filter(Boolean).join(' • ')}
+                                </p>
+                            </Link>
+                            <div className="mt-1">
+                                {vehicle.is_offer && vehicle.price_offer_formatted ? (
+                                    <div className="flex flex-col">
+                                        <div className="flex items-center gap-1.5 flex-wrap">
+                                            <span className="bg-red-100 text-red-600 text-[8px] font-black px-1.5 py-0.5 rounded uppercase">Oferta</span>
+                                            <span className="text-[9px] text-gray-400 line-through decoration-red-200">{vehicle.price_formatted}</span>
+                                        </div>
+                                        <p className="text-lg font-black text-red-600 tracking-tight">{vehicle.price_offer_formatted}</p>
+                                    </div>
+                                ) : vehicle.price_financing_formatted ? (
+                                    <div className="flex flex-col">
+                                        <p className="text-[8px] text-blue-600 font-bold uppercase flex items-center gap-1">
+                                            <i className="fa-solid fa-credit-card"></i> con Financiamiento
+                                        </p>
+                                        <p className="text-lg font-black text-blue-700 tracking-tight leading-none">{vehicle.price_financing_formatted}</p>
+                                        <p className="text-[8px] text-gray-400 font-medium">Contado: <strong className="text-gray-600">{vehicle.price_formatted}</strong></p>
+                                    </div>
+                                ) : (
+                                    <p className="text-lg font-black text-gray-900 tracking-tight">{vehicle.price_formatted}</p>
+                                )}
                             </div>
                         </div>
-                        <div className="mt-1">
-                            {vehicle.is_offer && vehicle.price_offer_formatted ? (
-                                <div className="flex flex-col">
-                                    <div className="flex items-center gap-1.5 flex-wrap">
-                                        <span className="bg-red-100 text-red-600 text-[8px] font-black px-1.5 py-0.5 rounded uppercase">Oferta</span>
-                                        <span className="text-[9px] text-gray-400 line-through decoration-red-200">{vehicle.price_formatted}</span>
-                                    </div>
-                                    <p className="text-lg md:text-xl font-black text-red-600 tracking-tight">{vehicle.price_offer_formatted}</p>
-                                </div>
-                            ) : vehicle.price_financing_formatted ? (
-                                <div className="flex flex-col">
-                                    <p className="text-[8px] text-blue-600 font-bold uppercase flex items-center gap-1">
-                                        <i className="fa-solid fa-credit-card"></i> con Financiamiento
-                                    </p>
-                                    <p className="text-lg md:text-xl font-black text-blue-700 tracking-tight leading-none">{vehicle.price_financing_formatted}</p>
-                                    <p className="text-[8px] text-gray-400 font-medium">Contado: <strong className="text-gray-600">{vehicle.price_formatted}</strong></p>
-                                </div>
-                            ) : (
-                                <p className="text-lg md:text-xl font-black text-gray-900 tracking-tight">{vehicle.price_formatted}</p>
-                            )}
+                        <div className="flex flex-wrap items-center gap-2 text-[10px] text-gray-500 font-medium leading-none">
+                            <span>{vehicle.year}</span>
+                            <span className="text-gray-300">|</span>
+                            <span>{vehicle.km_formatted}</span>
+                            <span className="text-gray-300">|</span>
+                            <span>{vehicle.transmission === 'Automática' ? 'Aut.' : 'Mec.'}</span>
                         </div>
                     </div>
 
-                    {/* Specs Grid - Clean Text Style (Bruno Style) */}
-                    <div className="flex flex-wrap items-center gap-2 text-[10px] md:text-xs text-gray-500 font-medium leading-none">
-                        <span>{vehicle.year}</span>
-                        <span className="text-gray-300">|</span>
-                        <span>{vehicle.km_formatted}</span>
-                        <span className="text-gray-300">|</span>
-                        <span>{vehicle.transmission === 'Automática' ? 'Aut.' : 'Mec.'}</span>
+                    <div className="flex items-center gap-2 mt-2 pt-2 border-t border-gray-50">
+                        <Link
+                            href={`/auto/${vehicle.slug}`}
+                            className="flex-1 h-9 bg-black text-white text-[10px] font-bold rounded-lg hover:bg-gray-800 transition text-center flex items-center justify-center"
+                        >
+                            Ver Detalles
+                        </Link>
+                        <div className="shrink-0">
+                            <ShareButton
+                                title={`${vehicle.brand.name} ${vehicle.model}`}
+                                slug={vehicle.slug}
+                                brand={vehicle.brand.name}
+                                model={vehicle.model}
+                                year={vehicle.year}
+                                price={vehicle.price_offer_formatted || vehicle.price_financing_formatted || vehicle.price_formatted}
+                            />
+                        </div>
                     </div>
                 </div>
 
-                {/* Actions */}
-                <div className="flex items-center gap-2 mt-2 pt-2 border-t border-gray-50">
-                    <Link
-                        href={`/auto/${vehicle.slug}`}
-                        className="flex-1 h-9 md:h-10 bg-black text-white text-[10px] md:text-xs font-bold rounded-lg hover:bg-gray-800 transition text-center flex items-center justify-center"
-                    >
-                        Ver Detalles
-                    </Link>
+                {/* DESKTOP LAYOUT (3-Column Grid) - Visible ONLY on Desktop */}
+                <div className="hidden md:grid h-full grid-cols-12 gap-6 p-5">
 
-                    {/* Share Button (Second) */}
-                    <div className="shrink-0">
-                        <ShareButton
-                            title={`${vehicle.brand.name} ${vehicle.model}`}
-                            slug={vehicle.slug}
-                            brand={vehicle.brand.name}
-                            model={vehicle.model}
-                            year={vehicle.year}
-                            price={vehicle.price_offer_formatted || vehicle.price_financing_formatted || vehicle.price_formatted}
-                        />
+                    {/* COL 1: Main Info (Brand, Model) */}
+                    <div className="col-span-4 flex flex-col justify-center border-r border-gray-100 pr-4">
+                        <Link href={`/auto/${vehicle.slug}`} className="group-hover:text-premium-gold transition-colors">
+                            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-1">{vehicle.brand.name}</span>
+                            <h3 className="text-xl font-black text-gray-900 leading-none mb-2 truncate" title={vehicle.model}>{vehicle.model}</h3>
+                            <div className="flex items-center gap-2">
+                                <span className="bg-gray-100 text-gray-600 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wide">
+                                    {vehicle.year}
+                                </span>
+                                {vehicle.is_unique_owner && (
+                                    <span className="bg-blue-50 text-blue-600 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wide">
+                                        Único Dueño
+                                    </span>
+                                )}
+                            </div>
+                        </Link>
                     </div>
 
-                    {/* WhatsApp Button (Contact) - Icon Only on Mobile */}
+                    {/* COL 2: Specs (Clean Vertical Stack) */}
+                    <div className="col-span-4 flex flex-col justify-center pl-4 border-r border-gray-100">
+                        <div className="space-y-2">
+                            <div className="flex items-center gap-3 text-sm text-gray-600">
+                                <div className="w-5 text-center text-gray-400"><i className="fa-solid fa-gauge-high"></i></div>
+                                <span className="font-medium">{vehicle.km_formatted}</span>
+                            </div>
+                            <div className="flex items-center gap-3 text-sm text-gray-600">
+                                <div className="w-5 text-center text-gray-400"><i className="fa-solid fa-gears"></i></div>
+                                <span className="font-medium capitalize">{vehicle.transmission?.toLowerCase()}</span>
+                            </div>
+                            <div className="flex items-center gap-3 text-sm text-gray-600">
+                                <div className="w-5 text-center text-gray-400"><i className="fa-solid fa-gas-pump"></i></div>
+                                <span className="font-medium capitalize">{vehicle.fuel?.toLowerCase() || 'Combustible n/a'}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* COL 3: Price & Actions (Right Aligned) */}
+                    <div className="col-span-4 flex flex-col justify-center items-end text-right pl-4">
+                        <div className="mb-4">
+                            {vehicle.is_offer && vehicle.price_offer_formatted ? (
+                                <div className="flex flex-col items-end">
+                                    <span className="text-xs text-gray-400 line-through mb-0.5">{vehicle.price_formatted}</span>
+                                    <div className="flex items-center gap-2 justify-end">
+                                        <span className="bg-red-100 text-red-600 text-[10px] font-black px-2 py-0.5 rounded uppercase">Oferta</span>
+                                        <p className="text-2xl font-black text-red-600 tracking-tight">{vehicle.price_offer_formatted}</p>
+                                    </div>
+                                </div>
+                            ) : vehicle.price_financing_formatted ? (
+                                <div className="flex flex-col items-end">
+                                    <p className="text-[10px] text-blue-600 font-bold uppercase flex items-center gap-1 justify-end mb-0.5">
+                                        <i className="fa-solid fa-credit-card"></i> Financiamiento
+                                    </p>
+                                    <p className="text-2xl font-black text-blue-700 tracking-tight leading-none mb-1">{vehicle.price_financing_formatted}</p>
+                                    <p className="text-xs text-gray-400 font-medium">Contado: <strong className="text-gray-600">{vehicle.price_formatted}</strong></p>
+                                </div>
+                            ) : (
+                                <p className="text-2xl font-black text-gray-900 tracking-tight">{vehicle.price_formatted}</p>
+                            )}
+                        </div>
+
+                        <div className="flex items-center gap-2 w-full justify-end">
+                            <ShareButton
+                                title={`${vehicle.brand.name} ${vehicle.model}`}
+                                slug={vehicle.slug}
+                                brand={vehicle.brand.name}
+                                model={vehicle.model}
+                                year={vehicle.year}
+                                price={vehicle.price_offer_formatted || vehicle.price_financing_formatted || vehicle.price_formatted}
+                            />
+                            <Link
+                                href={`/auto/${vehicle.slug}`}
+                                className="h-10 px-6 bg-black text-white text-xs font-bold rounded-lg hover:bg-gray-800 transition flex items-center justify-center shadow-lg shadow-black/10 active:scale-95"
+                            >
+                                Ver Detalle <i className="fa-solid fa-arrow-right ml-2"></i>
+                            </Link>
+                        </div>
+                    </div>
 
                 </div>
             </div>
