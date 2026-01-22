@@ -66,71 +66,74 @@ export default function VehicleListCard({ vehicle }: VehicleListCardProps) {
             {/* Content Section - Adaptive Layout */}
             <div className="flex-1 p-2.5 md:p-0 min-w-0">
 
-                {/* MOBILE LAYOUT (Stack) - Visible ONLY on Mobile */}
+                {/* MOBILE LAYOUT (Optimized) - Visible ONLY on Mobile */}
                 <div className="md:hidden flex flex-col justify-between h-full">
-                    <div>
-                        <div className="mb-1">
-                            <Link href={`/auto/${vehicle.slug}`}>
-                                <h3 className="text-gray-900 text-base leading-tight uppercase mb-1 truncate">
-                                    <span className="font-extrabold mr-1.5">{vehicle.brand.name}</span>
-                                    <span className="font-bold text-gray-700">{vehicle.model}</span>
-                                </h3>
-                                <p className="text-[10px] text-gray-500 font-medium uppercase truncate">
-                                    {[
-                                        formatEngine(vehicle.motor),
-                                        vehicle.traction,
-                                        vehicle.transmission === 'MECANICO' || vehicle.transmission === 'MECÁNICO' ? 'MEC' : (vehicle.transmission === 'AUTOMATICO' || vehicle.transmission === 'AUTOMÁTICO' ? 'AUT' : vehicle.transmission),
-                                        vehicle.year
-                                    ].filter(Boolean).join(' • ')}
-                                </p>
-                            </Link>
-                            <div className="mt-1">
-                                {vehicle.is_offer && vehicle.price_offer_formatted ? (
-                                    <div className="flex flex-col">
-                                        <div className="flex items-center gap-1.5 flex-wrap">
-                                            <span className="bg-red-100 text-red-600 text-[8px] font-black px-1.5 py-0.5 rounded uppercase">Oferta</span>
-                                            <span className="text-[9px] text-gray-400 line-through decoration-red-200">{vehicle.price_formatted}</span>
-                                        </div>
-                                        <p className="text-lg font-black text-red-600 tracking-tight">{vehicle.price_offer_formatted}</p>
-                                    </div>
-                                ) : vehicle.price_financing_formatted ? (
-                                    <div className="flex flex-col">
-                                        <p className="text-[8px] text-blue-600 font-bold uppercase flex items-center gap-1">
-                                            <i className="fa-solid fa-credit-card"></i> con Financiamiento
-                                        </p>
-                                        <p className="text-lg font-black text-blue-700 tracking-tight leading-none">{vehicle.price_financing_formatted}</p>
-                                        <p className="text-[8px] text-gray-400 font-medium">Contado: <strong className="text-gray-600">{vehicle.price_formatted}</strong></p>
-                                    </div>
-                                ) : (
-                                    <p className="text-lg font-black text-gray-900 tracking-tight">{vehicle.price_formatted}</p>
-                                )}
-                            </div>
+                    <div className="flex flex-col gap-0.5">
+                        {/* Row 1: Brand | Year */}
+                        <div className="flex items-center justify-between mb-0.5">
+                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none">{vehicle.brand.name}</span>
+                            <span className="bg-gray-100 text-gray-600 text-[9px] font-bold px-1.5 py-0.5 rounded leading-none border border-gray-200">
+                                {vehicle.year}
+                            </span>
                         </div>
-                        <div className="flex flex-wrap items-center gap-2 text-[10px] text-gray-500 font-medium leading-none">
-                            <span>{vehicle.year}</span>
-                            <span className="text-gray-300">|</span>
+
+                        {/* Row 2: Model */}
+                        <Link href={`/auto/${vehicle.slug}`} className="block">
+                            <h3 className="text-sm font-bold text-gray-900 leading-tight mb-1 line-clamp-2" title={vehicle.model}>
+                                {vehicle.model}
+                            </h3>
+                        </Link>
+
+                        {/* Row 3: Specs (Single Line) */}
+                        <div className="flex items-center gap-2 text-[10px] font-medium text-gray-500">
                             <span>{vehicle.km_formatted}</span>
                             <span className="text-gray-300">|</span>
-                            <span>{vehicle.transmission === 'Automática' ? 'Aut.' : 'Mec.'}</span>
+                            <span className="capitalize">{vehicle.transmission === 'Automática' ? 'Aut.' : 'Mec.'}</span>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-2 mt-2 pt-2 border-t border-gray-50">
-                        <Link
-                            href={`/auto/${vehicle.slug}`}
-                            className="flex-1 h-9 bg-black text-white text-[10px] font-bold rounded-lg hover:bg-gray-800 transition text-center flex items-center justify-center"
-                        >
-                            Ver Detalles
-                        </Link>
-                        <div className="shrink-0">
-                            <ShareButton
-                                title={`${vehicle.brand.name} ${vehicle.model}`}
-                                slug={vehicle.slug}
-                                brand={vehicle.brand.name}
-                                model={vehicle.model}
-                                year={vehicle.year}
-                                price={vehicle.price_offer_formatted || vehicle.price_financing_formatted || vehicle.price_formatted}
-                            />
+                    {/* Row 4: Price & Actions (Compact Bottom Row) */}
+                    <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-50">
+                        {/* Price (Left) */}
+                        <div>
+                            {vehicle.is_offer && vehicle.price_offer_formatted ? (
+                                <div className="flex flex-col">
+                                    <span className="text-[9px] text-gray-400 line-through leading-none decoration-red-200">{vehicle.price_formatted}</span>
+                                    <span className="text-base font-bold text-red-600 leading-none tracking-tight">{vehicle.price_offer_formatted}</span>
+                                </div>
+                            ) : vehicle.price_financing_formatted ? (
+                                <div className="flex flex-col">
+                                    <p className="text-[8px] text-blue-600 font-bold uppercase flex items-center gap-0.5 mb-0.5 leading-none">
+                                        <i className="fa-solid fa-credit-card"></i> Financiamiento
+                                    </p>
+                                    <span className="text-base font-bold text-blue-700 leading-none tracking-tight">{vehicle.price_financing_formatted}</span>
+                                </div>
+                            ) : (
+                                <span className="text-base font-bold text-gray-900 leading-none tracking-tight">{vehicle.price_formatted}</span>
+                            )}
+                        </div>
+
+                        {/* Actions (Right) */}
+                        <div className="flex items-center gap-2">
+                            {/* Share Button (Bubble Variant) */}
+                            <div className="scale-75 origin-right">
+                                <ShareButton
+                                    title={`${vehicle.brand.name} ${vehicle.model}`}
+                                    slug={vehicle.slug}
+                                    brand={vehicle.brand.name}
+                                    model={vehicle.model}
+                                    year={vehicle.year}
+                                    price={vehicle.price_offer_formatted || vehicle.price_financing_formatted || vehicle.price_formatted}
+                                    variant="stack"
+                                />
+                            </div>
+
+                            <Link
+                                href={`/auto/${vehicle.slug}`}
+                                className="h-8 px-4 bg-gray-900 text-white text-[10px] font-bold rounded-lg flex items-center justify-center shadow-sm active:scale-95 transition-transform"
+                            >
+                                Ver
+                            </Link>
                         </div>
                     </div>
                 </div>
