@@ -2,11 +2,11 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    // 1. Activar AVIF (formato ultra-ligero de Google)
+    // ESTA LÍNEA ES OBLIGATORIA PARA EL 90+:
     formats: ['image/avif', 'image/webp'],
 
-    // 2. Ajustar tamaños para móviles específicos (reduce peso en celulares)
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    // Tamaños exactos para dispositivos móviles
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
 
     remotePatterns: [
       {
@@ -25,8 +25,7 @@ const nextConfig: NextConfig = {
       }
     ],
   },
-  // 3. Comprimir JS (ayuda con el aviso de "JavaScript heredado")
-  compress: true,
+  compress: true, // Habilita compresión Gzip/Brotli
 };
 
 export default nextConfig;
