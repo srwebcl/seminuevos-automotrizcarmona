@@ -107,7 +107,16 @@ export default function HomeStockSection({ initialVehicles, categories }: HomeSt
             </div>
 
             <div className="mt-16 text-center">
-                <a href={activeFilter === 'todo' ? '/catalogo' : `/catalogo?category=${activeFilter}`} className="inline-block px-10 py-4 rounded-full border-2 border-black text-black font-bold uppercase tracking-wide hover:bg-black hover:text-white transition duration-300">
+                <a
+                    href={
+                        activeFilter === 'todo' ? '/catalogo' :
+                            activeFilter === 'offers' ? '/catalogo?is_offer=1' :
+                                activeFilter === 'featured' ? '/catalogo?is_featured=1' :
+                                    activeFilter === 'premium' ? '/catalogo?is_premium=1' :
+                                        `/catalogo?category=${activeFilter}`
+                    }
+                    className="inline-block px-10 py-4 rounded-full border-2 border-black text-black font-bold uppercase tracking-wide hover:bg-black hover:text-white transition duration-300"
+                >
                     Ver Inventario Completo
                 </a>
             </div>
