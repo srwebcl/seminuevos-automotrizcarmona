@@ -7,7 +7,7 @@ import { searchGlobal } from '@/lib/api';
 import { Banner } from '@/types/banner';
 import { useDebounce } from 'use-debounce';
 import Link from 'next/link';
-import { VehicleCategory, Vehicle } from '@/types/vehicle'; // Asegura importar los tipos
+import { VehicleCategory, Vehicle } from '@/types/vehicle';
 
 interface HeroSectionProps {
     banners: Banner[];
@@ -112,50 +112,95 @@ export default function HeroSection({ banners }: HeroSectionProps) {
             <div className="relative z-50 w-full max-w-5xl px-4 text-center">
                 <h1 className="text-6xl md:text-8xl font-black text-white mb-10 tracking-tighter leading-[0.9] drop-shadow-2xl">
                     <span className="block mb-2">Tu próximo auto,</span>
-                    <span className="text-transparent bg-clip-text bg-gradient-to-b from-[#FFF5D1] via-[#D4AF37] to-[#8A6E2F] filter brightness-125">
+                    <span className="text-transparent bg-clip-text bg-gradient-to-b from-[#FFF5D1] via-[#D4AF37] to-[#8A6E2F] filter brightness-125 drop-shadow-[0_0_25px_rgba(212,175,55,0.4)]">
                         está aquí.
                     </span>
                 </h1>
 
                 <div className="mt-12 relative max-w-2xl mx-auto group">
                     <div className="relative z-50">
-                        <i className={`fa-solid fa-magnifying-glass absolute left-6 top-1/2 -translate-y-1/2 z-10 text-xl ${showResults ? 'text-premium-gold' : 'text-gray-400'}`}></i>
+                        <i className={`fa-solid fa-magnifying-glass absolute left-6 top-1/2 -translate-y-1/2 z-10 text-xl transition-colors duration-300 ${showResults ? 'text-premium-gold' : 'text-gray-400'}`}></i>
                         <input
                             type="text"
-                            placeholder="Busca por marca, modelo o tipo..."
+                            placeholder="Busca por marca, modelo o tipo... (Ej: BMW X5)"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             onFocus={() => { if (searchTerm.length >= 2) setShowResults(true); }}
-                            className="w-full h-16 pl-16 pr-16 rounded-2xl bg-white/95 backdrop-blur-xl text-gray-900 focus:outline-none text-xl font-medium shadow-2xl"
+                            className="w-full h-16 pl-16 pr-16 rounded-2xl bg-white/95 backdrop-blur-xl border border-white/20 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-premium-gold/30 focus:bg-white transition-all text-xl font-medium shadow-[0_0_50px_rgba(0,0,0,0.4)]"
                         />
-                        {/* ... (Botón limpiar y loader se mantienen igual) ... */}
+                        {searchTerm && !isLoading && (
+                            <button
+                                onClick={() => { setSearchTerm(''); setShowResults(false); }}
+                                className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition-colors"
+                                aria-label="Limpiar búsqueda"
+                            >
+                                <i className="fa-solid fa-xmark text-xl"></i>
+                            </button>
+                        )}
+                        {isLoading && (
+                            <div className="absolute right-6 top-1/2 -translate-y-1/2">
+                                <i className="fa-solid fa-circle-notch fa-spin text-premium-gold text-xl"></i>
+                            </div>
+                        )}
                     </div>
 
                     {/* Resultados de Búsqueda */}
                     {showResults && (
-                        <div className="absolute top-full left-0 w-full bg-white/90 backdrop-blur-2xl rounded-3xl shadow-2xl mt-4 overflow-hidden z-[100] text-left">
-                            {/* ... (Mantén tu lógica de renderizado de resultados aquí) ... */}
-                            {/* IMPORTANTE: En la lista de autos, asegura usar sizes="100px" en las imágenes pequeñas */}
+                        <div className="absolute top-full left-0 w-full bg-white/90 backdrop-blur-2xl rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] mt-4 overflow-hidden z-[100] border border-white/40 ring-1 ring-black/5 text-left transform transition-all duration-300 origin-top animate-in fade-in slide-in-from-top-2">
+                            {/* Categories Grid */}
+                            {results.categories.length > 0 && (
+                                <div className="bg-gray-50/50 p-4 border-b border-gray-100">
+                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 ml-1">Categorías Sugeridas</p>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        {results.categories.map((cat) => (
+                                            <button
+                                                key={cat.slug}
+                                                onClick={() => router.push(`/catalogo?category=${cat.slug}`)}
+                                                className="flex items-center justify-between px-4 py-3 bg-white border border-gray-100 rounded-xl hover:border-premium-gold/50 hover:shadow-md hover:scale-[1.02] transition-all group"
+                                            >
+                                                <span className="text-sm font-bold text-gray-700 group-hover:text-black capitalize">{cat.name.toLowerCase()}</span>
+                                                <i className="fa-solid fa-chevron-right text-[10px] text-gray-300 group-hover:text-premium-gold"></i>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Vehicles List */}
                             {results.vehicles.length > 0 && (
                                 <div className="p-2">
+                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 mt-2 ml-3">Vehículos Encontrados</p>
                                     <ul className="space-y-1">
                                         {results.vehicles.map((auto) => (
                                             <li key={auto.id}>
-                                                <Link href={`/auto/${auto.slug}`} className="flex items-center gap-4 p-3 hover:bg-white/50 rounded-xl">
-                                                    <div className="w-24 h-16 relative rounded-lg overflow-hidden">
-                                                        {auto.cover_photo && (
+                                                <Link href={`/auto/${auto.slug}`} className="flex items-center gap-4 p-3 rounded-2xl hover:bg-white hover:shadow-lg transition-all duration-300 group ring-1 ring-transparent hover:ring-black/5">
+                                                    <div className="w-24 h-16 bg-gray-200 rounded-xl overflow-hidden shrink-0 relative shadow-inner">
+                                                        {auto.cover_photo ? (
                                                             <Image
                                                                 src={auto.cover_photo}
                                                                 alt={auto.model}
                                                                 fill
-                                                                className="object-cover"
-                                                                sizes="100px" // ESTO FALTABA
+                                                                className="object-cover transition-transform duration-500 group-hover:scale-110"
+                                                                sizes="100px"
                                                             />
+                                                        ) : (
+                                                            <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-300">
+                                                                <i className="fa-solid fa-car"></i>
+                                                            </div>
+                                                        )}
+                                                        {auto.is_premium && (
+                                                            <div className="absolute top-0 right-0 bg-premium-gold text-black text-[8px] font-bold px-1.5 py-0.5 rounded-bl-lg">
+                                                                PRO
+                                                            </div>
                                                         )}
                                                     </div>
-                                                    <div>
-                                                        <p className="font-bold text-gray-900">{auto.brand?.name} {auto.model}</p>
-                                                        <p className="text-xs text-gray-500">{auto.year} • {auto.price_formatted}</p>
+                                                    <div className="flex-1 min-w-0">
+                                                        <div className="flex items-baseline gap-2 mb-0.5">
+                                                            <span className="text-[10px] font-bold text-premium-gold/80 uppercase tracking-wider">{auto.brand?.name}</span>
+                                                            <span className="text-[10px] text-gray-400">• {auto.year}</span>
+                                                        </div>
+                                                        <h4 className="text-base font-black text-gray-900 leading-none truncate group-hover:text-premium-gold transition-colors">{auto.model}</h4>
+                                                        <p className="text-xs text-gray-500 mt-1">{auto.km_formatted}</p>
                                                     </div>
                                                 </Link>
                                             </li>
@@ -163,6 +208,22 @@ export default function HeroSection({ banners }: HeroSectionProps) {
                                     </ul>
                                 </div>
                             )}
+
+                            {/* Empty State */}
+                            {results.categories.length === 0 && results.vehicles.length === 0 && (
+                                <div className="p-8 text-center flex flex-col items-center justify-center text-gray-400">
+                                    <i className="fa-solid fa-magnifying-glass text-3xl mb-3 opacity-20"></i>
+                                    <p className="text-sm font-medium">No encontramos resultados para <span className="text-gray-900 font-bold">"{searchTerm}"</span></p>
+                                    <p className="text-xs mt-1">Intenta buscar por marca o modelo general.</p>
+                                </div>
+                            )}
+
+                            {/* Footer */}
+                            <div className="bg-gray-50 px-4 py-2 text-center border-t border-gray-100">
+                                <Link href="/catalogo" className="text-[10px] font-bold text-gray-500 hover:text-black transition-colors uppercase tracking-widest">
+                                    Ver Inventario Completo
+                                </Link>
+                            </div>
                         </div>
                     )}
                 </div>
