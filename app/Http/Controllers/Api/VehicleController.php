@@ -41,6 +41,13 @@ class VehicleController extends Controller
             });
         }
 
+        if ($request->has('tag')) {
+            $slug = $request->query('tag');
+            $query->whereHas('tags', function ($q) use ($slug) {
+                $q->where('slug', $slug);
+            });
+        }
+
         if ($request->has('q')) {
             $search = $request->query('q');
             $query->where(function ($q) use ($search) {

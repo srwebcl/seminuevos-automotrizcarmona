@@ -2,33 +2,40 @@
 
 import { useState } from 'react';
 import { Vehicle, VehicleCategory } from '@/types/vehicle';
+import { Tag } from '@/lib/api';
 import VehicleCard from '@/components/VehicleCard';
 import { getVehicles } from '@/lib/api';
 
 interface HomeStockSectionProps {
     initialVehicles: Vehicle[];
     categories: VehicleCategory[];
+    tags: Tag[];
 }
 
-export default function HomeStockSection({ initialVehicles, categories }: HomeStockSectionProps) {
+export default function HomeStockSection({ initialVehicles, categories, tags }: HomeStockSectionProps) {
     const [vehicles, setVehicles] = useState<Vehicle[]>(initialVehicles);
     const [activeFilter, setActiveFilter] = useState('todo');
+    const [filterType, setFilterType] = useState<'todo' | 'featured' | 'premium' | 'category' | 'tag'>('todo');
     const [loading, setLoading] = useState(false);
 
-    const handleFilter = async (filterType: string, slug?: string) => {
+    const handleFilter = async (type: 'todo' | 'featured' | 'premium' | 'category' | 'tag', slug?: string) => {
         setLoading(true);
-        setActiveFilter(slug ? slug : filterType);
+        const filterKey = slug ? slug : type;
+        setActiveFilter(filterKey);
+        setFilterType(type);
 
         try {
             let response;
-            if (filterType === 'todo') {
+            if (type === 'todo') {
                 response = await getVehicles(1);
-            } else if (filterType === 'featured') {
+            } else if (type === 'featured') {
                 response = await getVehicles(1, { is_featured: true });
-            } else if (filterType === 'premium') {
+            } else if (type === 'premium') {
                 response = await getVehicles(1, { is_premium: true });
-            } else if (filterType === 'category' && slug) {
+            } else if (type === 'category' && slug) {
                 response = await getVehicles(1, { category: slug });
+            } else if (type === 'tag' && slug) {
+                response = await getVehicles(1, { tag: slug });
             } else {
                 response = await getVehicles(1);
             }
@@ -38,6 +45,15 @@ export default function HomeStockSection({ initialVehicles, categories }: HomeSt
         } finally {
             setLoading(false);
         }
+    };
+
+    const getCtaLink = () => {
+        if (filterType === 'todo') return '/catalogo';
+        if (filterType === 'featured') return '/catalogo?is_featured=1';
+        if (filterType === 'premium') return '/catalogo?is_premium=1';
+        if (filterType === 'category') return `/catalogo?category=${activeFilter}`;
+        if (filterType === 'tag') return `/catalogo?tag=${activeFilter}`;
+        return '/catalogo';
     };
 
     return (
@@ -70,6 +86,19 @@ export default function HomeStockSection({ initialVehicles, categories }: HomeSt
                         <i className="fa-solid fa-crown"></i> Premium
                     </button>
 
+                    {/* Dynamic Tags */}
+                    {tags.map((tag) => (
+                        <button
+                            key={tag.id}
+                            onClick={() => handleFilter('tag', tag.slug)}
+                            className={`filter-btn shrink-0 snap-center px-6 py-2.5 rounded-full border text-sm font-bold transition flex items-center gap-2 whitespace-nowrap ${activeFilter === tag.slug ? 'bg-black text-white border-black' : 'bg-white text-gray-700 border-gray-200 hover:bg-black hover:text-white'}`}
+                            style={activeFilter !== tag.slug ? { color: tag.text_color || '#374151', borderColor: tag.bg_color || '#e5e7eb' } : {}}
+                        >
+                            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: tag.bg_color || '#000' }}></span>
+                            {tag.name}
+                        </button>
+                    ))}
+
                     {categories
                         .filter(cat => !['seminuevos', 'premium', 'ofertas'].includes(cat.slug))
                         .map((cat) => (
@@ -98,7 +127,7 @@ export default function HomeStockSection({ initialVehicles, categories }: HomeSt
             </div>
 
             <div className="mt-16 text-center">
-                <a href={activeFilter === 'todo' ? '/catalogo' : `/catalogo?category=${activeFilter}`} className="inline-block px-10 py-4 rounded-full border-2 border-black text-black font-bold uppercase tracking-wide hover:bg-black hover:text-white transition duration-300">
+                <a href={getCtaLink()} className="inline-block px-10 py-4 rounded-full border-2 border-black text-black font-bold uppercase tracking-wide hover:bg-black hover:text-white transition duration-300">
                     Ver Inventario Completo
                 </a>
             </div>

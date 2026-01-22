@@ -15,6 +15,7 @@ Route::get('/locations', [LocationController::class, 'index']);
 Route::get('categories', [\App\Http\Controllers\Api\CategoryController::class, 'index']);
 Route::get('menu', [\App\Http\Controllers\Api\CategoryController::class, 'menu']);
 Route::get('settings', [\App\Http\Controllers\Api\SettingsController::class, 'index']);
+Route::get('tags', [\App\Http\Controllers\Api\TagController::class, 'index']);
 
 // Banners (Using dedicated controller or closure if simple)
 Route::get('banners', function () {

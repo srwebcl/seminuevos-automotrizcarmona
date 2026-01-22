@@ -28,10 +28,20 @@ async function fetchAPI<T>(endpoint: string, options?: { revalidate?: number }):
     return res.json();
 }
 
-export async function getVehicles(page = 1, filters?: { category?: string; brand?: string; q?: string; sort?: string; is_premium?: boolean; is_featured?: boolean }): Promise<PaginatedResponse<Vehicle>> {
+export interface Tag {
+    id: number;
+    name: string;
+    slug: string;
+    bg_color: string;
+    text_color: string;
+    vehicles_count?: number;
+}
+
+export async function getVehicles(page = 1, filters?: { category?: string; brand?: string; q?: string; sort?: string; is_premium?: boolean; is_featured?: boolean; tag?: string }): Promise<PaginatedResponse<Vehicle>> {
     let query = `vehicles?page=${page}`;
     if (filters?.category) query += `&category=${filters.category}`;
     if (filters?.brand) query += `&brand=${filters.brand}`;
+    if (filters?.tag) query += `&tag=${filters.tag}`;
     if (filters?.q) query += `&q=${encodeURIComponent(filters.q)}`;
     if (filters?.sort) query += `&sort=${filters.sort}`;
     if (filters?.is_premium) query += `&is_premium=1`;
@@ -39,6 +49,11 @@ export async function getVehicles(page = 1, filters?: { category?: string; brand
 
     // Catalog: 5 minutes cache (300s)
     return fetchAPI<PaginatedResponse<Vehicle>>(query, { revalidate: 300 });
+}
+
+export async function getTags(): Promise<{ data: Tag[] }> {
+    // Tags: 1 hour cache (3600s) - Tags structure changes rarely
+    return fetchAPI<{ data: Tag[] }>('tags', { revalidate: 3600 });
 }
 
 export async function getPremiumVehicles(): Promise<PaginatedResponse<Vehicle>> {

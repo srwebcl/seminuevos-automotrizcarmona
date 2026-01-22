@@ -1,4 +1,4 @@
-import { getVehicles, getPremiumVehicles, getCategories, getBanners } from '@/lib/api';
+import { getVehicles, getPremiumVehicles, getCategories, getBanners, getTags } from '@/lib/api';
 import HeroSection from '@/components/home/HeroSection';
 import PremiumSection from '@/components/home/PremiumSection';
 import HomeStockSection from '@/components/home/HomeStockSection';
@@ -9,20 +9,22 @@ import CategoryPromos from '@/components/home/CategoryPromos';
 export const dynamic = 'force-dynamic'; // Disable caching for real-time updates
 
 export default async function Home() {
-  let recentVehicles, premiumVehicles, categoriesResponse, bannersResponse;
+  let recentVehicles, premiumVehicles, categoriesResponse, bannersResponse, tagsResponse;
 
   try {
     const results = await Promise.allSettled([
       getVehicles(1),
       getPremiumVehicles(),
       getCategories(),
-      getBanners()
+      getBanners(),
+      getTags()
     ]);
 
     recentVehicles = results[0].status === 'fulfilled' ? results[0].value : { data: [] };
     premiumVehicles = results[1].status === 'fulfilled' ? results[1].value : { data: [] };
     categoriesResponse = results[2].status === 'fulfilled' ? results[2].value : { data: [] };
     bannersResponse = results[3].status === 'fulfilled' ? results[3].value : { data: [] };
+    tagsResponse = results[4].status === 'fulfilled' ? results[4].value : { data: [] };
 
     // Log errors if any
     results.forEach((result, index) => {
@@ -36,10 +38,12 @@ export default async function Home() {
     recentVehicles = { data: [] };
     categoriesResponse = { data: [] };
     bannersResponse = { data: [] };
+    tagsResponse = { data: [] };
   }
 
   const categories = categoriesResponse.data || [];
   const banners = bannersResponse.data || [];
+  const tags = tagsResponse.data || [];
 
   // Filter Banners
   const heroBanners = banners.filter(b => b.type === 'hero');
@@ -53,7 +57,7 @@ export default async function Home() {
       <FullBanner banner={fullBanner} />
       <CategoryPromos promos={promos} />
 
-      <HomeStockSection initialVehicles={recentVehicles.data || []} categories={categories} />
+      <HomeStockSection initialVehicles={recentVehicles.data || []} categories={categories} tags={tags} />
       <ExperienceSection />
     </main>
   );
