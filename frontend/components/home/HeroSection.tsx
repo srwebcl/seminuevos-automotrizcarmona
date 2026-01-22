@@ -68,8 +68,8 @@ export default function HeroSection({ banners }: HeroSectionProps) {
     }, [debouncedSearchTerm]);
 
     return (
-        <div className="relative h-[650px] flex items-center justify-center bg-black overflow-hidden">
-            <div className="absolute inset-0 z-0">
+        <div className="relative h-[650px] flex items-center justify-center bg-black">
+            <div className="absolute inset-0 z-0 overflow-hidden">
                 {slides.map((slide, index) => {
                     const isActive = index === currentSlideIndex;
                     // LÓGICA CRÍTICA: La primera imagen (LCP) NO debe tener transición.
@@ -93,8 +93,8 @@ export default function HeroSection({ banners }: HeroSectionProps) {
                                         src={slide.url}
                                         alt={slide.banner.title || "Hero"}
                                         fill
-                                        // Calidad 60 reduce el peso dramáticamente en móvil sin perder nitidez visible
-                                        quality={60}
+                                        // Calidad 80 para recuperar nitidez (antes 60)
+                                        quality={80}
                                         priority={isFirst}
                                         fetchPriority={isFirst ? "high" : "auto"}
                                         className="object-cover"
@@ -112,7 +112,7 @@ export default function HeroSection({ banners }: HeroSectionProps) {
             <div className="relative z-50 w-full max-w-5xl px-4 text-center">
                 <h1 className="text-6xl md:text-8xl font-black text-white mb-10 tracking-tighter leading-[0.9] drop-shadow-2xl">
                     <span className="block mb-2">Tu próximo auto,</span>
-                    <span className="text-transparent bg-clip-text bg-gradient-to-b from-[#FFF5D1] via-[#D4AF37] to-[#8A6E2F] filter brightness-125 drop-shadow-[0_0_25px_rgba(212,175,55,0.4)]">
+                    <span className="text-transparent bg-clip-text bg-gradient-to-b from-[#FFF5D1] via-[#D4AF37] to-[#8A6E2F] filter brightness-125 drop-shadow-[0_0_25px_rgba(212,175,55,0.4)] pb-2 pr-2 inline-block">
                         está aquí.
                     </span>
                 </h1>

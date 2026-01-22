@@ -5,12 +5,15 @@ export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000
 // Safe backend URL derivation: remove trailing /api (and optional slash) only if it's at the end
 export const BACKEND_URL = API_URL.replace(/\/api\/?$/, '');
 
-async function fetchAPI<T>(endpoint: string): Promise<T> {
+async function fetchAPI<T>(endpoint: string, options?: { revalidate?: number }): Promise<T> {
     const separator = endpoint.includes('?') ? '&' : '?';
     const url = `${API_URL}/${endpoint}`;
 
+    // Default revalidate is 60s if not specified
+    const revalidate = options?.revalidate ?? 60;
+
     const res = await fetch(url, {
-        next: { revalidate: 60 }, // ISR: Cache for 60 seconds
+        next: { revalidate },
         headers: {
             'Accept': 'application/json',
         }
@@ -34,27 +37,27 @@ export async function getVehicles(page = 1, filters?: { category?: string; brand
     if (filters?.is_premium) query += `&is_premium=1`;
     if (filters?.is_featured) query += `&is_featured=1`;
 
-    return fetchAPI<PaginatedResponse<Vehicle>>(query);
+    // Catalog: 5 minutes cache (300s)
+    return fetchAPI<PaginatedResponse<Vehicle>>(query, { revalidate: 300 });
 }
 
 export async function getPremiumVehicles(): Promise<PaginatedResponse<Vehicle>> {
-    // Only fetch first page of premium vehicles for the home section
-    return getVehicles(1, { is_premium: true });
+    const response = await getVehicles(1, { is_premium: true });
+    return response;
 }
 
 export async function getFeaturedVehicles(): Promise<{ data: Vehicle[] }> {
-    // The endpoint /vehicles/featured returns a collection resource, wrapping data in 'data'
-    return fetchAPI<{ data: Vehicle[] }>('vehicles/featured');
+    // Featured home: 5 minutes (300s)
+    return fetchAPI<{ data: Vehicle[] }>('vehicles/featured', { revalidate: 300 });
 }
 
 export async function getVehicleBySlug(slug: string): Promise<{ data: Vehicle }> {
-    return fetchAPI<{ data: Vehicle }>(`vehicles/${slug}`);
+    // Detail: 60s for immediate price updates (Business Requirement)
+    return fetchAPI<{ data: Vehicle }>(`vehicles/${slug}`, { revalidate: 60 });
 }
 
 export async function getCategories(): Promise<{ data: VehicleCategory[] }> {
-    // Assuming backend has a /categories endpoint. If not, we might need to create it or infer.
-    // For now, let's try standard endpoint.
-    return fetchAPI<{ data: VehicleCategory[] }>('categories');
+    return fetchAPI<{ data: VehicleCategory[] }>('categories', { revalidate: 3600 });
 }
 
 export async function getBrands(category?: string): Promise<{ data: { id: number; name: string; slug: string; vehicles_count: number }[] }> {
@@ -62,19 +65,22 @@ export async function getBrands(category?: string): Promise<{ data: { id: number
     if (category) {
         url += `?category=${category}`;
     }
-    return fetchAPI<{ data: { id: number; name: string; slug: string; vehicles_count: number }[] }>(url);
+    return fetchAPI<{ data: { id: number; name: string; slug: string; vehicles_count: number }[] }>(url, { revalidate: 3600 });
 }
 
 export async function searchGlobal(query: string): Promise<{ categories: VehicleCategory[], vehicles: Vehicle[] }> {
+    // Search: Default 60s (or could be lower, but 60s is fine)
     return fetchAPI<{ categories: VehicleCategory[], vehicles: Vehicle[] }>(`search/global?query=${encodeURIComponent(query)}`);
 }
 
 export async function getBanners(): Promise<{ data: Banner[] }> {
-    return fetchAPI<{ data: Banner[] }>('banners');
+    // Banners: 1 hour (3600s)
+    return fetchAPI<{ data: Banner[] }>('banners', { revalidate: 3600 });
 }
 
 export async function getMenu(): Promise<{ data: VehicleCategory[] }> {
-    return fetchAPI<{ data: VehicleCategory[] }>('menu');
+    // Menu: 1 hour (3600s)
+    return fetchAPI<{ data: VehicleCategory[] }>('menu', { revalidate: 3600 });
 }
 
 export interface WhatsappNumber {
@@ -110,16 +116,16 @@ export interface Settings {
 }
 
 export async function getSettings(): Promise<{ data: Settings }> {
-    return fetchAPI('settings');
+    // Settings: 1 hour (3600s)
+    return fetchAPI('settings', { revalidate: 3600 });
 }
 
 export async function getRelatedVehicles(categorySlug: string, currentVehicleId: number): Promise<Vehicle[]> {
-    // Fetch vehicles from the same category
     const { data } = await getVehicles(1, { category: categorySlug });
-    // Filter out the current vehicle and limit to 4
     return data.filter(v => v.id !== currentVehicleId).slice(0, 4);
 }
 
 export async function getLocations(): Promise<{ data: { id: number; name: string; address: string; phone?: string; city: string; image_path?: string; is_active: boolean; schedule?: string; google_maps_url?: string }[] }> {
-    return fetchAPI<{ data: { id: number; name: string; address: string; phone?: string; city: string; image_path?: string; is_active: boolean; schedule?: string; google_maps_url?: string }[] }>('locations');
+    // Locations: 1 hour (3600s)
+    return fetchAPI<{ data: { id: number; name: string; address: string; phone?: string; city: string; image_path?: string; is_active: boolean; schedule?: string; google_maps_url?: string }[] }>('locations', { revalidate: 3600 });
 }

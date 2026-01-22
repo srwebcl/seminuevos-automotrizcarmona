@@ -180,8 +180,8 @@ export default function SmartWhatsAppButton({ numbers = [] }: SmartWhatsAppButto
             {/* Context Bubble */}
             <div
                 className={`
-                    relative max-w-[280px] bg-white text-gray-800 p-5 rounded-[2rem] rounded-br-sm shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] border border-gray-100
-                    transform transition-all duration-500 ease-spring origin-bottom-right
+                    relative max-w-[280px] max-w-[85vw] bg-white text-gray-800 p-5 rounded-[2rem] rounded-br-sm shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] border border-gray-100
+                    transform transition-all duration-500 ease-out origin-bottom
                     ${showBubble && hasScrolled ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-75 translate-y-8 pointer-events-none'}
                 `}
             >
