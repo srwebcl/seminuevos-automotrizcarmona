@@ -58,10 +58,22 @@ class VehicleController extends Controller
             $sort = $request->query('sort');
             switch ($sort) {
                 case 'price_asc':
-                    $query->orderBy('price', 'asc');
+                    $query->orderByRaw('
+                        CASE 
+                            WHEN is_offer = 1 AND price_offer IS NOT NULL THEN price_offer 
+                            WHEN price_financing IS NOT NULL THEN price_financing 
+                            ELSE price 
+                        END ASC
+                    ');
                     break;
                 case 'price_desc':
-                    $query->orderBy('price', 'desc');
+                    $query->orderByRaw('
+                        CASE 
+                            WHEN is_offer = 1 AND price_offer IS NOT NULL THEN price_offer 
+                            WHEN price_financing IS NOT NULL THEN price_financing 
+                            ELSE price 
+                        END DESC
+                    ');
                     break;
                 default:
                     $query->orderBy('created_at', 'desc');
