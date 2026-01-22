@@ -28,7 +28,7 @@ async function fetchAPI<T>(endpoint: string, options?: { revalidate?: number }):
     return res.json();
 }
 
-export async function getVehicles(page = 1, filters?: { category?: string; brand?: string; q?: string; sort?: string; is_premium?: boolean; is_featured?: boolean; is_offer?: boolean }): Promise<PaginatedResponse<Vehicle>> {
+export async function getVehicles(page = 1, filters?: { category?: string; brand?: string; q?: string; sort?: string; is_premium?: boolean; is_featured?: boolean; is_offer?: boolean; tag?: string }): Promise<PaginatedResponse<Vehicle>> {
     let query = `vehicles?page=${page}`;
     if (filters?.category) query += `&category=${filters.category}`;
     if (filters?.brand) query += `&brand=${filters.brand}`;
@@ -37,6 +37,7 @@ export async function getVehicles(page = 1, filters?: { category?: string; brand
     if (filters?.is_premium) query += `&is_premium=1`;
     if (filters?.is_featured) query += `&is_featured=1`;
     if (filters?.is_offer) query += `&is_offer=1`;
+    if (filters?.tag) query += `&tag=${filters.tag}`;
 
     // Catalog: 5 minutes cache (300s)
     return fetchAPI<PaginatedResponse<Vehicle>>(query, { revalidate: 300 });

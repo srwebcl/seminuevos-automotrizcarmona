@@ -28,7 +28,7 @@ export default function HomeStockSection({ initialVehicles, categories }: HomeSt
             } else if (filterType === 'premium') {
                 response = await getVehicles(1, { is_premium: true });
             } else if (filterType === 'offers') {
-                response = await getVehicles(1, { is_offer: true });
+                response = await getVehicles(1, { tag: 'oferta' });
             } else if (filterType === 'category' && slug) {
                 response = await getVehicles(1, { category: slug });
             } else {
@@ -110,7 +110,7 @@ export default function HomeStockSection({ initialVehicles, categories }: HomeSt
                 <a
                     href={
                         activeFilter === 'todo' ? '/catalogo' :
-                            activeFilter === 'offers' ? '/catalogo?is_offer=1' :
+                            activeFilter === 'offers' ? '/catalogo?tag=oferta' :
                                 activeFilter === 'featured' ? '/catalogo?is_featured=1' :
                                     activeFilter === 'premium' ? '/catalogo?is_premium=1' :
                                         `/catalogo?category=${activeFilter}`
