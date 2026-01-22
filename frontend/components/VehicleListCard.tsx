@@ -140,11 +140,11 @@ export default function VehicleListCard({ vehicle }: VehicleListCardProps) {
 
                     {/* COL 1: Info & Specs (Merged) */}
                     <div className="col-span-7 flex flex-col justify-center h-full border-r border-gray-100 pr-6">
-                        <div className="flex flex-col gap-1">
-                            {/* Row 1: Brand | Year */}
-                            <div className="flex items-center gap-2.5">
-                                <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest leading-none mt-0.5">{vehicle.brand.name}</span>
-                                <span className="bg-gray-100 text-gray-500 text-[10px] font-bold px-1.5 py-0.5 rounded-md leading-none border border-gray-200/50">
+                        <div className="flex flex-col gap-1 w-full">
+                            {/* Row 1: Brand (Left) | Year (Right) */}
+                            <div className="flex items-center justify-between w-full mb-0.5">
+                                <span className="text-[13px] font-bold text-gray-400 uppercase tracking-widest leading-none">{vehicle.brand.name}</span>
+                                <span className="bg-gray-100 text-gray-600 text-[11px] font-bold px-2 py-0.5 rounded-md leading-none border border-gray-200">
                                     {vehicle.year}
                                 </span>
                             </div>
@@ -155,7 +155,7 @@ export default function VehicleListCard({ vehicle }: VehicleListCardProps) {
                             </Link>
                         </div>
 
-                        {/* Row 3: Specs (Pushed to bottom if needed, or close to model) */}
+                        {/* Row 3: Specs */}
                         <div className="flex items-center gap-3 text-[11px] font-medium text-gray-400 mt-2">
                             <div className="flex items-center gap-1.5" title="Kilometraje">
                                 <i className="fa-solid fa-gauge-high text-gray-300 text-[10px]"></i>

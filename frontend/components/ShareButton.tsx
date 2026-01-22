@@ -37,10 +37,10 @@ export default function ShareButton({ title, slug, brand, model, year, price, va
 
     if (variant === 'stack') {
         return (
-            <div className="relative">
+            <div className="relative group/share">
                 {/* Options Menu (Pop-up) - Sophisticated Glassmorphism */}
                 {isOpen && (
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 flex gap-2 bg-black/80 backdrop-blur-xl border border-white/10 p-2 rounded-2xl shadow-2xl shadow-black/50 animate-in fade-in slide-in-from-bottom-2 duration-200 z-50">
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 flex gap-2 bg-black/90 backdrop-blur-xl border border-white/10 p-2 rounded-2xl shadow-2xl shadow-black/50 animate-in fade-in slide-in-from-bottom-2 duration-200 z-[60]">
                         {/* WhatsApp Button */}
                         <button
                             onClick={handleWhatsApp}
@@ -60,22 +60,25 @@ export default function ShareButton({ title, slug, brand, model, year, price, va
                         </button>
 
                         {/* Little arrow down */}
-                        <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-black/80 backdrop-blur-xl border-r border-b border-white/10 rotate-45"></div>
+                        <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-black/90 backdrop-blur-xl border-r border-b border-white/10 rotate-45"></div>
                     </div>
                 )}
 
-                {/* Main Toggle Button - Apple Style Icon */}
+                {/* Main Toggle Button - Improved Style & Icon */}
                 <button
                     onClick={() => setIsOpen(!isOpen)}
-                    className={`w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all duration-300 border border-transparent ${isOpen ? 'bg-black text-white shadow-lg scale-105' : 'bg-gray-50 text-gray-400 hover:bg-gray-100 hover:text-black hover:border-gray-200'} relative group`}
+                    className={`w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all duration-300 border ${isOpen ? 'bg-black text-white border-black shadow-lg scale-105' : 'bg-white text-gray-400 border-gray-100 hover:border-gray-200 hover:text-gray-900 hover:bg-gray-50'} relative group/btn`}
                     aria-label="Abrir opciones de compartir"
                 >
-                    <i className="fa-solid fa-arrow-up-from-bracket text-[13px] mb-0.5"></i>
+                    <i className="fa-solid fa-share-nodes text-[14px]"></i>
 
-                    {/* Tooltip on Hover */}
-                    <span className="absolute -top-10 left-1/2 -translate-x-1/2 bg-black text-white text-[10px] font-bold py-1 px-3 rounded-full opacity-0 group-hover:opacity-100 transition-all whitespace-nowrap pointer-events-none translate-y-2 group-hover:translate-y-0 shadow-xl">
-                        Compartir
-                    </span>
+                    {/* Tooltip on Hover - Only for Button */}
+                    {!isOpen && (
+                        <span className="absolute -top-9 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[10px] font-bold py-1 px-2.5 rounded-lg opacity-0 group-hover/btn:opacity-100 transition-all duration-200 whitespace-nowrap pointer-events-none translate-y-1 group-hover/btn:translate-y-0 shadow-xl z-50">
+                            Compartir
+                            <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></span>
+                        </span>
+                    )}
                 </button>
             </div>
         );
