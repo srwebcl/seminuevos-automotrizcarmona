@@ -77,7 +77,7 @@ export async function searchGlobal(query: string): Promise<{ categories: Vehicle
 
 export async function getBanners(): Promise<{ data: Banner[] }> {
     // Banners: 1 hour (3600s)
-    return fetchAPI<{ data: Banner[] }>('banners', { revalidate: 3600 });
+    return fetchAPI<{ data: Banner[] }>('banners', { revalidate: 0 });
 }
 
 export async function getMenu(): Promise<{ data: VehicleCategory[] }> {
