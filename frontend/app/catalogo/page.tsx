@@ -7,19 +7,21 @@ export const dynamic = 'force-dynamic';
 export default async function CatalogPage({
     searchParams,
 }: {
-    searchParams: Promise<{ page?: string; category?: string; brand?: string; q?: string; sort?: string; is_premium?: string }>;
+    searchParams: Promise<{ page?: string; category?: string; brand?: string; q?: string; sort?: string; is_premium?: string; is_offer?: string }>;
 }) {
     const params = await searchParams;
-    const { page, category, brand, q, sort, is_premium } = params;
+    const { page, category, brand, q, sort, is_premium, is_offer } = params;
     const currentPage = Number(page) || 1;
     const isPremium = is_premium === '1' || is_premium === 'true';
+    const isOffer = is_offer === '1' || is_offer === 'true';
 
     const filters = {
         category,
         brand,
         q,
         sort,
-        is_premium: isPremium
+        is_premium: isPremium,
+        is_offer: isOffer
     };
 
     // Parallel fetching
