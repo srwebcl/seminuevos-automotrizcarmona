@@ -122,8 +122,12 @@ export async function getSettings(): Promise<{ data: Settings }> {
     return fetchAPI('settings', { revalidate: 3600 });
 }
 
-export async function getRelatedVehicles(categorySlug: string, currentVehicleId: number): Promise<Vehicle[]> {
-    const { data } = await getVehicles(1, { category: categorySlug });
+export async function getRelatedVehicles(categorySlug: string, currentVehicleId: number, isPremium: boolean = false): Promise<Vehicle[]> {
+    const filters: any = { category: categorySlug };
+    if (isPremium) {
+        filters.is_premium = true;
+    }
+    const { data } = await getVehicles(1, filters);
     return data.filter(v => v.id !== currentVehicleId).slice(0, 4);
 }
 

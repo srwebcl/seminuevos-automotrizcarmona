@@ -26,7 +26,7 @@ export default async function VehicleDetailPage({
 
     // Fetch related vehicles
     const categoryIdentifier = vehicle.category?.slug || vehicle.category_id?.toString() || '';
-    const relatedVehicles = await getRelatedVehicles(categoryIdentifier, vehicle.id).catch(() => []);
+    const relatedVehicles = await getRelatedVehicles(categoryIdentifier, vehicle.id, vehicle.is_premium).catch(() => []);
 
     // Fallback for settings if needed
     const { data: settings } = await getSettings().catch(() => ({ data: { contact: { address: '', email: '' }, whatsapp_numbers: [] } }));
