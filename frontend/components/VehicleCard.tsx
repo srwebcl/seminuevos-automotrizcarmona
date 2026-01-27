@@ -14,10 +14,7 @@ function adjustColor(color: string, amount: number) {
 export default function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
 
     return (
-        <div className={`group relative bg-white rounded-[1.5rem] overflow-hidden transition-all duration-300 flex flex-col h-full hover:-translate-y-1 hover:shadow-xl 
-            ${vehicle.is_premium ? 'border-2 border-premium-gold shadow-lg shadow-premium-gold/10' :
-                vehicle.is_featured ? 'border-2 border-blue-600 shadow-lg shadow-blue-600/10' :
-                    'border border-gray-100 shadow-sm'}`}>
+        <div className="group relative bg-white rounded-[1.5rem] overflow-hidden transition-all duration-300 flex flex-col h-full hover:-translate-y-1 hover:shadow-xl border border-gray-100 shadow-sm">
             <div className="relative aspect-[16/10] bg-gray-100 overflow-hidden group/image">
                 {/* Badges Container */}
                 <div className="absolute top-3 left-3 z-30 flex flex-col gap-2 items-start">

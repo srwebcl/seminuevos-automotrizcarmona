@@ -181,46 +181,12 @@ class VehicleResource extends Resource
                                                     ->helperText('Carrusel Home'),
                                             ]),
 
-                                            // ETIQUETAS PROMOCIONALES (Switches Directos)
-                                            Forms\Components\Group::make()
-                                                ->schema(function () {
-                                                    $tags = \App\Models\Tag::all();
-
-                                                    // Placeholder for layout
-                                                    $grid = Grid::make(3)->schema(
-                                                        $tags->map(function ($tag) {
-                                                        return Toggle::make('tag_' . $tag->id) // Unique name, not field bound
-                                                            ->label($tag->name)
-                                                            ->onColor(match ($tag->name) {
-                                                                'Oferta' => 'danger',
-                                                                'Liquidación' => 'warning',
-                                                                'Cyber' => 'primary',
-                                                                default => 'success',
-                                                            })
-                                                            ->live()
-                                                            ->dehydrated(false) // No intentar guardar en modelo directamente
-                                                            ->afterStateHydrated(function (Toggle $component, $record) use ($tag) {
-                                                                if (!$record)
-                                                                    return;
-                                                                // Check direct DB relationship
-                                                                $isActive = $record->tags()->where('tags.id', $tag->id)->exists();
-                                                                $component->state($isActive);
-                                                            })
-                                                            ->afterStateUpdated(function (bool $state, $record) use ($tag) {
-                                                                if (!$record)
-                                                                    return;
-
-                                                                if ($state) {
-                                                                    $record->tags()->syncWithoutDetaching([$tag->id]);
-                                                                } else {
-                                                                    $record->tags()->detach($tag->id);
-                                                                }
-                                                            });
-                                                    })->toArray()
-                                                    );
-
-                                                    return [$grid];
-                                                }),
+                                            // ETIQUETAS PROMOCIONALES (Checkbox List)
+                                            Forms\Components\CheckboxList::make('tags')
+                                                ->label('Etiquetas Activas')
+                                                ->relationship('tags', 'name')
+                                                ->columns(3)
+                                                ->helperText('Selecciona las etiquetas para este vehículo (Oferta, Cyber, etc).'),
                                         ]),
                                 ]),
                             ]),
@@ -303,20 +269,31 @@ class VehicleResource extends Resource
                 ->sortable()
                 ->searchable(),
 
-            Tables\Columns\ToggleColumn::make('is_published')
+            Tables\Columns\IconColumn::make('is_published')
                 ->label('Disponible')
+                ->boolean()
+                ->action(function ($record) {
+                    $record->update(['is_published' => !$record->is_published]);
+                })
+                ->tooltip('Clic para cambiar estado')
                 ->sortable(),
 
-            Tables\Columns\ToggleColumn::make('is_premium')
+            Tables\Columns\IconColumn::make('is_premium')
                 ->label('Premium')
+                ->boolean()
+                ->action(function ($record) {
+                    $record->update(['is_premium' => !$record->is_premium]);
+                })
+                ->tooltip('Clic para cambiar estado')
                 ->sortable(),
 
-            Tables\Columns\ToggleColumn::make('is_featured')
+            Tables\Columns\IconColumn::make('is_featured')
                 ->label('Destacado')
-                ->sortable(),
-
-            Tables\Columns\ToggleColumn::make('is_offer')
-                ->label('Oferta')
+                ->boolean()
+                ->action(function ($record) {
+                    $record->update(['is_featured' => !$record->is_featured]);
+                })
+                ->tooltip('Clic para cambiar estado')
                 ->sortable(),
         ];
     }
@@ -353,16 +330,45 @@ class VehicleResource extends Resource
                 ->label('Solo Premium')
                 ->query(fn($query) => $query->where('is_premium', true)),
 
-            // 4. FILTRO DE OFERTAS
-            Tables\Filters\Filter::make('is_offer')
-                ->label('En Oferta')
-                ->query(fn($query) => $query->where('is_offer', true)),
+            // 4. FILTRO DE ETIQUETAS
+            Tables\Filters\SelectFilter::make('tags')
+                ->label('Etiquetas')
+                ->relationship('tags', 'name')
+                ->preload()
+                ->multiple(),
         ];
     }
 
     private static function getActions(): array
     {
         return [
+            Tables\Actions\Action::make('quick_tags')
+                ->label('')
+                ->icon('heroicon-o-tag')
+                ->tooltip('Etiquetas Rápidas')
+                ->form([
+                    Forms\Components\Select::make('tags')
+                        ->label('Etiquetas')
+                        ->relationship('tags', 'name')
+                        ->multiple()
+                        ->preload()
+                        ->searchable()
+                        ->placeholder('Selecciona etiquetas...')
+                        ->createOptionForm([
+                            Forms\Components\TextInput::make('name')
+                                ->required()
+                                ->live(onBlur: true)
+                                ->afterStateUpdated(fn($set, $state) => $set('slug', Str::slug($state))),
+                            Forms\Components\TextInput::make('slug')->required()->readOnly(),
+                        ]),
+                ])
+                ->action(function (Vehicle $record, array $data): void {
+                    $record->tags()->sync($data['tags'] ?? []);
+                })
+                ->mountUsing(fn(Forms\ComponentContainer $form, Vehicle $record) => $form->fill([
+                    'tags' => $record->tags->pluck('id')->toArray(),
+                ])),
+
             Tables\Actions\Action::make('view_frontend')
                 ->label('')
                 ->tooltip('Ver en Sitio')

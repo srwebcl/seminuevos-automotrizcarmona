@@ -18,6 +18,11 @@ class BannerObserver
     {
         $hasChanges = false;
 
+        // Skip optimization if no images were changed
+        if (!$banner->wasChanged('image_path') && !$banner->wasChanged('mobile_image_path')) {
+            return;
+        }
+
         // 1. Optimize `image_path` (Array or String depending on old data, but cast ensures Array access)
         $images = $banner->image_path;
         if (!empty($images) && is_array($images)) {

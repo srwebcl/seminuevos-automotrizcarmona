@@ -20,6 +20,12 @@ class VehicleObserver
         // However, Filament syncs might make isDirty tricky for array casts sometimes.
         // We will process photos and if any path changes, we update.
 
+        // SOLO OPTIMIZAR SI LAS FOTOS CAMBIARON
+        // Esto evita que al cambiar "is_premium" se vuelva a procesar todo el array de fotos.
+        if (!$vehicle->wasChanged('photos')) {
+            return;
+        }
+
         $photos = $vehicle->photos ?? [];
         if (empty($photos)) {
             return;

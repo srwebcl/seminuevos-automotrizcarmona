@@ -12,12 +12,12 @@ class SettingsController extends Controller
     public function index()
     {
         // 1. Seasonal Settings (Navidad, Año Nuevo, etc.)
-        $setting = SiteSetting::first();
+        $setting = SiteSetting::first(['*']);
 
         return response()->json([
             'data' => [
                 'seasonal_mode' => $setting ? $setting->seasonal_mode : 'none',
-                'whatsapp_numbers' => WhatsappNumber::where('is_active', true)->get()->map(function ($number) {
+                'whatsapp_numbers' => WhatsappNumber::where('is_active', '=', true, 'and')->get()->map(function ($number) {
                     return [
                         'number' => $number->phone,
                         'label' => $number->label,
@@ -35,7 +35,7 @@ class SettingsController extends Controller
                     'linkedin' => $setting ? $setting->linkedin_url : null,
                     'youtube' => $setting ? $setting->youtube_url : null,
                 ],
-                'locations' => \App\Models\Location::where('is_active', true)->get()->map(function ($loc) {
+                'locations' => \App\Models\Location::where('is_active', '=', true, 'and')->get()->map(function ($loc) {
                     return [
                         'name' => $loc->name,
                         'address' => $loc->address,

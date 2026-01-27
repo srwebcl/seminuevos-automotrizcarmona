@@ -30,8 +30,28 @@ class VehicleController extends Controller
             $query->where('is_premium', true);
         }
 
+        if ($request->has('is_premium')) {
+            $query->where('is_premium', true);
+        }
+
+        if ($request->has('is_offer')) {
+            $query->whereHas('tags', function ($t) {
+                $t->where('slug', 'like', '%ofert%')
+                    ->orWhere('name', 'like', '%ofert%');
+            });
+        }
+
         if ($request->has('is_featured')) {
             $query->where('is_featured', true);
+        }
+
+        if ($request->has('tag')) {
+            $slug = $request->query('tag');
+            $query->whereHas('tags', function ($q) use ($slug) {
+                // Flexible match to support singular/plural (oferta vs ofertas) and name/slug
+                $q->where('slug', 'like', "%{$slug}%")
+                    ->orWhere('name', 'like', "%{$slug}%");
+            });
         }
 
         if ($request->has('brand')) {
@@ -54,6 +74,9 @@ class VehicleController extends Controller
         if ($request->has('sort') && !empty($request->query('sort'))) {
             $sort = $request->query('sort');
             switch ($sort) {
+                case 'latest':
+                    $query->orderBy('created_at', 'desc');
+                    break;
                 case 'price_asc':
                     $query->orderByRaw('
                         CASE 

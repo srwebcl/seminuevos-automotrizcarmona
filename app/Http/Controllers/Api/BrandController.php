@@ -32,7 +32,7 @@ class BrandController extends Controller
                     }
                 }
             ])
-            ->orderBy('name')
+            ->orderBy('name', 'asc')
             ->get();
 
         return response()->json([

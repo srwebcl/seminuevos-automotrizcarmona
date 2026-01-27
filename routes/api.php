@@ -18,7 +18,7 @@ Route::get('settings', [\App\Http\Controllers\Api\SettingsController::class, 'in
 
 // Banners (Using dedicated controller or closure if simple)
 Route::get('banners', function () {
-    $banners = \App\Models\Banner::where('is_active', '=', true)->orderBy('sort_order')->get();
+    $banners = \App\Models\Banner::where('is_active', '=', true, 'and')->orderBy('sort_order', 'asc')->get();
     return \App\Http\Resources\Api\BannerResource::collection($banners);
 });
 

@@ -173,34 +173,40 @@ export default function HeroSection({ banners }: HeroSectionProps) {
                                     <ul className="space-y-1">
                                         {results.vehicles.map((auto) => (
                                             <li key={auto.id}>
-                                                <Link href={`/auto/${auto.slug}`} className="flex items-center gap-4 p-3 rounded-2xl hover:bg-white hover:shadow-lg transition-all duration-300 group ring-1 ring-transparent hover:ring-black/5">
-                                                    <div className="w-24 h-16 bg-gray-200 rounded-xl overflow-hidden shrink-0 relative shadow-inner">
-                                                        {auto.cover_photo ? (
-                                                            <Image
-                                                                src={auto.cover_photo}
-                                                                alt={auto.model}
-                                                                fill
-                                                                className="object-cover transition-transform duration-500 group-hover:scale-110"
-                                                                sizes="100px"
-                                                            />
-                                                        ) : (
-                                                            <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-300">
-                                                                <i className="fa-solid fa-car"></i>
-                                                            </div>
-                                                        )}
-                                                        {auto.is_premium && (
-                                                            <div className="absolute top-0 right-0 bg-premium-gold text-black text-[8px] font-bold px-1.5 py-0.5 rounded-bl-lg">
-                                                                PRO
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                    <div className="flex-1 min-w-0">
-                                                        <div className="flex items-baseline gap-2 mb-0.5">
-                                                            <span className="text-[10px] font-bold text-premium-gold/80 uppercase tracking-wider">{auto.brand?.name}</span>
-                                                            <span className="text-[10px] text-gray-400">• {auto.year}</span>
+                                                <Link href={`/auto/${auto.slug}`} className="flex items-center justify-between gap-4 p-3 rounded-2xl hover:bg-white hover:shadow-lg transition-all duration-300 group ring-1 ring-transparent hover:ring-black/5">
+
+                                                    {/* IZQUIERDA: Imagen + Datos */}
+                                                    <div className="flex items-center gap-4 flex-1 min-w-0">
+                                                        <div className="w-24 h-16 bg-gray-200 rounded-xl overflow-hidden shrink-0 relative shadow-inner">
+                                                            {auto.cover_photo ? (
+                                                                <Image
+                                                                    src={auto.cover_photo}
+                                                                    alt={auto.model}
+                                                                    fill
+                                                                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                                                                    sizes="100px"
+                                                                />
+                                                            ) : (
+                                                                <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-300">
+                                                                    <i className="fa-solid fa-car"></i>
+                                                                </div>
+                                                            )}
                                                         </div>
-                                                        <h4 className="text-base font-black text-gray-900 leading-none truncate group-hover:text-premium-gold transition-colors">{auto.model}</h4>
-                                                        <p className="text-xs text-gray-500 mt-1">{auto.km_formatted}</p>
+                                                        <div className="min-w-0">
+                                                            <div className="flex items-baseline gap-2 mb-0.5">
+                                                                <span className="text-[10px] font-bold text-premium-gold/80 uppercase tracking-wider">{auto.brand?.name}</span>
+                                                                <span className="text-[10px] text-gray-400">• {auto.year}</span>
+                                                            </div>
+                                                            <h4 className="text-base font-black text-gray-900 leading-none truncate group-hover:text-premium-gold transition-colors">{auto.model}</h4>
+                                                            <p className="text-xs text-gray-500 mt-1">{auto.km_formatted}</p>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* DERECHA: Precio */}
+                                                    <div className="text-right shrink-0 pl-2">
+                                                        <p className="text-sm font-black text-gray-900 leading-tight">
+                                                            {auto.price_offer_formatted || auto.price_financing_formatted || auto.price_formatted}
+                                                        </p>
                                                     </div>
                                                 </Link>
                                             </li>
