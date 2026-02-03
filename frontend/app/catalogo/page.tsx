@@ -57,7 +57,7 @@ export default async function CatalogPage({
     const categories = categoriesResponse.data;
 
     // Determine Page Configuration
-    let heroTitle = 'Catálogo Completo';
+    let heroTitle = 'Seminuevos';
     let heroImage = '/images/default-hero.jpg'; // Needs a real default
     let heroSubtitle = `Mostrando ${meta.total} vehículos disponibles`;
 

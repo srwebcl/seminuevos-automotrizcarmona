@@ -34,9 +34,13 @@ export default function TopToolbar({ total, viewMode, onViewChange }: TopToolbar
                         className="text-sm border-none bg-gray-50 rounded-lg py-2 pl-3 pr-8 focus:ring-0 cursor-pointer font-medium text-gray-900"
                     >
                         <option value="a_z">De la A a la Z</option>
-                        <option value="latest">Más recientes</option>
+                        <option value="z_a">De la Z a la A</option>
+                        <option disabled>──────────</option>
                         <option value="price_asc">Menor Precio</option>
                         <option value="price_desc">Mayor Precio</option>
+                        <option disabled>──────────</option>
+                        <option value="latest">Más recientes (Nuevos ingresos)</option>
+                        <option value="oldest">Más antiguos</option>
                     </select>
                 </div>
 

@@ -107,6 +107,13 @@ class VehicleController extends Controller
                     $query->orderBy('brand_name', 'asc')
                         ->orderBy('model', 'asc');
                     break;
+                case 'z_a':
+                    $query->orderBy('brand_name', 'desc')
+                        ->orderBy('model', 'desc');
+                    break;
+                case 'oldest':
+                    $query->orderBy('vehicles.created_at', 'asc');
+                    break;
                 default:
                     // Default to A-Z
                     $query->orderBy('brand_name', 'asc')
