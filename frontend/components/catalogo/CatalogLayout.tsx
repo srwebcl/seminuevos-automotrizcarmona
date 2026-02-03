@@ -89,7 +89,10 @@ export default function CatalogLayout({ vehicles, meta, links, brands, categorie
                     {/* Footer Actions */}
                     <div className="p-5 border-t border-gray-100 bg-white shadow-[0_-4px_10px_-1px_rgba(0,0,0,0.05)] safe-bottom">
                         <button
-                            onClick={() => setShowMobileFilters(false)}
+                            onClick={() => {
+                                // Explicitly close the modal
+                                setShowMobileFilters(false);
+                            }}
                             className="w-full bg-black text-white font-bold py-4 rounded-xl text-lg hover:bg-gray-800 transition shadow-lg shadow-black/20 active:scale-[0.98] flex items-center justify-center gap-2"
                         >
                             Ver {meta.total} Vehículos <i className="fa-solid fa-arrow-right"></i>

@@ -24,14 +24,18 @@ class VehicleController extends Controller
             $query->whereHas('category', function ($q) use ($slug) {
                 $q->where('slug', $slug);
             });
+        } else {
+            // Default: Exclude Motos and Camiones if no category is selected
+            $query->whereDoesntHave('category', function ($q) {
+                $q->whereIn('slug', ['motos', 'camion']);
+            });
         }
 
         if ($request->has('is_premium')) {
             $query->where('is_premium', true);
-        }
-
-        if ($request->has('is_premium')) {
-            $query->where('is_premium', true);
+        } else {
+            // Default: Exclude Premium if not explicitly requested
+            $query->where('is_premium', false);
         }
 
         if ($request->has('is_offer')) {
@@ -71,11 +75,15 @@ class VehicleController extends Controller
             });
         }
 
+        // Apply Join for Sorting (Always needed for A-Z, harmless for others)
+        $query->join('brands', 'vehicles.brand_id', '=', 'brands.id')
+            ->select('vehicles.*', 'brands.name as brand_name');
+
         if ($request->has('sort') && !empty($request->query('sort'))) {
             $sort = $request->query('sort');
             switch ($sort) {
                 case 'latest':
-                    $query->orderBy('created_at', 'desc');
+                    $query->orderBy('vehicles.created_at', 'desc');
                     break;
                 case 'price_asc':
                     $query->orderByRaw('
@@ -95,13 +103,19 @@ class VehicleController extends Controller
                         END DESC
                     ');
                     break;
+                case 'a_z':
+                    $query->orderBy('brand_name', 'asc')
+                        ->orderBy('model', 'asc');
+                    break;
                 default:
-                    $query->orderByDesc('is_featured');
-                    $query->orderBy('created_at', 'desc');
+                    // Default to A-Z
+                    $query->orderBy('brand_name', 'asc')
+                        ->orderBy('model', 'asc');
             }
         } else {
-            $query->orderByDesc('is_featured');
-            $query->orderBy('created_at', 'desc');
+            // Default to A-Z
+            $query->orderBy('brand_name', 'asc')
+                ->orderBy('model', 'asc');
         }
 
         $vehicles = $query->paginate(12);

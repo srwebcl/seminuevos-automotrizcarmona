@@ -11,7 +11,7 @@ interface TopToolbarProps {
 export default function TopToolbar({ total, viewMode, onViewChange }: TopToolbarProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const currentSort = searchParams.get('sort') || 'latest';
+    const currentSort = searchParams.get('sort') || 'a_z';
 
     const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const params = new URLSearchParams(searchParams.toString());
@@ -33,6 +33,7 @@ export default function TopToolbar({ total, viewMode, onViewChange }: TopToolbar
                         onChange={handleSortChange}
                         className="text-sm border-none bg-gray-50 rounded-lg py-2 pl-3 pr-8 focus:ring-0 cursor-pointer font-medium text-gray-900"
                     >
+                        <option value="a_z">De la A a la Z</option>
                         <option value="latest">Más recientes</option>
                         <option value="price_asc">Menor Precio</option>
                         <option value="price_desc">Mayor Precio</option>
