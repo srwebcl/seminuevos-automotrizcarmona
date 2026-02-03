@@ -117,6 +117,11 @@ export default async function CatalogPage({
         }
     }
 
+    // 4. Force specific category titles (Highest Priority - Overrides everything else)
+    if (category === 'camioneta') {
+        heroTitle = 'Camionetas';
+    }
+
     return (
         <div className="bg-gray-50 min-h-screen">
             {/* Dynamic Hero */}
