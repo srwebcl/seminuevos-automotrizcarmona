@@ -28,7 +28,7 @@ export default async function CatalogPage({
     const [vehiclesResponse, bannersResponse, brandsResponse, categoriesResponse] = await Promise.all([
         getVehicles(currentPage, filters).catch(() => null),
         getBanners().catch(() => ({ data: [] })),
-        getBrands(category).catch(() => ({ data: [] })),
+        getBrands(filters).catch(() => ({ data: [] })),
         getCategories().catch(() => ({ data: [] }))
     ]);
 

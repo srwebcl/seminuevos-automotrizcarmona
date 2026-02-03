@@ -62,12 +62,15 @@ export async function getCategories(): Promise<{ data: VehicleCategory[] }> {
     return fetchAPI<{ data: VehicleCategory[] }>('categories', { revalidate: 3600 });
 }
 
-export async function getBrands(category?: string): Promise<{ data: { id: number; name: string; slug: string; vehicles_count: number }[] }> {
-    let url = 'brands';
-    if (category) {
-        url += `?category=${category}`;
-    }
-    return fetchAPI<{ data: { id: number; name: string; slug: string; vehicles_count: number }[] }>(url, { revalidate: 3600 });
+export async function getBrands(filters?: { category?: string; is_premium?: boolean; is_featured?: boolean; is_offer?: boolean; tag?: string }): Promise<{ data: { id: number; name: string; slug: string; vehicles_count: number }[] }> {
+    let query = 'brands?';
+    if (filters?.category) query += `&category=${filters.category}`;
+    if (filters?.is_premium) query += `&is_premium=1`;
+    if (filters?.is_featured) query += `&is_featured=1`;
+    if (filters?.is_offer) query += `&is_offer=1`;
+    if (filters?.tag) query += `&tag=${filters.tag}`;
+
+    return fetchAPI<{ data: { id: number; name: string; slug: string; vehicles_count: number }[] }>(query, { revalidate: 3600 });
 }
 
 export async function searchGlobal(query: string): Promise<{ categories: VehicleCategory[], vehicles: Vehicle[] }> {
