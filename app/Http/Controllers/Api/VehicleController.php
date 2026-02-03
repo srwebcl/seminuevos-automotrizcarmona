@@ -22,26 +22,43 @@ class VehicleController extends Controller
             $slug = $request->query('category');
             // Support filtering by category slug
             $query->whereHas('category', function ($q) use ($slug) {
-                $q->where('slug', $slug);
+                // Fix ambiguity: specify table name
+                $q->where('categories.slug', $slug);
             });
         } else {
             // Default: Exclude Motos and Camiones if no category is selected
-            $query->whereDoesntHave('category', function ($q) {
-                $q->whereIn('slug', ['motos', 'camion']);
-            });
+            // RELAXED RULE: Also allow them if searching for Offers, Featured, or specific Tags
+            if (!$request->has('is_offer') && !$request->has('is_featured') && !$request->has('tag')) {
+                $query->whereDoesntHave('category', function ($q) {
+                    $q->whereIn('categories.slug', ['motos', 'camion']);
+                });
+            }
         }
 
         if ($request->has('is_premium')) {
             $query->where('is_premium', true);
         } else {
             // Default: Exclude Premium if not explicitly requested
-            $query->where('is_premium', false);
+            // RELAXED RULE: Allow Premium if searching for Offers/Featured/Tags
+            if (!$request->has('is_offer') && !$request->has('is_featured') && !$request->has('tag')) {
+                $query->where('is_premium', false);
+            }
         }
 
         if ($request->has('is_offer')) {
-            $query->whereHas('tags', function ($t) {
-                $t->where('slug', 'like', '%ofert%')
-                    ->orWhere('name', 'like', '%ofert%');
+            $query->where(function ($q) {
+                // 1. Check strict boolean column (Admin Switch)
+                $q->where('is_offer', true)
+                    // 2. OR check if it has a valid Offer Price (Logic added per request)
+                    ->orWhere(function ($priceQ) {
+                        $priceQ->whereNotNull('price_offer')
+                            ->where('price_offer', '>', 0);
+                    })
+                    // 3. OR check if it has "Oferta" tag (Legacy/Flexible)
+                    ->orWhereHas('tags', function ($t) {
+                        // FIX: tags table does NOT have a slug column. Use name only.
+                        $t->where('tags.name', 'like', '%ofert%');
+                    });
             });
         }
 
@@ -52,25 +69,26 @@ class VehicleController extends Controller
         if ($request->has('tag')) {
             $slug = $request->query('tag');
             $query->whereHas('tags', function ($q) use ($slug) {
-                // Flexible match to support singular/plural (oferta vs ofertas) and name/slug
-                $q->where('slug', 'like', "%{$slug}%")
-                    ->orWhere('name', 'like', "%{$slug}%");
+                // FIX: tags table does NOT have a slug column. Use name only.
+                // We compare the 'slug' from URL to the 'name' in DB hoping they match roughly, 
+                // or just search by name.
+                $q->where('tags.name', 'like', "%{$slug}%");
             });
         }
 
         if ($request->has('brand')) {
             $slug = $request->query('brand');
             $query->whereHas('brand', function ($q) use ($slug) {
-                $q->where('slug', $slug);
+                $q->where('brands.slug', $slug);
             });
         }
 
         if ($request->has('q')) {
             $search = $request->query('q');
             $query->where(function ($q) use ($search) {
-                $q->where('model', 'like', "%{$search}%")
+                $q->where('vehicles.model', 'like', "%{$search}%")
                     ->orWhereHas('brand', function ($wq) use ($search) {
-                        $wq->where('name', 'like', "%{$search}%");
+                        $wq->where('brands.name', 'like', "%{$search}%");
                     });
             });
         }

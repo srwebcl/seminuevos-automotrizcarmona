@@ -71,9 +71,18 @@ export default async function CatalogPage({
         heroImage = categoryBanner.image_url[0] || '/images/hero-bg-2.jpg';
         heroSubtitle = categoryBanner.subtitle || heroSubtitle;
     } else if (category) {
-        heroTitle = category === 'camionemen' ? 'CAMIONETAS' : // Prevent typo
-            category === 'camioneta' ? 'CAMIONETAS' :
-                category.replace('-', ' ').toUpperCase();
+        // Try to find category in the fetched list to get the proper Display Name
+        const activeCategory = categories.find(c => c.slug === category);
+
+        if (activeCategory) {
+            heroTitle = activeCategory.name;
+        } else {
+            // Fallback to formatting the slug
+            heroTitle = category === 'camioneta' ? 'Camionetas' :
+                category === 'suv' ? 'SUVs' :
+                    category.replace('-', ' ').toUpperCase();
+        }
+
         // Fallback image for categories without specific banner?
         heroImage = '/images/hero-bg-2.jpg';
     }
