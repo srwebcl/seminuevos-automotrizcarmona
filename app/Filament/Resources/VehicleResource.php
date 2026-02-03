@@ -42,8 +42,8 @@ class VehicleResource extends Resource
             ->schema([
                 Forms\Components\Tabs::make('Tabs')
                     ->tabs([
-                        // TAB 1: LA MÁQUINA (Datos Físicos y Técnicos)
-                        Forms\Components\Tabs\Tab::make('La Máquina')
+                        // TAB 1: CARACTERÍSTICAS (Datos Físicos y Técnicos)
+                        Forms\Components\Tabs\Tab::make('Características')
                             ->icon('heroicon-o-truck')
                             ->schema([
                                 Grid::make(3)->schema([
@@ -107,20 +107,34 @@ class VehicleResource extends Resource
                                         ->searchable(),
                                 ]),
 
-                                // UBICACIÓN
-                                Select::make('location_id')
-                                    ->relationship('location', 'name')
-                                    ->label('Ubicación Física')
-                                    ->required()
-                                    ->createOptionForm([
-                                        TextInput::make('name')->required()->label('Nombre Sucursal'),
-                                        TextInput::make('address')->required()->label('Dirección'),
-                                        TextInput::make('city')->default('La Serena')->required(),
+                                // CLASIFICACIÓN
+                                Section::make('Clasificación')
+                                    ->schema([
+                                        Select::make('category_id')
+                                            ->relationship('category', 'name', fn($query) => $query->whereNull('filter_query'))
+                                            ->label('Categoría')
+                                            ->searchable()
+                                            ->preload()
+                                            ->required()
+                                            ->createOptionForm([
+                                                TextInput::make('name')
+                                                    ->required()
+                                                    ->live(onBlur: true)
+                                                    ->afterStateUpdated(fn($set, $state) => $set('slug', Str::slug($state))),
+                                                TextInput::make('slug')->required()->readOnly(),
+                                            ]),
                                     ]),
+
+                                // DESCRIPCIÓN
+                                Textarea::make('description')
+                                    ->label('Descripción Comercial Detallada')
+                                    ->rows(5)
+                                    ->placeholder('Texto simple descriptivo.')
+                                    ->columnSpanFull(),
                             ]),
 
-                        // TAB 2: LA VENTA (Datos Comerciales)
-                        Forms\Components\Tabs\Tab::make('La Venta')
+                        // TAB 2: CONDICIONES DE VENTA (Datos Comerciales)
+                        Forms\Components\Tabs\Tab::make('Condiciones de Venta')
                             ->icon('heroicon-o-currency-dollar')
                             ->schema([
                                 Grid::make(3)->schema([
@@ -145,20 +159,17 @@ class VehicleResource extends Resource
                                 ])->columnSpanFull(),
 
                                 Grid::make(2)->schema([
-                                    Section::make('Clasificación')
+                                    // UBICACIÓN
+                                    Section::make('Ubicación Física')
                                         ->schema([
-                                            Select::make('category_id')
-                                                ->relationship('category', 'name', fn($query) => $query->whereNull('filter_query'))
-                                                ->label('Categoría')
-                                                ->searchable()
-                                                ->preload()
+                                            Select::make('location_id')
+                                                ->relationship('location', 'name')
+                                                ->label('Sucursal')
                                                 ->required()
                                                 ->createOptionForm([
-                                                    TextInput::make('name')
-                                                        ->required()
-                                                        ->live(onBlur: true)
-                                                        ->afterStateUpdated(fn($set, $state) => $set('slug', Str::slug($state))),
-                                                    TextInput::make('slug')->required()->readOnly(),
+                                                    TextInput::make('name')->required()->label('Nombre Sucursal'),
+                                                    TextInput::make('address')->required()->label('Dirección'),
+                                                    TextInput::make('city')->default('La Serena')->required(),
                                                 ]),
                                         ]),
 
@@ -191,7 +202,7 @@ class VehicleResource extends Resource
                                 ]),
                             ]),
 
-                        // TAB 3: MULTIMEDIA (Restaurado a Pestaña)
+                        // TAB 3: MULTIMEDIA
                         Forms\Components\Tabs\Tab::make('Multimedia')
                             ->icon('heroicon-o-photo')
                             ->schema([
@@ -212,12 +223,6 @@ class VehicleResource extends Resource
                                     ->imageResizeTargetHeight('720')
                                     ->maxSize(10240)
                                     ->required(),
-
-                                Textarea::make('description')
-                                    ->label('Descripción Comercial Detallada')
-                                    ->rows(5)
-                                    ->placeholder('Texto simple descriptivo.')
-                                    ->columnSpanFull(),
                             ]),
                     ])->columnSpanFull(),
             ]);

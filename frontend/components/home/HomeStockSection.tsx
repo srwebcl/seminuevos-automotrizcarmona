@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Vehicle, VehicleCategory } from '@/types/vehicle';
 import VehicleCard from '@/components/VehicleCard';
 import { getVehicles } from '@/lib/api';
@@ -15,9 +15,26 @@ export default function HomeStockSection({ initialVehicles, categories }: HomeSt
     const [activeFilter, setActiveFilter] = useState('todo');
     const [loading, setLoading] = useState(false);
 
+    // Cache & Race Condition Prevention
+    const [cache, setCache] = useState<Record<string, Vehicle[]>>({});
+    const lastRequestId = useRef<number>(0);
+
     const handleFilter = async (filterType: string, slug?: string) => {
-        setLoading(true);
+        const filterKey = slug ? `${filterType}-${slug}` : filterType;
+        const requestId = Date.now();
+        lastRequestId.current = requestId;
+
         setActiveFilter(slug ? slug : filterType);
+
+        // 1. Check Cache
+        if (cache[filterKey]) {
+            setVehicles(cache[filterKey]);
+            setLoading(false);
+            return;
+        }
+
+        // 2. If not in cache, fetch
+        setLoading(true);
 
         try {
             let response;
@@ -34,11 +51,18 @@ export default function HomeStockSection({ initialVehicles, categories }: HomeSt
             } else {
                 response = await getVehicles(1);
             }
-            setVehicles(response.data);
+
+            // 3. Race Condition Check: Only update if this is still the latest request
+            if (lastRequestId.current === requestId) {
+                setVehicles(response.data);
+                setCache(prev => ({ ...prev, [filterKey]: response.data }));
+            }
         } catch (error) {
             console.error("Filter error", error);
         } finally {
-            setLoading(false);
+            if (lastRequestId.current === requestId) {
+                setLoading(false);
+            }
         }
     };
 
