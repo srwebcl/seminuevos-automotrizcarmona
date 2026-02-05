@@ -28,8 +28,9 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://seminuevos.automotrizcarmona.cl'),
   title: 'Automotriz Carmona | Venta de Seminuevos',
-  description: 'Encuentra tu próximo auto al mejor precio y calidad.',
+  description: 'Encuentra tu próximo auto seminuevo en La Serena al mejor precio y calidad. Automotriz Carmona, líderes en la IV Región.',
 };
 
 export default async function RootLayout({

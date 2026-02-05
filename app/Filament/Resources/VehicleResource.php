@@ -268,6 +268,12 @@ class VehicleResource extends Resource
                 ->sortable()
                 ->rules(['numeric', 'min:0']),
 
+            Tables\Columns\TextInputColumn::make('price_financing')
+                ->label('Precio Crédito')
+                ->type('number')
+                ->sortable()
+                ->rules(['numeric', 'min:0']),
+
             Tables\Columns\SelectColumn::make('category_id')
                 ->label('Categoría')
                 ->options(\App\Models\Category::pluck('name', 'id'))
