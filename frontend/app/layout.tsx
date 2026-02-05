@@ -8,6 +8,11 @@ import AosInit from '@/components/AosInit';
 import SmartWhatsAppButton from '@/components/SmartWhatsAppButton';
 import { getMenu, getSettings } from '@/lib/api';
 
+// --- 1. IMPORTACIONES DE ANALÍTICA
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { GoogleAnalytics } from '@next/third-parties/google';
+
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
@@ -32,7 +37,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Fetch global data on server
+
   const [menuResponse, settingsResponse] = await Promise.all([
     getMenu().catch(() => ({ data: [] })),
     getSettings().catch(() => ({
@@ -47,8 +52,10 @@ export default async function RootLayout({
   const menuItems = menuResponse.data;
   const settings = settingsResponse.data;
 
-  // Apply seasonal theme class if needed to body (mapped from 'settings.seasonal_mode')
   const themeClass = settings.seasonal_mode !== 'none' ? `theme-${settings.seasonal_mode}` : '';
+
+  // --- 2. CONFIGURACIÓN ID GOOGLE ---
+  const gaId = process.env.NEXT_PUBLIC_GA_ID || "G-506B9N7C46";
 
   return (
     <html lang="es">
@@ -65,6 +72,12 @@ export default async function RootLayout({
           <SmartWhatsAppButton numbers={settings.whatsapp_numbers} />
         </Suspense>
         <AosInit />
+
+        {/* --- 3. COMPONENTES DE MEDICIÓN */}
+        <Analytics />
+        <SpeedInsights />
+        <GoogleAnalytics gaId={gaId} />
+
       </body>
     </html>
   );
