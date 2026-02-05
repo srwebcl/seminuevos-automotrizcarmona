@@ -1,12 +1,13 @@
 export default function Loading() {
     return (
-        // Fondo oscuro (60% opacidad) con desenfoque suave (backdrop-blur-sm)
-        // Coincide con el estilo de tus modales (FinancingModal / Contact)
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm transition-all">
+        // Fondo oscuro sutil (40%) con desenfoque, similar a los modales de contacto
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-[2px] animate-in fade-in duration-200">
 
-            {/* Spinner minimalista blanco */}
-            {/* border-white/20 crea el anillo suave, border-t-white es la parte que gira */}
-            <div className="w-10 h-10 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+            {/* Spinner fino y elegante */}
+            <div className="relative">
+                <div className="w-12 h-12 border-4 border-white/20 rounded-full"></div>
+                <div className="w-12 h-12 border-4 border-t-white rounded-full animate-spin absolute top-0 left-0"></div>
+            </div>
 
         </div>
     );

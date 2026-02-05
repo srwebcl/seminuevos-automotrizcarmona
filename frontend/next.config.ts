@@ -7,6 +7,11 @@ const nextConfig: NextConfig = {
     },
 
     images: {
+        // --- CORRECCIÓN CRÍTICA ---
+        // Esto evita que Vercel intente procesar las imágenes y sature Hostgator.
+        // Soluciona los errores 502 (Bad Gateway) y 504 (Timeout) que viste en consola.
+        unoptimized: true,
+
         formats: ['image/avif', 'image/webp'],
         deviceSizes: [640, 750, 828, 1080, 1200, 1920],
         remotePatterns: [
