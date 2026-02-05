@@ -2,30 +2,37 @@ import { PaginatedResponse, Vehicle, VehicleCategory } from '@/types/vehicle';
 import { Banner } from '@/types/banner';
 
 export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
-// Safe backend URL derivation: remove trailing /api (and optional slash) only if it's at the end
 export const BACKEND_URL = API_URL.replace(/\/api\/?$/, '');
 
+// --- CONFIGURACIÓN DE TIEMPOS DE CACHÉ ---
+const CACHE_FAST = 60;   // 1 minuto para stock y precios (sensible al negocio)
+const CACHE_SLOW = 300;  // 5 minutos para menús, banners y ajustes (estabilidad servidor)
+
 async function fetchAPI<T>(endpoint: string, options?: { revalidate?: number }): Promise<T> {
-    const separator = endpoint.includes('?') ? '&' : '?';
     const url = `${API_URL}/${endpoint}`;
 
-    // Default revalidate is 3600s (1 hour) if not specified
-    const revalidate = options?.revalidate ?? 3600;
+    // Si no se especifica, el valor por defecto será 5 minutos para proteger el servidor
+    const revalidate = options?.revalidate ?? CACHE_SLOW;
 
-    const res = await fetch(url, {
-        next: { revalidate },
-        headers: {
-            'Accept': 'application/json',
+    try {
+        const res = await fetch(url, {
+            next: { revalidate },
+            headers: {
+                'Accept': 'application/json',
+            }
+        });
+
+        if (!res.ok) {
+            const errorText = await res.text().catch(() => 'No response text');
+            console.error(`[API Error] ${res.status} ${res.statusText} at ${url}:`, errorText);
+            throw new Error(`Failed to fetch API: ${res.statusText} (${res.status})`);
         }
-    });
 
-    if (!res.ok) {
-        const errorText = await res.text().catch(() => 'No response text');
-        console.error(`[API Error] ${res.status} ${res.statusText} at ${url}:`, errorText);
-        throw new Error(`Failed to fetch API: ${res.statusText} (${res.status}) at ${url}`);
+        return res.json();
+    } catch (error) {
+        console.error(`[Network Error] Failed to connect to ${url}`, error);
+        throw error;
     }
-
-    return res.json();
 }
 
 export async function getVehicles(page = 1, filters?: { category?: string; brand?: string; q?: string; sort?: string; is_premium?: boolean; is_featured?: boolean; is_offer?: boolean; tag?: string }): Promise<PaginatedResponse<Vehicle>> {
@@ -39,27 +46,25 @@ export async function getVehicles(page = 1, filters?: { category?: string; brand
     if (filters?.is_offer) query += `&is_offer=1`;
     if (filters?.tag) query += `&tag=${filters.tag}`;
 
-    // Catalog: 1 minute (60s)
-    return fetchAPI<PaginatedResponse<Vehicle>>(query, { revalidate: 60 });
+    // Catálogo: 1 minuto es el equilibrio perfecto entre ventas y carga
+    return fetchAPI<PaginatedResponse<Vehicle>>(query, { revalidate: CACHE_FAST });
 }
 
 export async function getPremiumVehicles(): Promise<PaginatedResponse<Vehicle>> {
-    const response = await getVehicles(1, { is_premium: true });
-    return response;
+    return getVehicles(1, { is_premium: true });
 }
 
 export async function getFeaturedVehicles(): Promise<{ data: Vehicle[] }> {
-    // Featured home: 1 minute (60s)
-    return fetchAPI<{ data: Vehicle[] }>('vehicles/featured', { revalidate: 60 });
+    return fetchAPI<{ data: Vehicle[] }>('vehicles/featured', { revalidate: CACHE_FAST });
 }
 
 export async function getVehicleBySlug(slug: string): Promise<{ data: Vehicle }> {
-    // Detail: 1 minute (60s)
-    return fetchAPI<{ data: Vehicle }>(`vehicles/${slug}`, { revalidate: 60 });
+    // Detalle del auto: 1 minuto
+    return fetchAPI<{ data: Vehicle }>(`vehicles/${slug}`, { revalidate: CACHE_FAST });
 }
 
 export async function getCategories(): Promise<{ data: VehicleCategory[] }> {
-    return fetchAPI<{ data: VehicleCategory[] }>('categories', { revalidate: 3600 });
+    return fetchAPI<{ data: VehicleCategory[] }>('categories', { revalidate: CACHE_SLOW });
 }
 
 export async function getBrands(filters?: { category?: string; is_premium?: boolean; is_featured?: boolean; is_offer?: boolean; tag?: string }): Promise<{ data: { id: number; name: string; slug: string; vehicles_count: number }[] }> {
@@ -70,71 +75,40 @@ export async function getBrands(filters?: { category?: string; is_premium?: bool
     if (filters?.is_offer) query += `&is_offer=1`;
     if (filters?.tag) query += `&tag=${filters.tag}`;
 
-    return fetchAPI<{ data: { id: number; name: string; slug: string; vehicles_count: number }[] }>(query, { revalidate: 3600 });
+    return fetchAPI<{ data: { id: number; name: string; slug: string; vehicles_count: number }[] }>(query, { revalidate: CACHE_SLOW });
 }
 
 export async function searchGlobal(query: string): Promise<{ categories: VehicleCategory[], vehicles: Vehicle[] }> {
-    // Search: Default 3600s
-    return fetchAPI<{ categories: VehicleCategory[], vehicles: Vehicle[] }>(`search/global?query=${encodeURIComponent(query)}`);
+    return fetchAPI<{ categories: VehicleCategory[], vehicles: Vehicle[] }>(`search/global?query=${encodeURIComponent(query)}`, { revalidate: CACHE_FAST });
 }
 
 export async function getBanners(): Promise<{ data: Banner[] }> {
-    // Banners: 1 minute (60s)
-    return fetchAPI<{ data: Banner[] }>('banners', { revalidate: 60 });
+    return fetchAPI<{ data: Banner[] }>('banners', { revalidate: CACHE_SLOW });
 }
 
 export async function getMenu(): Promise<{ data: VehicleCategory[] }> {
-    // Menu: 1 minute (60s)
-    return fetchAPI<{ data: VehicleCategory[] }>('menu', { revalidate: 60 });
-}
-
-export interface WhatsappNumber {
-    number: string;
-    label: string;
-    for_premium_only: boolean;
+    // El menú está en todas las páginas, usar 5 min es vital para la salud de Hostgator
+    return fetchAPI<{ data: VehicleCategory[] }>('menu', { revalidate: CACHE_SLOW });
 }
 
 export interface Settings {
     seasonal_mode: 'none' | 'christmas' | 'new_year' | '18sept' | 'cyber';
-    whatsapp_numbers?: WhatsappNumber[];
-    contact: {
-        address: string;
-        email: string;
-    };
-    social_links?: {
-        instagram?: string;
-        facebook?: string;
-        linkedin?: string;
-        youtube?: string;
-    };
-    locations?: {
-        name: string;
-        address: string;
-        city: string;
-        phone?: string;
-        google_maps_url?: string;
-    }[];
-    main_categories?: {
-        name: string;
-        slug: string;
-    }[];
+    whatsapp_numbers?: { number: string; label: string; for_premium_only: boolean; }[];
+    contact: { address: string; email: string; };
+    social_links?: { instagram?: string; facebook?: string; linkedin?: string; youtube?: string; };
 }
 
 export async function getSettings(): Promise<{ data: Settings }> {
-    // Settings: 1 hour (3600s)
-    return fetchAPI('settings', { revalidate: 3600 });
+    return fetchAPI('settings', { revalidate: CACHE_SLOW });
 }
 
 export async function getRelatedVehicles(categorySlug: string, currentVehicleId: number, isPremium: boolean = false): Promise<Vehicle[]> {
     const filters: any = { category: categorySlug };
-    if (isPremium) {
-        filters.is_premium = true;
-    }
+    if (isPremium) filters.is_premium = true;
     const { data } = await getVehicles(1, filters);
     return data.filter(v => v.id !== currentVehicleId).slice(0, 4);
 }
 
-export async function getLocations(): Promise<{ data: { id: number; name: string; address: string; phone?: string; city: string; image_path?: string; is_active: boolean; schedule?: string; google_maps_url?: string }[] }> {
-    // Locations: 1 hour (3600s)
-    return fetchAPI<{ data: { id: number; name: string; address: string; phone?: string; city: string; image_path?: string; is_active: boolean; schedule?: string; google_maps_url?: string }[] }>('locations', { revalidate: 3600 });
+export async function getLocations(): Promise<{ data: any[] }> {
+    return fetchAPI<{ data: any[] }>('locations', { revalidate: CACHE_SLOW });
 }
