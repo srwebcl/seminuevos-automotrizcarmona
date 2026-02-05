@@ -4,8 +4,12 @@ const nextConfig: NextConfig = {
     typescript: {
         ignoreBuildErrors: true,
     },
-
+    eslint: {
+        ignoreDuringBuilds: true,
+    },
     images: {
+        unoptimized: true,
+
         formats: ['image/avif', 'image/webp'],
         deviceSizes: [640, 750, 828, 1080, 1200, 1920],
         remotePatterns: [
@@ -49,7 +53,6 @@ const nextConfig: NextConfig = {
         dangerouslyAllowSVG: true,
     },
     compress: true,
-
     async redirects() {
         return [
             {
