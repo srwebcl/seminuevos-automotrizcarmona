@@ -8,7 +8,10 @@ export const BACKEND_URL = API_URL.replace(/\/api\/?$/, '');
 const CACHE_FAST = 60;   // 1 minuto para stock y precios (sensible al negocio)
 const CACHE_SLOW = 300;  // 5 minutos para menús, banners y ajustes (estabilidad servidor)
 
-async function fetchAPI<T>(endpoint: string, options?: { revalidate?: number }): Promise<T> {
+// Helper para esperar (Sleep)
+const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+async function fetchAPI<T>(endpoint: string, options?: { revalidate?: number }, retries = 3): Promise<T> {
     const url = `${API_URL}/${endpoint}`;
 
     // Si no se especifica, el valor por defecto será 5 minutos para proteger el servidor
@@ -23,6 +26,13 @@ async function fetchAPI<T>(endpoint: string, options?: { revalidate?: number }):
         });
 
         if (!res.ok) {
+            // Si es un error de servidor (500, 502, 503) o límite (429), reintentamos
+            if ((res.status >= 500 || res.status === 429) && retries > 0) {
+                console.warn(`[API Retry] ${res.status} at ${url}. Reintentando en 1s... (${retries} restantes)`);
+                await wait(1000); // Esperar 1 segundo
+                return fetchAPI<T>(endpoint, options, retries - 1);
+            }
+
             const errorText = await res.text().catch(() => 'No response text');
             console.error(`[API Error] ${res.status} ${res.statusText} at ${url}:`, errorText);
             throw new Error(`Failed to fetch API: ${res.statusText} (${res.status})`);
@@ -30,6 +40,13 @@ async function fetchAPI<T>(endpoint: string, options?: { revalidate?: number }):
 
         return res.json();
     } catch (error) {
+        // Si es un error de red (Timeout, Connection Reset), reintentamos
+        if (retries > 0) {
+            console.warn(`[Network Retry] Failed to connect to ${url}. Reintentando en 1.5s... (${retries} restantes)`);
+            await wait(1500); // Esperar 1.5 segundos
+            return fetchAPI<T>(endpoint, options, retries - 1);
+        }
+
         console.error(`[Network Error] Failed to connect to ${url}`, error);
         throw error;
     }
