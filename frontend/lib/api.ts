@@ -9,8 +9,8 @@ async function fetchAPI<T>(endpoint: string, options?: { revalidate?: number }):
     const separator = endpoint.includes('?') ? '&' : '?';
     const url = `${API_URL}/${endpoint}`;
 
-    // Default revalidate is 60s if not specified
-    const revalidate = options?.revalidate ?? 60;
+    // Default revalidate is 3600s (1 hour) if not specified
+    const revalidate = options?.revalidate ?? 3600;
 
     const res = await fetch(url, {
         next: { revalidate },
@@ -39,8 +39,8 @@ export async function getVehicles(page = 1, filters?: { category?: string; brand
     if (filters?.is_offer) query += `&is_offer=1`;
     if (filters?.tag) query += `&tag=${filters.tag}`;
 
-    // Catalog: Instant updates (No Cache)
-    return fetchAPI<PaginatedResponse<Vehicle>>(query, { revalidate: 0 });
+    // Catalog: 1 minute (60s)
+    return fetchAPI<PaginatedResponse<Vehicle>>(query, { revalidate: 60 });
 }
 
 export async function getPremiumVehicles(): Promise<PaginatedResponse<Vehicle>> {
@@ -49,17 +49,17 @@ export async function getPremiumVehicles(): Promise<PaginatedResponse<Vehicle>> 
 }
 
 export async function getFeaturedVehicles(): Promise<{ data: Vehicle[] }> {
-    // Featured home: Instant updates (No Cache)
-    return fetchAPI<{ data: Vehicle[] }>('vehicles/featured', { revalidate: 0 });
+    // Featured home: 1 minute (60s)
+    return fetchAPI<{ data: Vehicle[] }>('vehicles/featured', { revalidate: 60 });
 }
 
 export async function getVehicleBySlug(slug: string): Promise<{ data: Vehicle }> {
-    // Detail: Instant updates (No Cache)
-    return fetchAPI<{ data: Vehicle }>(`vehicles/${slug}`, { revalidate: 0 });
+    // Detail: 1 minute (60s)
+    return fetchAPI<{ data: Vehicle }>(`vehicles/${slug}`, { revalidate: 60 });
 }
 
 export async function getCategories(): Promise<{ data: VehicleCategory[] }> {
-    return fetchAPI<{ data: VehicleCategory[] }>('categories', { revalidate: 60 });
+    return fetchAPI<{ data: VehicleCategory[] }>('categories', { revalidate: 3600 });
 }
 
 export async function getBrands(filters?: { category?: string; is_premium?: boolean; is_featured?: boolean; is_offer?: boolean; tag?: string }): Promise<{ data: { id: number; name: string; slug: string; vehicles_count: number }[] }> {
@@ -70,22 +70,22 @@ export async function getBrands(filters?: { category?: string; is_premium?: bool
     if (filters?.is_offer) query += `&is_offer=1`;
     if (filters?.tag) query += `&tag=${filters.tag}`;
 
-    return fetchAPI<{ data: { id: number; name: string; slug: string; vehicles_count: number }[] }>(query, { revalidate: 60 });
+    return fetchAPI<{ data: { id: number; name: string; slug: string; vehicles_count: number }[] }>(query, { revalidate: 3600 });
 }
 
 export async function searchGlobal(query: string): Promise<{ categories: VehicleCategory[], vehicles: Vehicle[] }> {
-    // Search: Default 60s (or could be lower, but 60s is fine)
+    // Search: Default 3600s
     return fetchAPI<{ categories: VehicleCategory[], vehicles: Vehicle[] }>(`search/global?query=${encodeURIComponent(query)}`);
 }
 
 export async function getBanners(): Promise<{ data: Banner[] }> {
-    // Banners: 1 hour (3600s)
-    return fetchAPI<{ data: Banner[] }>('banners', { revalidate: 0 });
+    // Banners: 1 minute (60s)
+    return fetchAPI<{ data: Banner[] }>('banners', { revalidate: 60 });
 }
 
 export async function getMenu(): Promise<{ data: VehicleCategory[] }> {
-    // Menu: 1 hour (3600s)
-    return fetchAPI<{ data: VehicleCategory[] }>('menu', { revalidate: 0 });
+    // Menu: 1 minute (60s)
+    return fetchAPI<{ data: VehicleCategory[] }>('menu', { revalidate: 60 });
 }
 
 export interface WhatsappNumber {
@@ -122,7 +122,7 @@ export interface Settings {
 
 export async function getSettings(): Promise<{ data: Settings }> {
     // Settings: 1 hour (3600s)
-    return fetchAPI('settings', { revalidate: 60 });
+    return fetchAPI('settings', { revalidate: 3600 });
 }
 
 export async function getRelatedVehicles(categorySlug: string, currentVehicleId: number, isPremium: boolean = false): Promise<Vehicle[]> {
@@ -136,5 +136,5 @@ export async function getRelatedVehicles(categorySlug: string, currentVehicleId:
 
 export async function getLocations(): Promise<{ data: { id: number; name: string; address: string; phone?: string; city: string; image_path?: string; is_active: boolean; schedule?: string; google_maps_url?: string }[] }> {
     // Locations: 1 hour (3600s)
-    return fetchAPI<{ data: { id: number; name: string; address: string; phone?: string; city: string; image_path?: string; is_active: boolean; schedule?: string; google_maps_url?: string }[] }>('locations', { revalidate: 60 });
+    return fetchAPI<{ data: { id: number; name: string; address: string; phone?: string; city: string; image_path?: string; is_active: boolean; schedule?: string; google_maps_url?: string }[] }>('locations', { revalidate: 3600 });
 }
