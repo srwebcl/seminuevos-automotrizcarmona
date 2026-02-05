@@ -19,6 +19,23 @@ export default function Gallery({ images, model }: GalleryProps) {
         setCurrentIndex(0);
     }, [images]);
 
+    // --- NEW: PRELOAD NEXT/PREV IMAGES FOR SMOOTH TRANSITION ---
+    useEffect(() => {
+        if (!images || images.length <= 1) return;
+
+        // Calculate neighbors
+        const nextIndex = (currentIndex + 1) % images.length;
+        const prevIndex = (currentIndex - 1 + images.length) % images.length;
+
+        // Browser silent prefetch
+        const imgNext = new window.Image();
+        imgNext.src = images[nextIndex];
+
+        const imgPrev = new window.Image();
+        imgPrev.src = images[prevIndex];
+    }, [currentIndex, images]);
+    // -----------------------------------------------------------
+
     const handleImageClick = (img: string, index: number) => {
         setMainImage(img);
         setCurrentIndex(index);
@@ -76,8 +93,7 @@ export default function Gallery({ images, model }: GalleryProps) {
                     alt={model}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    // Priority true solo aquí para que sea lo primero que el usuario ve
-                    priority
+                    priority={true} // Changed: Always prioritize main visible image
                     sizes="(max-width: 1200px) 100vw, 800px"
                 />
                 <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-1 rounded-full text-xs font-bold backdrop-blur-sm pointer-events-none">
@@ -121,7 +137,6 @@ export default function Gallery({ images, model }: GalleryProps) {
                                 alt={`${model} - view ${index + 1}`}
                                 fill
                                 className="object-cover"
-                                // Solo la primera imagen móvil es prioritaria, el resto es lazy
                                 priority={index === 0}
                                 loading={index === 0 ? undefined : "lazy"}
                                 sizes="100vw"
@@ -140,6 +155,12 @@ export default function Gallery({ images, model }: GalleryProps) {
                     {images.map((img, index) => (
                         <button
                             key={index}
+                            // --- NEW: HOVER PREFETCH FOR THUMBNAILS ---
+                            onMouseEnter={() => {
+                                const i = new window.Image();
+                                i.src = img;
+                            }}
+                            // ------------------------------------------
                             onClick={() => {
                                 setMainImage(img);
                                 setCurrentIndex(index);
@@ -152,7 +173,6 @@ export default function Gallery({ images, model }: GalleryProps) {
                                 alt={`${model} view ${index + 1}`}
                                 fill
                                 className="object-cover"
-                                // Las miniaturas siempre son lazy y pequeñas en peso de descarga
                                 loading="lazy"
                                 sizes="200px"
                             />
@@ -172,7 +192,11 @@ export default function Gallery({ images, model }: GalleryProps) {
                         <i className="fa-solid fa-xmark text-xl"></i>
                     </button>
 
-                    <button onClick={handlePrev} className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition z-[110] backdrop-blur-sm">
+                    <button
+                        onClick={handlePrev}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition z-[110] backdrop-blur-sm"
+                        aria-label="Imagen anterior"
+                    >
                         <i className="fa-solid fa-chevron-left text-xl"></i>
                     </button>
 
@@ -183,13 +207,17 @@ export default function Gallery({ images, model }: GalleryProps) {
                                 alt={model}
                                 fill
                                 className="object-contain"
-                                priority // En el lightbox queremos la mejor calidad rápido
+                                priority
                                 sizes="100vw"
                             />
                         </div>
                     </div>
 
-                    <button onClick={handleNext} className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition z-[110] backdrop-blur-sm">
+                    <button
+                        onClick={handleNext}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition z-[110] backdrop-blur-sm"
+                        aria-label="Siguiente imagen"
+                    >
                         <i className="fa-solid fa-chevron-right text-xl"></i>
                     </button>
 
