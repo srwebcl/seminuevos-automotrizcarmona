@@ -59,7 +59,7 @@ export async function getVehicleBySlug(slug: string): Promise<{ data: Vehicle }>
 }
 
 export async function getCategories(): Promise<{ data: VehicleCategory[] }> {
-    return fetchAPI<{ data: VehicleCategory[] }>('categories', { revalidate: 3600 });
+    return fetchAPI<{ data: VehicleCategory[] }>('categories', { revalidate: 60 });
 }
 
 export async function getBrands(filters?: { category?: string; is_premium?: boolean; is_featured?: boolean; is_offer?: boolean; tag?: string }): Promise<{ data: { id: number; name: string; slug: string; vehicles_count: number }[] }> {
@@ -70,7 +70,7 @@ export async function getBrands(filters?: { category?: string; is_premium?: bool
     if (filters?.is_offer) query += `&is_offer=1`;
     if (filters?.tag) query += `&tag=${filters.tag}`;
 
-    return fetchAPI<{ data: { id: number; name: string; slug: string; vehicles_count: number }[] }>(query, { revalidate: 3600 });
+    return fetchAPI<{ data: { id: number; name: string; slug: string; vehicles_count: number }[] }>(query, { revalidate: 60 });
 }
 
 export async function searchGlobal(query: string): Promise<{ categories: VehicleCategory[], vehicles: Vehicle[] }> {
@@ -122,7 +122,7 @@ export interface Settings {
 
 export async function getSettings(): Promise<{ data: Settings }> {
     // Settings: 1 hour (3600s)
-    return fetchAPI('settings', { revalidate: 3600 });
+    return fetchAPI('settings', { revalidate: 60 });
 }
 
 export async function getRelatedVehicles(categorySlug: string, currentVehicleId: number, isPremium: boolean = false): Promise<Vehicle[]> {
@@ -136,5 +136,5 @@ export async function getRelatedVehicles(categorySlug: string, currentVehicleId:
 
 export async function getLocations(): Promise<{ data: { id: number; name: string; address: string; phone?: string; city: string; image_path?: string; is_active: boolean; schedule?: string; google_maps_url?: string }[] }> {
     // Locations: 1 hour (3600s)
-    return fetchAPI<{ data: { id: number; name: string; address: string; phone?: string; city: string; image_path?: string; is_active: boolean; schedule?: string; google_maps_url?: string }[] }>('locations', { revalidate: 3600 });
+    return fetchAPI<{ data: { id: number; name: string; address: string; phone?: string; city: string; image_path?: string; is_active: boolean; schedule?: string; google_maps_url?: string }[] }>('locations', { revalidate: 60 });
 }
