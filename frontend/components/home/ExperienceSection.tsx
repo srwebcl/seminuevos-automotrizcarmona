@@ -1,14 +1,17 @@
 export default function ExperienceSection() {
     return (
-        <section className="relative py-12 overflow-hidden">
-            <div className="absolute inset-0 bg-black">
-                {/* Fallback pattern/image */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent"></div>
-            </div>
+        <section className="relative py-32 overflow-hidden bg-black">
+            {/* Parallax Background */}
+            <div
+                className="absolute inset-0 bg-fixed bg-center bg-cover opacity-60 pointer-events-none"
+                style={{ backgroundImage: "url('/images/financiamiento.webp')" }}
+            ></div>
+
+            <div className="absolute inset-0 bg-black/70"></div>
 
             <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                 <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                    Experiencia <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">Carmona</span>
+                    Experiencia <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-100 via-gray-400 to-gray-100">Carmona</span>
                 </h2>
                 <p className="text-gray-400 max-w-2xl mx-auto mb-16 text-lg">
                     Más que un auto, te entregamos la tranquilidad de un servicio integral.
