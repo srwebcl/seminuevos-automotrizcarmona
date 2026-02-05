@@ -85,7 +85,7 @@ export async function getBanners(): Promise<{ data: Banner[] }> {
 
 export async function getMenu(): Promise<{ data: VehicleCategory[] }> {
     // Menu: 1 hour (3600s)
-    return fetchAPI<{ data: VehicleCategory[] }>('menu', { revalidate: 3600 });
+    return fetchAPI<{ data: VehicleCategory[] }>('menu', { revalidate: 0 });
 }
 
 export interface WhatsappNumber {
