@@ -19,23 +19,6 @@ export default function Gallery({ images, model }: GalleryProps) {
         setCurrentIndex(0);
     }, [images]);
 
-    // --- NEW: PRELOAD NEXT/PREV IMAGES FOR SMOOTH TRANSITION ---
-    useEffect(() => {
-        if (!images || images.length <= 1) return;
-
-        // Calculate neighbors
-        const nextIndex = (currentIndex + 1) % images.length;
-        const prevIndex = (currentIndex - 1 + images.length) % images.length;
-
-        // Browser silent prefetch
-        const imgNext = new window.Image();
-        imgNext.src = images[nextIndex];
-
-        const imgPrev = new window.Image();
-        imgPrev.src = images[prevIndex];
-    }, [currentIndex, images]);
-    // -----------------------------------------------------------
-
     const handleImageClick = (img: string, index: number) => {
         setMainImage(img);
         setCurrentIndex(index);
@@ -93,7 +76,7 @@ export default function Gallery({ images, model }: GalleryProps) {
                     alt={model}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    priority={true} // Changed: Always prioritize main visible image
+                    priority={true}
                     sizes="(max-width: 1200px) 100vw, 800px"
                 />
                 <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-1 rounded-full text-xs font-bold backdrop-blur-sm pointer-events-none">
@@ -155,12 +138,6 @@ export default function Gallery({ images, model }: GalleryProps) {
                     {images.map((img, index) => (
                         <button
                             key={index}
-                            // --- NEW: HOVER PREFETCH FOR THUMBNAILS ---
-                            onMouseEnter={() => {
-                                const i = new window.Image();
-                                i.src = img;
-                            }}
-                            // ------------------------------------------
                             onClick={() => {
                                 setMainImage(img);
                                 setCurrentIndex(index);
