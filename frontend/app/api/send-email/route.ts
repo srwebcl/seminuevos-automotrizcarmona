@@ -10,6 +10,7 @@ export async function POST(request: Request) {
 
         let to: string[] = [];
         let cc: string[] = [];
+        let bcc: string[] = [];
         let subject = '';
         let internalHtml = '';
         let clientHtml = '';
@@ -18,26 +19,30 @@ export async function POST(request: Request) {
         // --- 1. CONFIGURACIÓN DE DESTINATARIOS Y ASUNTOS ---
 
         if (type === 'evaluation') {
-            subject = `🚗 Nueva Solicitud de Evaluación: ${data.name} - ${vehicle?.brand?.name} ${vehicle?.model}`;
+            subject = `🚗 Nuevo Lead Web: ${data.name} - ${vehicle?.brand?.name} ${vehicle?.model}`;
 
             // Lógica Premium
             if (vehicle?.is_premium) {
                 to = ['crivera@carmonaycia.cl'];
-                cc = ['nmercado@carmonaycia.cl', 'frios@carmonaycia.cl', 'contacto@srweb.cl'];
+                cc = ['frios@carmonaycia.cl'];
+                bcc = ['contacto@srweb.cl']; // CCO
             } else {
                 to = ['mfarias@carmonaycia.cl'];
-                cc = ['contacto@srweb.cl']; // Copia de verificación
+                cc = ['frios@carmonaycia.cl'];
+                bcc = ['contacto@srweb.cl']; // CCO
             }
 
         } else if (type === 'financing') {
             subject = `💰 Nueva Solicitud de Financiamiento: ${data.name}`;
             to = ['nmercado@carmonaycia.cl'];
-            cc = ['frios@carmonaycia.cl', 'mfarias@carmonaycia.cl', 'contacto@srweb.cl'];
+            cc = ['frios@carmonaycia.cl', 'mfarias@carmonaycia.cl'];
+            bcc = ['contacto@srweb.cl']; // CCO
 
         } else if (type === 'sell') {
             subject = `💵 Nuevo Lead "Parte de Pago": ${data.brand} ${data.model} (${data.year})`;
             to = ['mfarias@carmonaycia.cl'];
-            cc = ['frios@carmonaycia.cl', 'contacto@srweb.cl'];
+            cc = ['frios@carmonaycia.cl'];
+            bcc = ['contacto@srweb.cl']; // CCO
         }
 
         // --- 2. PLANTILLAS HTML (INLINE PARA COMPATIBILIDAD) ---
@@ -145,6 +150,7 @@ export async function POST(request: Request) {
             from: 'Automotriz Carmona <marketing@carmonaycia.cl>', // Debe actualizarse a un dominio verificado en prod
             to: to,
             cc: cc,
+            bcc: bcc,
             replyTo: data.email,
             subject: subject,
             html: internalHtml,
