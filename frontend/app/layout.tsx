@@ -39,7 +39,7 @@ export default async function RootLayout({
       data: {
         seasonal_mode: 'none' as const,
         whatsapp_numbers: [],
-        contact: { address: 'Av. Balmaceda 3570, La Serena', email: 'contacto@carmona.cl' }
+        contact: { address: 'Av. Balmaceda 3570, La Serena', email: 'mfarias@carmonaycia.cl' }
       }
     }))
   ]);
