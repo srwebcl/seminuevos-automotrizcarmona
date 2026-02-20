@@ -172,7 +172,10 @@ export default function SmartWhatsAppButton({ numbers = [] }: SmartWhatsAppButto
         setShowBubble(false);
     };
 
-    const whatsappLink = `https://wa.me/${selectedNumber}?text=${encodeURIComponent(config.message)}`;
+    // Envío del enlace de la página actual + parámetros UTM para TECNOM
+    const currentUrlWithUtm = `https://seminuevos.automotrizcarmona.cl${pathname}?utm_source=boton_web&utm_medium=wsp_web`;
+    const finalMessage = `${config.message}\n\n${currentUrlWithUtm}`;
+    const whatsappLink = `https://wa.me/${selectedNumber}?text=${encodeURIComponent(finalMessage)}`;
 
     return (
         <div className="fixed bottom-6 right-6 z-[60] flex flex-col items-end gap-3 group">
