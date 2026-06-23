@@ -34,30 +34,34 @@ export default async function ClearancePage() {
     return (
         <div className="bg-gray-50 min-h-screen pb-16">
             {/* 1. Hero Banner */}
-            <div className="w-full relative bg-black flex items-center justify-center min-h-[300px] md:min-h-[500px]">
+            <div className="w-full bg-black flex items-center justify-center">
                 {desktopHeroUrl ? (
-                    <>
+                    <div className="w-full">
                         {/* Mobile Banner */}
-                        <div className="block md:hidden w-full h-[400px] relative">
+                        <div className="block md:hidden w-full">
                             <Image 
                                 src={mobileHeroUrl as string} 
                                 alt="Liquidación Automotriz Carmona" 
-                                fill 
-                                className="object-cover"
+                                width={800}
+                                height={1000}
+                                sizes="100vw"
+                                style={{ width: '100%', height: 'auto' }}
                                 priority
                             />
                         </div>
                         {/* Desktop Banner */}
-                        <div className="hidden md:block w-full h-[500px] lg:h-[600px] relative">
+                        <div className="hidden md:block w-full">
                             <Image 
                                 src={desktopHeroUrl as string} 
                                 alt="Liquidación Automotriz Carmona" 
-                                fill 
-                                className="object-cover"
+                                width={1920}
+                                height={600}
+                                sizes="100vw"
+                                style={{ width: '100%', height: 'auto' }}
                                 priority
                             />
                         </div>
-                    </>
+                    </div>
                 ) : (
                     <div className="text-center py-20">
                         <h1 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tight mb-4">
