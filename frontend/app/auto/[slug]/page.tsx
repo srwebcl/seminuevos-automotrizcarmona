@@ -75,9 +75,15 @@ export default async function VehicleDetailPage({
                             {/* Header: Badges & Share */}
                             <div className="flex justify-between items-start mb-4">
                                 <div className="flex flex-wrap gap-2">
-                                    <span className="inline-block bg-black text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-lg shadow-black/20">
-                                        Seminuevo
-                                    </span>
+                                    {vehicle.is_clearance ? (
+                                        <span className="inline-block bg-red-600 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-lg shadow-red-600/20">
+                                            🔥 Liquidación
+                                        </span>
+                                    ) : (
+                                        <span className="inline-block bg-black text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-lg shadow-black/20">
+                                            Seminuevo
+                                        </span>
+                                    )}
                                     {vehicle.is_unique_owner && (
                                         <span className="inline-block bg-blue-600 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-lg shadow-blue-600/20">
                                             Único Dueño
@@ -126,19 +132,24 @@ export default async function VehicleDetailPage({
                             <div className="mb-8">
                                 {vehicle.price_offer_formatted ? (
                                     (() => {
-                                        // Prioritize the first available dynamic tag for styling
-                                        const activeTag = vehicle.tags && vehicle.tags.length > 0 ? vehicle.tags[0] : null;
+                                        const isClearance = vehicle.is_clearance;
+                                        // Prioritize the first available dynamic tag for styling, unless it's clearance
+                                        const activeTag = (!isClearance && vehicle.tags && vehicle.tags.length > 0) ? vehicle.tags[0] : null;
 
                                         return (
                                             <div
                                                 className="flex flex-col items-start p-4 rounded-2xl border transition-colors duration-300"
                                                 style={{
-                                                    backgroundColor: activeTag ? `${activeTag.bg_color}10` : 'rgba(254, 226, 226, 0.5)', // 10 is approx 6% opacity
-                                                    borderColor: activeTag ? `${activeTag.bg_color}30` : 'rgb(254, 202, 202)'
+                                                    backgroundColor: isClearance ? 'rgba(254, 226, 226, 0.5)' : (activeTag ? `${activeTag.bg_color}10` : 'rgba(254, 226, 226, 0.5)'), // 10 is approx 6% opacity
+                                                    borderColor: isClearance ? 'rgb(254, 202, 202)' : (activeTag ? `${activeTag.bg_color}30` : 'rgb(254, 202, 202)')
                                                 }}
                                             >
                                                 <div className="flex items-center gap-2 mb-1">
-                                                    {activeTag ? (
+                                                    {isClearance ? (
+                                                        <span className="bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider shadow-sm animate-pulse">
+                                                            ¡LIQUIDACIÓN!
+                                                        </span>
+                                                    ) : activeTag ? (
                                                         <span
                                                             className="text-white text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider shadow-sm animate-pulse"
                                                             style={{
@@ -160,13 +171,13 @@ export default async function VehicleDetailPage({
                                                 </div>
                                                 <p
                                                     className="text-5xl md:text-6xl font-black tracking-tighter leading-none"
-                                                    style={{ color: activeTag ? activeTag.bg_color : '#dc2626' }}
+                                                    style={{ color: (isClearance || !activeTag) ? '#dc2626' : activeTag.bg_color }}
                                                 >
                                                     {vehicle.price_offer_formatted}
                                                 </p>
                                                 <p
                                                     className="text-xs font-medium mt-1"
-                                                    style={{ color: activeTag ? activeTag.bg_color : '#f87171' }}
+                                                    style={{ color: (isClearance || !activeTag) ? '#f87171' : activeTag.bg_color }}
                                                 >
                                                     Precio con todo medio de pago
                                                 </p>
@@ -194,7 +205,14 @@ export default async function VehicleDetailPage({
                                     </div>
                                 ) : (
                                     <div>
-                                        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Precio Contado</p>
+                                        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-2">
+                                            {vehicle.is_clearance && (
+                                                <span className="bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider shadow-sm animate-pulse">
+                                                    ¡LIQUIDACIÓN!
+                                                </span>
+                                            )}
+                                            Precio Contado
+                                        </p>
                                         <p className="text-5xl md:text-6xl font-black text-gray-900 tracking-tight">
                                             {vehicle.price_formatted}
                                         </p>
