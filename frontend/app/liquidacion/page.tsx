@@ -32,7 +32,7 @@ export default async function ClearancePage() {
     const mobileHeroUrl = settings.hero_mobile ? `${BACKEND_URL}/storage/${settings.hero_mobile}` : desktopHeroUrl;
 
     return (
-        <div className="bg-gray-50 min-h-screen pb-16">
+        <div className="bg-gray-50 min-h-screen pt-20 pb-16">
             {/* 1. Hero Banner */}
             <div className="w-full bg-black flex items-center justify-center">
                 {desktopHeroUrl ? (
