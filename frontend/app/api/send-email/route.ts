@@ -19,7 +19,8 @@ export async function POST(request: Request) {
         // --- 1. CONFIGURACIÓN DE DESTINATARIOS Y ASUNTOS ---
 
         if (type === 'evaluation') {
-            subject = `🚗 Nuevo Lead Web: ${data.name} - ${vehicle?.brand?.name} ${vehicle?.model}`;
+            const clearanceText = vehicle?.is_clearance ? ' [EN LIQUIDACIÓN]' : '';
+            subject = `🚗 Nuevo Lead Web${clearanceText}: ${data.name} - ${vehicle?.brand?.name} ${vehicle?.model}`;
 
             // Lógica Premium
             if (vehicle?.is_premium) {
@@ -84,6 +85,7 @@ export async function POST(request: Request) {
                         Ver Vehículo en la Web
                     </a>
                 </p>
+                ${vehicle.is_clearance ? '<p style="color: #dc2626; font-weight: bold; margin-top: 10px;">🔥 VEHÍCULO EN LIQUIDACIÓN</p>' : ''}
                 ${vehicle.is_premium ? '<p style="color: #D4AF37; font-weight: bold; margin-top: 10px;">⭐ VEHÍCULO PREMIUM</p>' : ''}
             </div>
             ` : ''}

@@ -41,7 +41,7 @@ export default async function VehicleDetailPage({
     // Unique images
     const uniqueImages = [...new Set(galleryImages)];
 
-    const whatsappMessage = `Hola, estoy interesado en el ${vehicle.brand.name} ${vehicle.model} (${vehicle.year}) que vi en la web.`;
+    const whatsappMessage = `Hola, estoy interesado en el ${vehicle.brand.name} ${vehicle.model} (${vehicle.year})${vehicle.is_clearance ? ' EN LIQUIDACIÓN' : ''} que vi en la web.`;
     const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
 
     return (
