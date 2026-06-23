@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Image from 'next/image';
 import { getClearanceData, BACKEND_URL } from '@/lib/api';
-import VehicleCard from '@/components/VehicleCard';
+import ClearanceGrid from '@/components/ClearanceGrid';
 
 export const metadata: Metadata = {
     title: 'Liquidación Seminuevos | Automotriz Carmona',
@@ -74,30 +74,9 @@ export default async function ClearancePage() {
                 )}
             </div>
 
-            {/* 2. Grid de Vehículos */}
+            {/* 2. Grid Interactivo de Vehículos */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
-                <div className="mb-8">
-                    <h2 className="text-2xl md:text-3xl font-black text-gray-900 uppercase tracking-tight">
-                        Vehículos en <span className="text-red-600">Liquidación</span>
-                    </h2>
-                    <p className="text-gray-500 mt-1">
-                        Mostrando {vehicles.length} vehículos disponibles
-                    </p>
-                </div>
-
-                {vehicles.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        {vehicles.map((vehicle) => (
-                            <VehicleCard key={vehicle.id} vehicle={vehicle} />
-                        ))}
-                    </div>
-                ) : (
-                    <div className="text-center py-12 bg-white rounded-2xl shadow-sm border border-gray-100">
-                        <i className="fa-solid fa-car-side text-4xl text-gray-300 mb-3"></i>
-                        <h3 className="text-xl font-bold text-gray-600">No hay vehículos en liquidación</h3>
-                        <p className="text-gray-400">Vuelve a revisar más tarde.</p>
-                    </div>
-                )}
+                <ClearanceGrid initialVehicles={vehicles} />
             </div>
 
             {/* 3. Términos y Condiciones Legales */}

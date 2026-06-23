@@ -11,7 +11,7 @@ function adjustColor(color: string, amount: number) {
     return '#' + color.replace(/^#/, '').replace(/../g, color => ('0' + Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2));
 }
 
-export default function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
+export default function VehicleCard({ vehicle, isClearanceView = false }: { vehicle: Vehicle, isClearanceView?: boolean }) {
 
     return (
         <div className="group relative bg-white rounded-[1.5rem] overflow-hidden transition-all duration-300 flex flex-col h-full hover:-translate-y-1 hover:shadow-xl border border-gray-100 shadow-sm">
@@ -19,7 +19,7 @@ export default function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
                 {/* Badges Container */}
                 <div className="absolute top-3 left-3 z-30 flex flex-col gap-2 items-start">
 
-                    {vehicle.tags && vehicle.tags.map((tag, index) => (
+                    {!isClearanceView && vehicle.tags && vehicle.tags.map((tag, index) => (
                         <span
                             key={index}
                             className="text-[10px] font-bold px-3 py-1 rounded shadow-md uppercase tracking-wide"
@@ -31,9 +31,15 @@ export default function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
                             {tag.name}
                         </span>
                     ))}
+                    
+                    {isClearanceView && (
+                        <span className="bg-red-600 text-white text-[10px] font-black px-3 py-1 rounded shadow-md uppercase tracking-widest flex items-center gap-1">
+                            <i className="fa-solid fa-fire"></i> Liquidación
+                        </span>
+                    )}
                 </div>
 
-                {vehicle.is_premium && (
+                {!isClearanceView && vehicle.is_premium && (
                     <div className="absolute top-3 right-3 z-30">
                         <span className="bg-[#856404] text-white text-[10px] font-black px-2 py-1 rounded uppercase tracking-widest flex items-center gap-1 shadow-sm">
                             <i className="fa-solid fa-crown"></i> Premium
@@ -41,7 +47,7 @@ export default function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
                     </div>
                 )}
 
-                {vehicle.is_featured && !vehicle.is_premium && (
+                {!isClearanceView && vehicle.is_featured && !vehicle.is_premium && (
                     <div className="absolute top-3 right-3 z-30">
                         <span className="bg-blue-600 text-white text-[10px] font-black px-2 py-1 rounded uppercase tracking-widest flex items-center gap-1 shadow-sm">
                             <i className="fa-solid fa-star"></i> Destacado
@@ -101,8 +107,8 @@ export default function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
                     <div className="flex flex-col">
                         {vehicle.price_offer_formatted ? (
                             (() => {
-                                // Prioritize the first available dynamic tag for styling
-                                const activeTag = vehicle.tags && vehicle.tags.length > 0 ? vehicle.tags[0] : null;
+                                // En vista liquidación, forzamos estilo rojo. Si no, usamos el tag dinámico.
+                                const activeTag = (!isClearanceView && vehicle.tags && vehicle.tags.length > 0) ? vehicle.tags[0] : null;
 
                                 return (
                                     <>
@@ -119,7 +125,7 @@ export default function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
                                                 </span>
                                             ) : (
                                                 <span className="bg-red-100 text-red-600 text-[9px] font-black px-1.5 py-0.5 rounded uppercase">
-                                                    Oferta
+                                                    {isClearanceView ? 'Liquidación' : 'Oferta'}
                                                 </span>
                                             )}
                                             <span className="text-[10px] text-gray-400 line-through decoration-red-200 font-medium">{vehicle.price_formatted}</span>
