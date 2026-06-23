@@ -23,6 +23,7 @@ Route::get('banners', function () {
 });
 
 Route::get('search/global', [\App\Http\Controllers\Api\SearchController::class, 'index']);
+Route::get('clearance', [\App\Http\Controllers\Api\ClearanceController::class, 'index']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();

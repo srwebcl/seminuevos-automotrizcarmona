@@ -129,3 +129,18 @@ export async function getRelatedVehicles(categorySlug: string, currentVehicleId:
 export async function getLocations(): Promise<{ data: any[] }> {
     return fetchAPI<{ data: any[] }>('locations', { revalidate: CACHE_SLOW });
 }
+
+export interface ClearanceSettings {
+    hero_desktop: string | null;
+    hero_mobile: string | null;
+    legal_text: string | null;
+}
+
+export interface ClearanceData {
+    settings: ClearanceSettings;
+    vehicles: Vehicle[];
+}
+
+export async function getClearanceData(): Promise<ClearanceData> {
+    return fetchAPI<ClearanceData>('clearance', { revalidate: CACHE_FAST });
+}
