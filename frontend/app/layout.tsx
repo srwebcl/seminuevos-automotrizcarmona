@@ -11,7 +11,7 @@ import { getMenu, getSettings } from '@/lib/api';
 // --- 1. IMPORTACIONES DE ANALÍTICA
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { GoogleAnalytics } from '@next/third-parties/google';
+import { GoogleTagManager } from '@next/third-parties/google';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -56,10 +56,11 @@ export default async function RootLayout({
   const themeClass = settings.seasonal_mode !== 'none' ? `theme-${settings.seasonal_mode}` : '';
 
   // --- 2. CONFIGURACIÓN ID GOOGLE ---
-  const gaId = process.env.NEXT_PUBLIC_GA_ID || "G-506B9N7C46";
+  const gtmId = process.env.NEXT_PUBLIC_GTM_ID || "GTM-M2V7C6K6";
 
   return (
     <html lang="es">
+      <GoogleTagManager gtmId={gtmId} />
       <head>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossOrigin="anonymous" referrerPolicy="no-referrer" />
       </head>
@@ -77,7 +78,6 @@ export default async function RootLayout({
         {/* --- 3. COMPONENTES DE MEDICIÓN */}
         <Analytics />
         <SpeedInsights />
-        <GoogleAnalytics gaId={gaId} />
 
       </body>
     </html>
