@@ -24,15 +24,18 @@ export default function Navbar({ categories = [] }: NavbarProps) {
     }, []);
 
     // Definición de ítems del menú central
-    const menuItems: { name: string; slug: string; href: string; isSpecial?: boolean }[] = [
+    const menuItems: { name: string; slug: string; href: string; isSpecial?: boolean; isLiquidacion?: boolean }[] = [
         { name: 'Seminuevos', slug: 'seminuevos', href: '/catalogo' },
         { name: 'Premium', slug: 'premium', href: '/catalogo?is_premium=1', isSpecial: true },
-        // Segmentos dinámicos desde la API
-        ...categories.map(cat => ({
-            name: cat.slug === 'camion' ? 'Camiones' : (cat.slug === 'moto' ? 'Motos' : (cat.slug === 'camioneta' ? 'Camionetas' : cat.name)),
-            slug: cat.slug,
-            href: `/catalogo?category=${cat.slug}`
-        }))
+        { name: 'Liquidación', slug: 'liquidacion', href: '/liquidacion', isLiquidacion: true },
+        // Segmentos dinámicos desde la API (filtrando camionetas, motos y camiones)
+        ...categories
+            .filter(cat => !['camion', 'moto', 'camioneta', 'camiones', 'motos', 'camionetas'].includes(cat.slug.toLowerCase()))
+            .map(cat => ({
+                name: cat.name,
+                slug: cat.slug,
+                href: `/catalogo?category=${cat.slug}`
+            }))
     ];
 
     return (
@@ -61,14 +64,25 @@ export default function Navbar({ categories = [] }: NavbarProps) {
                         </Link>
 
                         {menuItems.map((item) => (
-                            <Link
-                                key={item.slug}
-                                href={item.href}
-                                className={`text-sm font-bold uppercase tracking-widest hover:text-premium-gold transition-colors flex items-center gap-1.5 ${pathname.includes(item.slug) ? 'text-premium-gold scale-105' : 'text-gray-300'} ${item.isSpecial ? 'text-premium-gold' : ''}`}
-                            >
-                                {item.name === 'Premium' && <i className="fa-solid fa-crown text-xs"></i>}
-                                {item.name}
-                            </Link>
+                            item.isLiquidacion ? (
+                                <Link
+                                    key={item.slug}
+                                    href={item.href}
+                                    className="group px-3 py-1.5 rounded-md border border-red-500/50 bg-[#2a0e0e] hover:bg-[#3a1414] hover:border-red-500 transition-all duration-300 flex items-center gap-2 shadow-[0_0_10px_rgba(239,68,68,0.1)]"
+                                >
+                                    <span className="text-sm">🔥</span>
+                                    <span className="text-xs font-bold uppercase tracking-widest text-red-50 group-hover:text-white">{item.name}</span>
+                                </Link>
+                            ) : (
+                                <Link
+                                    key={item.slug}
+                                    href={item.href}
+                                    className={`text-sm font-bold uppercase tracking-widest hover:text-premium-gold transition-colors flex items-center gap-1.5 ${pathname.includes(item.slug) ? 'text-premium-gold scale-105' : 'text-gray-300'} ${item.isSpecial ? 'text-premium-gold' : ''}`}
+                                >
+                                    {item.name === 'Premium' && <i className="fa-solid fa-crown text-xs"></i>}
+                                    {item.name}
+                                </Link>
+                            )
                         ))}
                     </div>
 
@@ -118,9 +132,21 @@ export default function Navbar({ categories = [] }: NavbarProps) {
                     <div className="flex-1 flex flex-col justify-center items-center space-y-6 p-6 overflow-y-auto">
                         <Link href="/" onClick={() => setOpen(false)} className="text-2xl font-black text-white hover:text-premium-gold tracking-tight">INICIO</Link>
                         {menuItems.map((item) => (
-                            <Link key={item.slug} href={item.href} onClick={() => setOpen(false)} className={`text-2xl font-black tracking-tight ${item.isSpecial ? 'text-premium-gold' : 'text-white hover:text-premium-gold'}`}>
-                                {item.name.toUpperCase()} {item.isSpecial && <i className="fa-solid fa-crown ml-2"></i>}
-                            </Link>
+                            item.isLiquidacion ? (
+                                <Link
+                                    key={item.slug}
+                                    href={item.href}
+                                    onClick={() => setOpen(false)}
+                                    className="w-full max-w-xs flex justify-center items-center gap-2 border border-red-500/60 bg-[#2a0e0e] hover:bg-[#3a1414] px-6 py-3 rounded-md transition-all mt-2 mb-2 shadow-[0_0_15px_rgba(239,68,68,0.15)]"
+                                >
+                                    <span className="text-lg">🔥</span>
+                                    <span className="text-sm font-bold text-white uppercase tracking-widest">{item.name}</span>
+                                </Link>
+                            ) : (
+                                <Link key={item.slug} href={item.href} onClick={() => setOpen(false)} className={`text-2xl font-black tracking-tight ${item.isSpecial ? 'text-premium-gold' : 'text-white hover:text-premium-gold'}`}>
+                                    {item.name.toUpperCase()} {item.isSpecial && <i className="fa-solid fa-crown ml-2"></i>}
+                                </Link>
+                            )
                         ))}
 
                         <div className="w-12 h-0.5 bg-white/20 my-4"></div>
