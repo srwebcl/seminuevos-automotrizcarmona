@@ -109,7 +109,10 @@ export default function Navbar({ categories = [] }: NavbarProps) {
                     </div>
 
                     {/* Botón Hamburguesa (Móvil) */}
-                    <div className="flex items-center lg:hidden">
+                    <div className="flex items-center lg:hidden gap-3">
+                        <Link href="/liquidacion" className="flex items-center justify-center w-9 h-9 rounded-md border border-red-500/50 bg-[#2a0e0e] hover:bg-[#3a1414] shadow-[0_0_10px_rgba(239,68,68,0.2)] transition-all">
+                            <span className="text-sm">🔥</span>
+                        </Link>
                         <button onClick={() => setOpen(!open)} className="text-white focus:outline-none p-2" aria-label="Abrir menú">
                             {open ? <i className="fa-solid fa-xmark text-2xl"></i> : <i className="fa-solid fa-bars text-2xl"></i>}
                         </button>
