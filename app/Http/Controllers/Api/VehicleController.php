@@ -16,8 +16,7 @@ class VehicleController extends Controller
             'category:id,name,slug',
             'tags:id,name,bg_color,text_color'
         ])
-            ->where('is_published', true)
-            ->where('is_clearance', false);
+            ->where('is_published', true);
 
         if ($request->has('category')) {
             $slug = $request->query('category');
@@ -154,7 +153,6 @@ class VehicleController extends Controller
         $vehicles = Vehicle::with(['brand', 'category', 'tags'])
             ->where('is_published', true)
             ->where('is_featured', true)
-            ->where('is_clearance', false)
             ->orderBy('created_at', 'desc')
             ->take(8)
             ->get();
@@ -170,5 +168,13 @@ class VehicleController extends Controller
             ->firstOrFail();
 
         return new VehicleResource($vehicle);
+    }
+
+    public function sitemap()
+    {
+        return Vehicle::where('is_published', true)
+            ->select('slug', 'updated_at')
+            ->orderBy('updated_at', 'desc')
+            ->get();
     }
 }

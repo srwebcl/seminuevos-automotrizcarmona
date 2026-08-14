@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { getVehicleBySlug, getSettings, getRelatedVehicles } from '@/lib/api';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -11,6 +12,34 @@ export const dynamic = 'force-dynamic';
 
 function adjustColor(color: string, amount: number) {
     return '#' + color.replace(/^#/, '').replace(/../g, color => ('0' + Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2));
+}
+
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+    const { slug } = await params;
+    try {
+        const { data: vehicle } = await getVehicleBySlug(slug);
+        const title = `${vehicle.brand.name} ${vehicle.model} ${vehicle.year}${vehicle.is_clearance ? ' | Liquidación' : ''}`;
+        const description = `${vehicle.brand.name} ${vehicle.model} ${vehicle.year} - ${vehicle.km_formatted} - ${vehicle.price_offer_formatted || vehicle.price_formatted}. ${vehicle.description || 'Disponible en Automotriz Carmona.'}`.slice(0, 300);
+        const image = vehicle.cover_photo || vehicle.photos?.[0];
+
+        return {
+            title,
+            description,
+            openGraph: {
+                title,
+                description,
+                images: image ? [{ url: image }] : undefined,
+            },
+        };
+    } catch {
+        // Si el slug no existe, dejamos que la página siga su curso normal (firstOrFail -> error boundary)
+        // y caemos al metadata genérico del layout.
+        return {};
+    }
 }
 
 export default async function VehicleDetailPage({
@@ -44,8 +73,42 @@ export default async function VehicleDetailPage({
     const whatsappMessage = `Hola, estoy interesado en el ${vehicle.brand.name} ${vehicle.model} (${vehicle.year})${vehicle.is_clearance ? ' EN LIQUIDACIÓN' : ''} que vi en la web.`;
     const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
 
+    // Datos estructurados (schema.org Product+Offer) para que buscadores y consumidores externos
+    // del catálogo (ej. CRMs de terceros) puedan leer el vehículo sin depender de parsear el HTML.
+    // Se usa Product en vez de Vehicle/rich-result de Google porque ese último exige VIN, dato que
+    // no maneja el sistema.
+    const jsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name: `${vehicle.brand.name} ${vehicle.model} ${vehicle.year}`,
+        description: vehicle.description || `${vehicle.brand.name} ${vehicle.model} ${vehicle.year}, ${vehicle.km_formatted}.`,
+        image: uniqueImages,
+        brand: {
+            '@type': 'Brand',
+            name: vehicle.brand.name,
+        },
+        offers: {
+            '@type': 'Offer',
+            price: vehicle.price_offer || vehicle.price,
+            priceCurrency: 'CLP',
+            availability: 'https://schema.org/InStock',
+            url: `https://seminuevos.automotrizcarmona.cl/auto/${vehicle.slug}`,
+        },
+        additionalProperty: [
+            { '@type': 'PropertyValue', name: 'Año', value: vehicle.year },
+            { '@type': 'PropertyValue', name: 'Kilometraje', value: vehicle.km_formatted },
+            vehicle.transmission ? { '@type': 'PropertyValue', name: 'Transmisión', value: vehicle.transmission } : null,
+            vehicle.fuel ? { '@type': 'PropertyValue', name: 'Combustible', value: vehicle.fuel } : null,
+        ].filter(Boolean),
+    };
+
     return (
         <div className="pt-24 pb-12 bg-white min-h-screen font-sans">
+            <script
+                type="application/ld+json"
+                // eslint-disable-next-line react/no-danger
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Breadcrumb */}
                 <nav className="text-sm mb-8 text-gray-500 flex items-center gap-2">

@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\LocationController;
 Route::prefix('vehicles')->group(function () {
     Route::get('/', [\App\Http\Controllers\Api\VehicleController::class, 'index']);
     Route::get('/featured', [\App\Http\Controllers\Api\VehicleController::class, 'featured']);
+    Route::get('/sitemap', [\App\Http\Controllers\Api\VehicleController::class, 'sitemap']);
     Route::get('/{slug}', [\App\Http\Controllers\Api\VehicleController::class, 'show']);
 });
 

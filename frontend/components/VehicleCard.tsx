@@ -12,6 +12,9 @@ function adjustColor(color: string, amount: number) {
 }
 
 export default function VehicleCard({ vehicle, isClearanceView = false }: { vehicle: Vehicle, isClearanceView?: boolean }) {
+    // Se muestra como liquidación tanto si el padre lo pide explícitamente (landing /liquidacion)
+    // como si el propio vehículo viene marcado is_clearance (catálogo general, home, relacionados).
+    const showClearance = isClearanceView || vehicle.is_clearance;
 
     return (
         <div className="group relative bg-white rounded-[1.5rem] overflow-hidden transition-all duration-300 flex flex-col h-full hover:-translate-y-1 hover:shadow-xl border border-gray-100 shadow-sm">
@@ -19,7 +22,7 @@ export default function VehicleCard({ vehicle, isClearanceView = false }: { vehi
                 {/* Badges Container */}
                 <div className="absolute top-3 left-3 z-30 flex flex-col gap-2 items-start">
 
-                    {!isClearanceView && vehicle.tags && vehicle.tags.map((tag, index) => (
+                    {!showClearance && vehicle.tags && vehicle.tags.map((tag, index) => (
                         <span
                             key={index}
                             className="text-[10px] font-bold px-3 py-1 rounded shadow-md uppercase tracking-wide"
@@ -32,14 +35,14 @@ export default function VehicleCard({ vehicle, isClearanceView = false }: { vehi
                         </span>
                     ))}
                     
-                    {isClearanceView && (
+                    {showClearance && (
                         <span className="bg-red-600 text-white text-[10px] font-black px-3 py-1 rounded shadow-md uppercase tracking-widest flex items-center gap-1">
                             <i className="fa-solid fa-fire"></i> Liquidación
                         </span>
                     )}
                 </div>
 
-                {!isClearanceView && vehicle.is_premium && (
+                {!showClearance && vehicle.is_premium && (
                     <div className="absolute top-3 right-3 z-30">
                         <span className="bg-[#856404] text-white text-[10px] font-black px-2 py-1 rounded uppercase tracking-widest flex items-center gap-1 shadow-sm">
                             <i className="fa-solid fa-crown"></i> Premium
@@ -47,7 +50,7 @@ export default function VehicleCard({ vehicle, isClearanceView = false }: { vehi
                     </div>
                 )}
 
-                {!isClearanceView && vehicle.is_featured && !vehicle.is_premium && (
+                {!showClearance && vehicle.is_featured && !vehicle.is_premium && (
                     <div className="absolute top-3 right-3 z-30">
                         <span className="bg-blue-600 text-white text-[10px] font-black px-2 py-1 rounded uppercase tracking-widest flex items-center gap-1 shadow-sm">
                             <i className="fa-solid fa-star"></i> Destacado
@@ -108,7 +111,7 @@ export default function VehicleCard({ vehicle, isClearanceView = false }: { vehi
                         {vehicle.price_offer_formatted ? (
                             (() => {
                                 // En vista liquidación, forzamos estilo rojo. Si no, usamos el tag dinámico.
-                                const activeTag = (!isClearanceView && vehicle.tags && vehicle.tags.length > 0) ? vehicle.tags[0] : null;
+                                const activeTag = (!showClearance && vehicle.tags && vehicle.tags.length > 0) ? vehicle.tags[0] : null;
 
                                 return (
                                     <>
@@ -125,7 +128,7 @@ export default function VehicleCard({ vehicle, isClearanceView = false }: { vehi
                                                 </span>
                                             ) : (
                                                 <span className="bg-red-100 text-red-600 text-[9px] font-black px-1.5 py-0.5 rounded uppercase">
-                                                    {isClearanceView ? 'Liquidación' : 'Oferta'}
+                                                    {showClearance ? 'Liquidación' : 'Oferta'}
                                                 </span>
                                             )}
                                             <span className="text-[10px] text-gray-400 line-through decoration-red-200 font-medium">{vehicle.price_formatted}</span>
