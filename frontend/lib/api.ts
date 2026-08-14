@@ -144,3 +144,15 @@ export interface ClearanceData {
 export async function getClearanceData(): Promise<ClearanceData> {
     return fetchAPI<ClearanceData>('clearance', { revalidate: CACHE_FAST });
 }
+
+export interface VehicleSitemapEntry {
+    slug: string;
+    updated_at: string;
+}
+
+// Lista liviana (sin paginar) de todos los slugs publicados, usada por app/sitemap.ts.
+// No usamos CACHE_FAST acá a propósito: un crawler no necesita datos al minuto,
+// y así evitamos pegarle al servidor de Hostgator en cada visita a /sitemap.xml.
+export async function getAllVehicleSlugs(): Promise<VehicleSitemapEntry[]> {
+    return fetchAPI<VehicleSitemapEntry[]>('vehicles/sitemap', { revalidate: CACHE_SLOW });
+}
