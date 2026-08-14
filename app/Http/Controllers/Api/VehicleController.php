@@ -25,15 +25,10 @@ class VehicleController extends Controller
                 // Fix ambiguity: specify table name
                 $q->where('categories.slug', $slug);
             });
-        } else {
-            // Default: Exclude Motos and Camiones if no category is selected
-            // RELAXED RULE: Also allow them if searching for Offers, Featured, or specific Tags
-            if (!$request->has('is_offer') && !$request->has('is_featured') && !$request->has('tag')) {
-                $query->whereDoesntHave('category', function ($q) {
-                    $q->whereIn('categories.slug', ['motos', 'camion']);
-                });
-            }
         }
+        // Nota: Motos y Camiones ya no se excluyen por defecto del catálogo (decisión de negocio,
+        // ago-2026). Siguen ocultos del menú de navegación (eso vive en frontend/components/Navbar.tsx,
+        // sin relación con este filtro).
 
         if ($request->has('is_premium')) {
             $query->where('is_premium', true);
